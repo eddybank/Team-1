@@ -12,7 +12,7 @@ import javax.swing.JComponent;
  */
 class CardStackFM extends JComponent
 {
-	protected final int NUM_CARDS = 52;
+	protected final int NUM_CARDS = 104;
 	protected Vector<CardFM> v;
 	protected boolean playStack = false;
 	protected int SPREAD = 18;
@@ -27,11 +27,14 @@ class CardStackFM extends JComponent
 		if (isDeck)
 		{
 			// set deck position
-			for (CardFM.Suit suit : CardFM.Suit.values())
+			for(int x = 0; x <= 1; x++)
 			{
-				for (CardFM.Value value : CardFM.Value.values())
+				for (CardFM.Suit suit : CardFM.Suit.values())
 				{
-					v.add(new CardFM(suit, value));
+					for (CardFM.Value value : CardFM.Value.values())
+					{
+						v.add(new CardFM(suit, value));
+					}
 				}
 			}
 		} else

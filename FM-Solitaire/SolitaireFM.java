@@ -1,4 +1,5 @@
 import Klondike.SolitaireK;
+
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
@@ -21,13 +22,14 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
+
 public class SolitaireFM
 {
 	// CONSTANTS
-	public static final int TABLE_HEIGHT = CardFM.CARD_HEIGHT * 4;
-	public static final int TABLE_WIDTH = (CardFM.CARD_WIDTH * 7) + 100;
-	public static final int NUM_FINAL_DECKS = 4;
-	public static final int NUM_PLAY_DECKS = 7;
+	public static final int TABLE_HEIGHT = CardFM.CARD_HEIGHT * 8;
+	public static final int TABLE_WIDTH = (CardFM.CARD_WIDTH * 8) + 100;
+	public static final int NUM_FINAL_DECKS = 8;
+	public static final int NUM_PLAY_DECKS = 13;
 	public static final Point DECK_POS = new Point(5, 5);
 	public static final Point SHOW_POS = new Point(DECK_POS.x + CardFM.CARD_WIDTH + 5, DECK_POS.y);
 	public static final Point FINAL_POS = new Point(SHOW_POS.x + CardFM.CARD_WIDTH + 150, DECK_POS.y);
@@ -52,7 +54,9 @@ public class SolitaireFM
 	private static JTextField scoreBox = new JTextField();// displays the score
 	private static JTextField timeBox = new JTextField();// displays the time
 	private static JTextField statusBox = new JTextField();// status messages
-	private static final CardFM newCardButton = new CardFM();// reveal waste card
+	private static JButton newCardButton = new JButton("Deal Cards");// deal waste cards
+	
+	
 	
 	//NEW ADDITIONS
 	private static JButton klondikeStart = new JButton("Klondike");
@@ -134,17 +138,41 @@ public class SolitaireFM
 		@Override
 		public void actionPerformed(ActionEvent e)
 		{
-			SolitaireK.playNewGame();
+			frame.dispose();
+			newCardButton.removeActionListener(new NewCardListener());
+			
+			newGameButton.removeActionListener(new NewGameListener());
+
+			showRulesButton.removeActionListener(new ShowRulesListener());
+			
+			toggleTimerButton.removeActionListener(new ToggleTimerListener());
+			
+			table.removeMouseListener(new CardMovementManager());
+			table.removeMouseMotionListener(new CardMovementManager());
+			table.repaint();
+			SolitaireFM.playFMNewGame();
 		}
 
 	}
 	
-	private static class NewFMGameListener implements ActionListener
+	private static class NewCardListener implements ActionListener
 	{
 		@Override
 		public void actionPerformed(ActionEvent e)
 		{
-			playFMNewGame();
+			// SHOW (WASTE) CARD OPERATIONS
+			// deal new card to each tableau -- needs updating, will add multiple cards because of previous mouse presses
+			if (deck.showSize() > 0)
+				{
+				for (int x = 0; x < NUM_PLAY_DECKS; x++)
+					{
+					System.out.print("poping deck ");
+					deck.showSize();
+					CardFM c = deck.pop().setFaceup();
+					playCardStack[x].putFirst(c);
+					table.repaint();
+				}
+			}
 		}
 
 	}
@@ -323,28 +351,7 @@ public class SolitaireFM
 				}
 
 			}
-			// SHOW (WASTE) CARD OPERATIONS
-			// display new show card
-			if (newCardButton.contains(start) && deck.showSize() > 0)
-			{
-				if (putBackOnDeck && prevCard != null)
-				{
-					System.out.println("Putting back on show stack: ");
-					prevCard.getValue();
-					prevCard.getSuit();
-					deck.putFirst(prevCard);
-				}
-
-				System.out.print("poping deck ");
-				deck.showSize();
-				if (prevCard != null)
-					table.remove(prevCard);
-				CardFM c = deck.pop().setFaceup();
-				table.add(SolitaireFM.moveCard(c, SHOW_POS.x, SHOW_POS.y));
-				c.repaint();
-				table.repaint();
-				prevCard = c;
-			}
+			
 
 			// preparing to move show card
 			if (newCardPlace.contains(start) && prevCard != null)
@@ -367,6 +374,7 @@ public class SolitaireFM
 			}
 			putBackOnDeck = true;
 
+			
 		}
 
 		@Override
@@ -421,7 +429,7 @@ public class SolitaireFM
 					// only aces can go first
 					if (dest.empty() && dest.contains(stop))
 					{
-						if (movedCard.getValue() == CardFM.Value.ACE)
+						if (movedCard.getValue() == CardFM.Value.ACE || movedCard.getValue() == CardFM.Value.KING)
 						{
 							dest.push(movedCard);
 							table.remove(prevCard);
@@ -582,9 +590,10 @@ public class SolitaireFM
 
 					if (card.getFaceStatus() == true && source != null && dest.contains(stop) && source != dest)
 					{// TO EMPTY STACK
+						//Flea Market doesn't have empty final stacks so this shouldn't be used but will keep for reference
 						if (dest.empty())// empty final should only take an ACE
 						{
-							if (card.getValue() == CardFM.Value.ACE)
+							if (card.getValue() == CardFM.Value.ACE || card.getValue() == CardFM.Value.KING)
 							{
 								CardFM c = source.popFirst();
 								c.repaint();
@@ -685,6 +694,8 @@ public class SolitaireFM
 
 	public static void playFMNewGame()
 	{
+		
+		
 		deck = new CardStackFM(true); // deal 52 cards
 		deck.shuffle();
 		table.removeAll();
@@ -706,44 +717,156 @@ public class SolitaireFM
 		{
 			final_cards[x] = new FinalStackFM();
 
-			final_cards[x].setXY((FINAL_POS.x + (x * CardFM.CARD_WIDTH)) + 10, FINAL_POS.y);
+			//Bottom Up: A to K
+			if(x >= 0 && x <= 3) 
+			{
+				final_cards[x].setXY((FINAL_POS.x + (x * CardFM.CARD_WIDTH)) + 10, (FINAL_POS.y));
+				for(int y = 0; y < deck.showSize(); y++) {
+					
+					CardFM c = deck.pop().setFaceup();
+					
+					if(c.getValue().equals(CardFM.Value.ACE) && c.getSuit().equals(CardFM.Suit.SPADES) 
+							&& x == 0){
+						
+						final_cards[x].putFirst(c);
+						break;
+						
+					}
+					else if(c.getValue().equals(CardFM.Value.ACE) && c.getSuit().equals(CardFM.Suit.HEARTS) 
+							&& x == 1) {
+						
+						final_cards[x].putFirst(c);
+						break;
+						
+					} 
+					else if(c.getValue().equals(CardFM.Value.ACE) && c.getSuit().equals(CardFM.Suit.DIAMONDS) 
+							&& x == 2) {
+						
+						final_cards[x].putFirst(c);
+						break;
+						
+					}
+					else if(c.getValue().equals(CardFM.Value.ACE) && c.getSuit().equals(CardFM.Suit.CLUBS) 
+							&& x == 3) {
+	
+						final_cards[x].putFirst(c);
+						break;
+						
+					} else {
+						System.out.println("Putting back on show stack: ");
+						c.getValue();
+						c.getSuit();
+						deck.putFirst(c);
+					}
+				}
+			}
+				//Top Down: K to A
+			else if(x >= 4 && x <= 7) 
+				{
+				final_cards[x].setXY((FINAL_POS.x + ((x-4) * CardFM.CARD_WIDTH)) + 10, ((65/2)*FINAL_POS.y));
+					for(int y = 0; y < deck.showSize(); y++) {
+						
+						CardFM c = deck.pop().setFaceup();
+						
+						if(c.getValue().equals(CardFM.Value.KING) && c.getSuit().equals(CardFM.Suit.SPADES)
+								&& x == 4){
+							
+							final_cards[x].putFirst(c);
+							break;
+							
+						}
+						else if(c.getValue().equals(CardFM.Value.KING) && c.getSuit().equals(CardFM.Suit.HEARTS)
+								&& x == 5) {
+							
+							final_cards[x].putFirst(c);
+							break;
+							
+						} 
+						else if(c.getValue().equals(CardFM.Value.KING) && c.getSuit().equals(CardFM.Suit.DIAMONDS)
+								&& x == 6) {
+							
+							final_cards[x].putFirst(c);
+							break;
+							
+						}
+						else if(c.getValue().equals(CardFM.Value.KING) && c.getSuit().equals(CardFM.Suit.CLUBS)
+								&& x == 7) {
+		
+							final_cards[x].putFirst(c);
+							break;
+							
+						} else {
+							System.out.println("Putting back on show stack: ");
+							c.getValue();
+							c.getSuit();
+							deck.putFirst(c);
+						}
+					}
+				}
+			
 			table.add(final_cards[x]);
 
 		}
 		// place new card distribution button
-		table.add(moveCard(newCardButton, DECK_POS.x, DECK_POS.y));
+		table.add(newCardButton);
 		// initialize & place play (tableau) decks/stacks
 		playCardStack = new CardStackFM[NUM_PLAY_DECKS];
 		for (int x = 0; x < NUM_PLAY_DECKS; x++)
 		{
 			playCardStack[x] = new CardStackFM(false);
-			playCardStack[x].setXY((DECK_POS.x + (x * (CardFM.CARD_WIDTH + 10))), PLAY_POS.y);
-
+			playCardStack[x].setXY((DECK_POS.x + (TABLE_WIDTH/8 + (3 * (CardFM.CARD_WIDTH) - 25))), (2*PLAY_POS.y));
+			
 			table.add(playCardStack[x]);
+			
+			if(x >= 1 && x <=4) 
+			{
+				
+				playCardStack[x] = new CardStackFM(false);
+				playCardStack[x].setXY((DECK_POS.x + (TABLE_WIDTH/8 + (x * (CardFM.CARD_WIDTH + 10)))), (3*PLAY_POS.y));
+				
+				table.add(playCardStack[x]);
+				
+			} 
+			if(x >= 5 && x <= 8) 
+			{
+				
+				playCardStack[x] = new CardStackFM(false);
+				playCardStack[x].setXY((DECK_POS.x + (TABLE_WIDTH/8 + ((x-4) * (CardFM.CARD_WIDTH + 10)))), (4*PLAY_POS.y));
+				
+				table.add(playCardStack[x]);
+				
+			} if(x >= 9 && x <= 13) 
+			{
+				
+				playCardStack[x] = new CardStackFM(false);
+				playCardStack[x].setXY((DECK_POS.x + (TABLE_WIDTH/8 + ((x-8) * (CardFM.CARD_WIDTH + 10)))), (5*PLAY_POS.y));
+				
+				table.add(playCardStack[x]);
+				
+			}
 		}
 
 		// Dealing new game
 		for (int x = 0; x < NUM_PLAY_DECKS; x++)
 		{
-			int hld = 0;
 			CardFM c = deck.pop().setFaceup();
 			playCardStack[x].putFirst(c);
 
-			for (int y = x + 1; y < NUM_PLAY_DECKS; y++)
-			{
-				playCardStack[y].putFirst(c = deck.pop());
-			}
 		}
 		// reset time
 		time = 0;
+		
 
+		newCardButton.addActionListener(new NewCardListener());
+		newCardButton.setBounds(15, TABLE_HEIGHT - 600, 120, 120);
+		
 		newGameButton.addActionListener(new NewGameListener());
 		newGameButton.setBounds(0, TABLE_HEIGHT - 70, 120, 30);
 
 		showRulesButton.addActionListener(new ShowRulesListener());
 		showRulesButton.setBounds(120, TABLE_HEIGHT - 70, 120, 30);
 
-		gameTitle.setText("<b>Shamari's Solitaire</b> <br> COP3252 <br> Spring 2012");
+		gameTitle.setText("<b>Team 2<br>Flea Market Solitaire</b> <br> CPSC 4900 <br> Fall 2021");
 		gameTitle.setEditable(false);
 		gameTitle.setOpaque(false);
 		gameTitle.setBounds(245, 20, 100, 100);
@@ -780,6 +903,7 @@ public class SolitaireFM
 		table.add(gameTitle);
 		table.add(timeBox);
 		table.add(newGameButton);
+		table.add(newCardButton);
 		table.add(showRulesButton);
 		table.add(scoreBox);
 		table.repaint();
@@ -787,8 +911,7 @@ public class SolitaireFM
 		//changes 
 		contentPane = frame.getContentPane();
 		contentPane.add(table);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
+		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
 		table.addMouseListener(new CardMovementManager());
 		table.addMouseMotionListener(new CardMovementManager());
@@ -800,5 +923,6 @@ public class SolitaireFM
 	public static void main(String[] args)
 	{
 		SolitaireMenu.main(args);
+		//playFMNewGame();
 	}
 }
