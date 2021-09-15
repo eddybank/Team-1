@@ -152,7 +152,7 @@ public class SolitaireFM
 				// deal new card to each tableau -- needs updating, will add multiple cards because of previous mouse presses
 				if (deck.showSize() > 0)
 					{
-					for (int x = 0; x < NUM_PLAY_DECKS; x++)
+					for (int x = 1; x < NUM_PLAY_DECKS; x++)
 						{
 						System.out.print("poping deck ");
 						deck.showSize();
@@ -266,68 +266,73 @@ public class SolitaireFM
 
 		private boolean validPlayStackMove(CardFM source, CardFM dest)
 		{
-			int s_val = source.getValue().ordinal();
-			int d_val = dest.getValue().ordinal();
-			CardFM.Suit s_suit = source.getSuit();
-			CardFM.Suit d_suit = dest.getSuit();
-
-			// destination card should be one higher value
-			if ((s_val + 1) == d_val)
-			{
-				// destination card should be opposite color
-				switch (s_suit)
+			if(dest != null) {
+				int s_val = source.getValue().ordinal();
+				int d_val = dest.getValue().ordinal();
+				CardFM.Suit s_suit = source.getSuit();
+				CardFM.Suit d_suit = dest.getSuit();
+	
+				// destination card should be one higher value
+				if (s_val  == (d_val + 1))
 				{
-				case SPADES:
-					if (d_suit == CardFM.Suit.HEARTS && d_suit == CardFM.Suit.DIAMONDS && d_suit == CardFM.Suit.CLUBS)
-						return false;
-					else
-						return true;
-				case CLUBS:
-					if (d_suit == CardFM.Suit.HEARTS && d_suit == CardFM.Suit.DIAMONDS && d_suit == CardFM.Suit.SPADES)
-						return false;
-					else
-						return true;
-				case HEARTS:
-					if (d_suit == CardFM.Suit.SPADES && d_suit == CardFM.Suit.CLUBS && d_suit == CardFM.Suit.DIAMONDS)
-						return false;
-					else
-						return true;
-				case DIAMONDS:
-					if (d_suit == CardFM.Suit.SPADES && d_suit == CardFM.Suit.CLUBS && d_suit == CardFM.Suit.HEARTS)
-						return false;
-					else
-						return true;
-				}
-				return false; // this never gets reached
-			} else if (s_val == (d_val + 1))
-			{
-				// destination card should be opposite color
-				switch (s_suit)
+					System.out.println("1");
+					// destination card should be same color
+					switch (s_suit)
+					{
+					case SPADES:
+						if (d_suit == CardFM.Suit.HEARTS && d_suit == CardFM.Suit.DIAMONDS && d_suit == CardFM.Suit.CLUBS)
+							return false;
+						else
+							return true;
+					case CLUBS:
+						if (d_suit == CardFM.Suit.HEARTS && d_suit == CardFM.Suit.DIAMONDS && d_suit == CardFM.Suit.SPADES)
+							return false;
+						else
+							return true;
+					case HEARTS:
+						if (d_suit == CardFM.Suit.SPADES && d_suit == CardFM.Suit.CLUBS && d_suit == CardFM.Suit.DIAMONDS)
+							return false;
+						else
+							return true;
+					case DIAMONDS:
+						if (d_suit == CardFM.Suit.SPADES && d_suit == CardFM.Suit.CLUBS && d_suit == CardFM.Suit.HEARTS)
+							return false;
+						else
+							return true;
+					}
+					return false; // this never gets reached
+				} else if ((s_val + 1) == d_val )
 				{
-				case SPADES:
-					if (d_suit == CardFM.Suit.HEARTS && d_suit == CardFM.Suit.DIAMONDS && d_suit == CardFM.Suit.CLUBS)
-						return false;
-					else
-						return true;
-				case CLUBS:
-					if (d_suit == CardFM.Suit.HEARTS && d_suit == CardFM.Suit.DIAMONDS && d_suit == CardFM.Suit.SPADES)
-						return false;
-					else
-						return true;
-				case HEARTS:
-					if (d_suit == CardFM.Suit.SPADES && d_suit == CardFM.Suit.CLUBS && d_suit == CardFM.Suit.DIAMONDS)
-						return false;
-					else
-						return true;
-				case DIAMONDS:
-					if (d_suit == CardFM.Suit.SPADES && d_suit == CardFM.Suit.CLUBS && d_suit == CardFM.Suit.HEARTS)
-						return false;
-					else
-						return true;
-				}
-				return false; // this never gets reachedelse 
+					System.out.println("2");
+					// destination card should be same color
+					switch (s_suit)
+					{
+					case SPADES:
+						if (d_suit == CardFM.Suit.HEARTS && d_suit == CardFM.Suit.DIAMONDS && d_suit == CardFM.Suit.CLUBS)
+							return false;
+						else
+							return true;
+					case CLUBS:
+						if (d_suit == CardFM.Suit.HEARTS && d_suit == CardFM.Suit.DIAMONDS && d_suit == CardFM.Suit.SPADES)
+							return false;
+						else
+							return true;
+					case HEARTS:
+						if (d_suit == CardFM.Suit.SPADES && d_suit == CardFM.Suit.CLUBS && d_suit == CardFM.Suit.DIAMONDS)
+							return false;
+						else
+							return true;
+					case DIAMONDS:
+						if (d_suit == CardFM.Suit.SPADES && d_suit == CardFM.Suit.CLUBS && d_suit == CardFM.Suit.HEARTS)
+							return false;
+						else
+							return true;
+					}
+					return false; // this never gets reached 
+				}  else
+					return false;
 			} else
-				return false;
+				return true;
 		}
 
 		private boolean validFinalStackMove(CardFM source, CardFM dest)
@@ -342,7 +347,7 @@ public class SolitaireFM
 					return true;
 				else
 					return false;
-			} else if ((s_val + 1) == d_val) // destination must one lower
+			} else if (s_val == (d_val - 1)) // destination must one lower
 			{
 				if (s_suit == d_suit)
 					return true;
@@ -391,13 +396,13 @@ public class SolitaireFM
 			
 
 			// preparing to move show card
-			if (newCardPlace.contains(start) && prevCard != null)
+			/*if (newCardPlace.contains(start) && prevCard != null)
 			{
 				movedCard = prevCard;
-			}
+			}*/
 
 			// FINAL (FOUNDATION) CARD OPERATIONS
-			for (int x = 0; x < NUM_FINAL_DECKS; x++)
+			/*for (int x = 0; x < NUM_FINAL_DECKS; x++)
 			{
 
 				if (final_cards[x].contains(start))
@@ -408,7 +413,7 @@ public class SolitaireFM
 					sourceIsFinalDeck = true;
 					break;
 				}
-			}
+			}*/
 			putBackOnDeck = true;
 
 			
@@ -429,8 +434,7 @@ public class SolitaireFM
 				{
 					dest = playCardStack[x];
 					// to empty play stack, only kings can go
-					if (dest.empty() && movedCard != null && dest.contains(stop)
-							&& movedCard.getValue() == CardFM.Value.KING)
+					if (dest.empty() && movedCard != null && dest.contains(stop) && validPlayStackMove(movedCard, dest.getFirst()))
 					{
 						System.out.print("moving new card to empty spot ");
 						movedCard.setXY(dest.getXY());
@@ -463,7 +467,7 @@ public class SolitaireFM
 				for (int x = 0; x < NUM_FINAL_DECKS; x++)
 				{
 					dest = final_cards[x];
-					// only aces can go first
+					/*// only aces can go first
 					if (dest.empty() && dest.contains(stop))
 					{
 						if (movedCard.getValue() == CardFM.Value.ACE || movedCard.getValue() == CardFM.Value.KING)
@@ -478,7 +482,7 @@ public class SolitaireFM
 							validMoveMade = true;
 							break;
 						}
-					}
+					}*/
 					if (!dest.empty() && dest.contains(stop) && validFinalStackMove(movedCard, dest.getLast()))
 					{
 						System.out.println("Destin" + dest.showSize());
@@ -503,10 +507,11 @@ public class SolitaireFM
 				{
 					dest = playCardStack[x];
 					// MOVING TO POPULATED STACK
-					if (card.getFaceStatus() == true && dest.contains(stop) && source != dest && !dest.empty()
-							&& validPlayStackMove(card, dest.getFirst()) && transferStack.showSize() == 1)
+					if (card.getFaceStatus() == true && dest.contains(stop) && source != dest &&
+							validPlayStackMove(card, dest.getFirst()) && transferStack.showSize() == 1)
 					{
 						CardFM c = null;
+						
 						if (sourceIsFinalDeck)
 							c = source.pop();
 						else
@@ -536,8 +541,9 @@ public class SolitaireFM
 							setScore(10);
 						validMoveMade = true;
 						break;
-					} else if (dest.empty() && card.getValue() == CardFM.Value.KING && transferStack.showSize() == 1)
-					{// MOVING TO EMPTY STACK, ONLY KING ALLOWED
+					} else if (dest.empty() &&
+							validPlayStackMove(card, dest.getFirst()) && transferStack.showSize() == 1)
+					{// MOVING TO EMPTY STACK
 						CardFM c = null;
 						if (sourceIsFinalDeck)
 							c = source.pop();
@@ -548,7 +554,7 @@ public class SolitaireFM
 						// if playstack, turn next card up
 						if (source.getFirst() != null)
 						{
-							CardFM temp = source.getFirst().setFaceup();
+							CardFM temp = source.getFirst();//.setFaceup();
 							temp.repaint();
 							source.repaint();
 						}
@@ -568,7 +574,7 @@ public class SolitaireFM
 					}
 					// Moving STACK of cards from PLAY TO PLAY
 					// to EMPTY STACK
-					if (dest.empty() && dest.contains(stop) && !transferStack.empty()
+					/*if (dest.empty() && dest.contains(stop) && !transferStack.empty()
 							&& transferStack.getFirst().getValue() == CardFM.Value.KING)
 					{
 						System.out.println("King To Empty Stack Transfer");
@@ -618,7 +624,7 @@ public class SolitaireFM
 						setScore(5);
 						validMoveMade = true;
 						break;
-					}
+					}*/
 				}
 				// from PLAY TO FINAL
 				for (int x = 0; x < NUM_FINAL_DECKS; x++)
@@ -628,7 +634,7 @@ public class SolitaireFM
 					if (card.getFaceStatus() == true && source != null && dest.contains(stop) && source != dest)
 					{// TO EMPTY STACK
 						//Flea Market doesn't have empty final stacks so this shouldn't be used but will keep for reference
-						if (dest.empty())// empty final should only take an ACE
+						/*if (dest.empty())// empty final should only take an ACE
 						{
 							if (card.getValue() == CardFM.Value.ACE || card.getValue() == CardFM.Value.KING)
 							{
@@ -656,10 +662,11 @@ public class SolitaireFM
 								validMoveMade = true;
 								break;
 							}// TO POPULATED STACK
-						} else if (validFinalStackMove(card, dest.getLast()))
+						} else*/ if (validFinalStackMove(card, dest.getLast()))
 						{
 							CardFM c = source.popFirst();
-							c.repaint();
+								c.repaint();
+
 							if (source.getFirst() != null)
 							{
 
@@ -718,6 +725,7 @@ public class SolitaireFM
 				statusBox.setText("Game Over!");
 			}
 			// RESET VARIABLES FOR NEXT EVENT
+			//transferStack.makeEmpty();
 			start = null;
 			stop = null;
 			source = null;
