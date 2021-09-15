@@ -10,6 +10,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -56,6 +58,7 @@ public class SolitaireFM
 	private static JTextField statusBox = new JTextField();// status messages
 	private static JButton newCardButton = new JButton("Deal Cards");// deal waste cards
 	
+	private static ActionListener ae = new setUpButtonListeners();
 	
 	
 	//NEW ADDITIONS
@@ -133,7 +136,108 @@ public class SolitaireFM
 	}
 
 	// BUTTON LISTENERS
-	private static class NewGameListener implements ActionListener
+	private static class setUpButtonListeners implements ActionListener
+	{
+		@Override
+		public void actionPerformed(ActionEvent e)
+		{
+			if(e.getSource() == newGameButton) {
+				SolitaireFM.playFMNewGame();
+			} else if (e.getSource() == newCardButton) {
+				// SHOW (WASTE) CARD OPERATIONS
+				// deal new card to each tableau -- needs updating, will add multiple cards because of previous mouse presses
+				if (deck.showSize() > 0)
+					{
+					for (int x = 0; x < NUM_PLAY_DECKS; x++)
+						{
+						System.out.print("poping deck ");
+						deck.showSize();
+						CardFM c = deck.pop().setFaceup();
+						playCardStack[x].putFirst(c);
+						table.repaint();
+					}
+				}
+			} else if(e.getSource() == toggleTimerButton) {
+					toggleTimer();
+					if (!timeRunning)
+					{
+						toggleTimerButton.setText("Start Timer");
+					} else
+					{
+						toggleTimerButton.setText("Pause Timer");
+					}
+			} else if(e.getSource() == showRulesButton){
+					JDialog ruleFrame = new JDialog(frame, true);
+					ruleFrame.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+					ruleFrame.setSize(TABLE_HEIGHT, TABLE_WIDTH);
+					JScrollPane scroll;
+					JEditorPane rulesTextPane = new JEditorPane("text/html", "");
+					rulesTextPane.setEditable(false);
+					String rulesText = "<b>Klondike Solitaire Rules</b>"
+							+ "<br><br> (From Wikipedia) Taking a shuffled standard 52-card deck of playing cards (without Jokers),"
+							+ " one upturned card is dealt on the left of the playing area, then six downturned cards"
+							+ " (from left to right).<p> On top of the downturned cards, an upturned card is dealt on the "
+							+ "left-most downturned pile, and downturned cards on the rest until all piles have an "
+							+ "upturned card. The piles should look like the figure to the right.<p>The four foundations "
+							+ "(light rectangles in the upper right of the figure) are built up by suit from Ace "
+							+ "(low in this game) to King, and the tableau piles can be built down by alternate colors,"
+							+ " and partial or complete piles can be moved if they are built down by alternate colors also. "
+							+ "Any empty piles can be filled with a King or a pile of cards with a King.<p> The point of "
+							+ "the game is to build up a stack of cards starting with 2 and ending with King, all of "
+							+ "the same suit. Once this is accomplished, the goal is to move this to a foundation, "
+							+ "where the player has previously placed the Ace of that suit. Once the player has done this, "
+							+ "they will have \"finished\" that suit- the goal being, of course, to finish all suits, "
+							+ "at which time the player will have won.<br><br><b> Scoring </b><br><br>"
+							+ "Moving cards directly from the Waste stack to a Foundation awards 10 points. However, "
+							+ "if the card is first moved to a Tableau, and then to a Foundation, then an extra 5 points "
+							+ "are received for a total of 15. Thus in order to receive a maximum score, no cards should be moved "
+							+ "directly from the Waste to Foundation.<p>	Time can also play a factor in Windows Solitaire, if the Timed game option is selected. For every 10 seconds of play, 2 points are taken away."
+							+ "<b><br><br>Notes On My Implementation</b><br><br>"
+							+ "Drag cards to and from any stack. As long as the move is valid the card, or stack of "
+							+ "cards, will be repositioned in the desired spot. The game follows the standard scoring and time"
+							+ " model explained above with only one waste card shown at a time."
+							+ "<p> The timer starts running as soon as "
+							+ "the game begins, but it may be paused by pressing the pause button at the bottom of"
+							+ "the screen. ";
+					rulesTextPane.setText(rulesText);
+					ruleFrame.add(scroll = new JScrollPane(rulesTextPane));
+
+					ruleFrame.setVisible(true);
+			}
+		}
+	} 
+	private static class windowListener implements WindowListener
+	{
+
+		@Override
+		public void windowOpened(WindowEvent e) {}
+		@Override
+		public void windowClosing(WindowEvent e) {
+			
+			newCardButton.removeActionListener(ae);
+			
+			newGameButton.removeActionListener(ae);
+			
+			toggleTimerButton.removeActionListener(ae);
+			
+			showRulesButton.removeActionListener(ae);
+			
+			frame.dispose();
+		}
+		@Override
+		public void windowClosed(WindowEvent e) {}
+		@Override
+		public void windowIconified(WindowEvent e) {}
+		@Override
+		public void windowDeiconified(WindowEvent e) {}
+		@Override
+		public void windowActivated(WindowEvent e) {}
+		@Override
+		public void windowDeactivated(WindowEvent e) {}
+
+	}
+	
+	/*private static class NewGameListener implements ActionListener
 	{
 		@Override
 		public void actionPerformed(ActionEvent e)
@@ -236,7 +340,7 @@ public class SolitaireFM
 
 			ruleFrame.setVisible(true);
 		}
-	}
+	}*/
 
 	/*
 	 * This class handles all of the logic of moving the Card components as well
@@ -694,7 +798,15 @@ public class SolitaireFM
 
 	public static void playFMNewGame()
 	{
+		newCardButton.removeActionListener(ae);
 		
+		newGameButton.removeActionListener(ae);
+		
+		toggleTimerButton.removeActionListener(ae);
+		
+		showRulesButton.removeActionListener(ae);
+		
+		frame.dispose();
 		
 		deck = new CardStackFM(true); // deal 52 cards
 		deck.shuffle();
@@ -856,14 +968,15 @@ public class SolitaireFM
 		// reset time
 		time = 0;
 		
-
-		newCardButton.addActionListener(new NewCardListener());
+		
+		
+		newCardButton.addActionListener(ae);
 		newCardButton.setBounds(15, TABLE_HEIGHT - 600, 120, 120);
 		
-		newGameButton.addActionListener(new NewGameListener());
+		newGameButton.addActionListener(ae);
 		newGameButton.setBounds(0, TABLE_HEIGHT - 70, 120, 30);
 
-		showRulesButton.addActionListener(new ShowRulesListener());
+		showRulesButton.addActionListener(ae);
 		showRulesButton.setBounds(120, TABLE_HEIGHT - 70, 120, 30);
 
 		gameTitle.setText("<b>Team 2<br>Flea Market Solitaire</b> <br> CPSC 4900 <br> Fall 2021");
@@ -884,7 +997,7 @@ public class SolitaireFM
 		startTimer();
 
 		toggleTimerButton.setBounds(480, TABLE_HEIGHT - 70, 125, 30);
-		toggleTimerButton.addActionListener(new ToggleTimerListener());
+		toggleTimerButton.addActionListener(ae);
 
 		statusBox.setBounds(605, TABLE_HEIGHT - 70, 180, 30);
 		statusBox.setEditable(false);
@@ -911,7 +1024,7 @@ public class SolitaireFM
 		//changes 
 		contentPane = frame.getContentPane();
 		contentPane.add(table);
-		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		frame.addWindowListener(new windowListener());
 
 		table.addMouseListener(new CardMovementManager());
 		table.addMouseMotionListener(new CardMovementManager());
