@@ -45,7 +45,6 @@ public class SolitaireFM
 
 	// GUI COMPONENTS (top level)
 	private static final JFrame frame = new JFrame("Klondike Solitaire");
-	private static final JFrame frame1 = new JFrame("Solitaire Menu");
 	protected static final JPanel table = new JPanel();
 	protected static final JPanel menu = new JPanel();
 	// other components
@@ -58,12 +57,9 @@ public class SolitaireFM
 	private static JTextField statusBox = new JTextField();// status messages
 	private static JButton newCardButton = new JButton("Deal Cards");// deal waste cards
 	
+	//Action Listener for buttons
 	private static ActionListener ae = new setUpButtonListeners();
 	
-	
-	//NEW ADDITIONS
-	private static JButton klondikeStart = new JButton("Klondike");
-	private static JButton fleaMarketStart = new JButton("fleaMarket");
 
 	// TIMER UTILITIES
 	private static Timer timer = new Timer();
@@ -111,6 +107,14 @@ public class SolitaireFM
 		// set the timer to update every second
 		timer.scheduleAtFixedRate(scoreClock, 1000, 1000);
 		timeRunning = true;
+	}
+	
+	//reset timer
+	protected static void resetTimer()
+	{
+		scoreClock.cancel();
+		time = 0;
+		timeRunning = false;
 	}
 
 	// the pause timer button uses this
@@ -703,6 +707,8 @@ public class SolitaireFM
 		showRulesButton.removeActionListener(ae);
 		
 		frame.dispose();
+		
+		resetTimer();
 		
 		deck = new CardStackFM(true); // deal 52 cards
 		deck.shuffle();
