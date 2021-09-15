@@ -278,27 +278,54 @@ public class SolitaireFM
 				switch (s_suit)
 				{
 				case SPADES:
-					if (d_suit != CardFM.Suit.HEARTS && d_suit != CardFM.Suit.DIAMONDS)
+					if (d_suit == CardFM.Suit.HEARTS && d_suit == CardFM.Suit.DIAMONDS && d_suit == CardFM.Suit.CLUBS)
 						return false;
 					else
 						return true;
 				case CLUBS:
-					if (d_suit != CardFM.Suit.HEARTS && d_suit != CardFM.Suit.DIAMONDS)
+					if (d_suit == CardFM.Suit.HEARTS && d_suit == CardFM.Suit.DIAMONDS && d_suit == CardFM.Suit.SPADES)
 						return false;
 					else
 						return true;
 				case HEARTS:
-					if (d_suit != CardFM.Suit.SPADES && d_suit != CardFM.Suit.CLUBS)
+					if (d_suit == CardFM.Suit.SPADES && d_suit == CardFM.Suit.CLUBS && d_suit == CardFM.Suit.DIAMONDS)
 						return false;
 					else
 						return true;
 				case DIAMONDS:
-					if (d_suit != CardFM.Suit.SPADES && d_suit != CardFM.Suit.CLUBS)
+					if (d_suit == CardFM.Suit.SPADES && d_suit == CardFM.Suit.CLUBS && d_suit == CardFM.Suit.HEARTS)
 						return false;
 					else
 						return true;
 				}
 				return false; // this never gets reached
+			} else if (s_val == (d_val + 1))
+			{
+				// destination card should be opposite color
+				switch (s_suit)
+				{
+				case SPADES:
+					if (d_suit == CardFM.Suit.HEARTS && d_suit == CardFM.Suit.DIAMONDS && d_suit == CardFM.Suit.CLUBS)
+						return false;
+					else
+						return true;
+				case CLUBS:
+					if (d_suit == CardFM.Suit.HEARTS && d_suit == CardFM.Suit.DIAMONDS && d_suit == CardFM.Suit.SPADES)
+						return false;
+					else
+						return true;
+				case HEARTS:
+					if (d_suit == CardFM.Suit.SPADES && d_suit == CardFM.Suit.CLUBS && d_suit == CardFM.Suit.DIAMONDS)
+						return false;
+					else
+						return true;
+				case DIAMONDS:
+					if (d_suit == CardFM.Suit.SPADES && d_suit == CardFM.Suit.CLUBS && d_suit == CardFM.Suit.HEARTS)
+						return false;
+					else
+						return true;
+				}
+				return false; // this never gets reachedelse 
 			} else
 				return false;
 		}
@@ -310,6 +337,12 @@ public class SolitaireFM
 			CardFM.Suit s_suit = source.getSuit();
 			CardFM.Suit d_suit = dest.getSuit();
 			if (s_val == (d_val + 1)) // destination must one lower
+			{
+				if (s_suit == d_suit)
+					return true;
+				else
+					return false;
+			} else if ((s_val + 1) == d_val) // destination must one lower
 			{
 				if (s_suit == d_suit)
 					return true;
