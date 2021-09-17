@@ -739,6 +739,23 @@ public class SolitaireFM
 				}
 			}// end cycle through play decks
 
+			//Deal a card to an empty tableau whilst there still is cards on the deck
+			if (deck.showSize() > 0)
+			{
+				for (int x = 0; x < NUM_PLAY_DECKS; x++)
+					{
+					if(playCardStack[x].empty()) {
+					System.out.print("poping deck ");
+					deck.showSize();
+					CardFM c = deck.pop().setFaceup();
+					playCardStack[x].putFirst(c);
+					c.repaint();
+					table.repaint();
+				}
+				}
+		}
+			
+			
 			// SHOWING STATUS MESSAGE IF MOVE INVALID
 			if (!validMoveMade && dest != null && card != null)
 			{
