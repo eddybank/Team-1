@@ -24,7 +24,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
-//test
+
 public class SolitaireFM
 {
 	// CONSTANTS
