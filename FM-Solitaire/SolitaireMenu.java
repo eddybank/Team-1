@@ -36,7 +36,7 @@ public class SolitaireMenu {
 		@Override
 		public void actionPerformed(ActionEvent e)
 		{
-			SolitaireFM.playFMNewGame();
+			SolitaireFM.main(null);
 		}
 
 	}

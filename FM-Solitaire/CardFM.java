@@ -183,6 +183,9 @@ class CardFM extends JPanel
 		_faceup = false;
 		return this;
 	}
+	public String toString() {
+		return "Card: Suit "+this._suit+" Value "+this._value;
+	}
 
 	@Override
 	public boolean contains(Point p)
