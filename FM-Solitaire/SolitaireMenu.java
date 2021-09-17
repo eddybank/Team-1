@@ -27,7 +27,7 @@ public class SolitaireMenu {
 		@Override
 		public void actionPerformed(ActionEvent e)
 		{
-			Klondike.SolitaireK.playNewGame();
+			Klondike.SolitaireK.main(null);
 		}
 
 	}

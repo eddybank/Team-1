@@ -61,6 +61,9 @@ public class SolitaireK
 	private static boolean timeRunning = false;// timer running?
 	private static int score = 0;// keep track of the score
 	private static int time = 0;// keep track of seconds elapsed
+	
+	//Action Listener for buttons
+	private static ActionListener ae = new setUpButtonListeners();
 
 	// moves a card to abs location within a component
 	protected static CardK moveCard(CardK c, int x, int y)
@@ -100,6 +103,14 @@ public class SolitaireK
 		timer.scheduleAtFixedRate(scoreClock, 1000, 1000);
 		timeRunning = true;
 	}
+	
+	protected static void resetTimer()
+	{
+		scoreClock.cancel();
+		time = 0;
+		timeRunning = false;
+	}
+
 
 	// the pause timer button uses this
 	protected static void toggleTimer()
@@ -123,75 +134,61 @@ public class SolitaireK
 		}
 	}
 
-	// BUTTON LISTENERS
-	private static class NewGameListener implements ActionListener
+	// BUTTON LISTENER
+	private static class setUpButtonListeners implements ActionListener
 	{
 		@Override
 		public void actionPerformed(ActionEvent e)
 		{
-			playNewGame();
-		}
+			if(e.getSource() == newGameButton) {
+				playKNewGame();
+			} else if(e.getSource() == toggleTimerButton) {
+					toggleTimer();
+					if (!timeRunning)
+					{
+						toggleTimerButton.setText("Start Timer");
+					} else
+					{
+						toggleTimerButton.setText("Pause Timer");
+					}
+			} else if(e.getSource() == showRulesButton){
+					JDialog ruleFrame = new JDialog(frame, true);
+					ruleFrame.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+					ruleFrame.setSize(TABLE_HEIGHT, TABLE_WIDTH);
+					JScrollPane scroll;
+					JEditorPane rulesTextPane = new JEditorPane("text/html", "");
+					rulesTextPane.setEditable(false);
+					String rulesText = "<b>Klondike Solitaire Rules</b>"
+							+ "<br><br> (From Wikipedia) Taking a shuffled standard 52-card deck of playing cards (without Jokers),"
+							+ " one upturned card is dealt on the left of the playing area, then six downturned cards"
+							+ " (from left to right).<p> On top of the downturned cards, an upturned card is dealt on the "
+							+ "left-most downturned pile, and downturned cards on the rest until all piles have an "
+							+ "upturned card. The piles should look like the figure to the right.<p>The four foundations "
+							+ "(light rectangles in the upper right of the figure) are built up by suit from Ace "
+							+ "(low in this game) to King, and the tableau piles can be built down by alternate colors,"
+							+ " and partial or complete piles can be moved if they are built down by alternate colors also. "
+							+ "Any empty piles can be filled with a King or a pile of cards with a King.<p> The point of "
+							+ "the game is to build up a stack of cards starting with 2 and ending with King, all of "
+							+ "the same suit. Once this is accomplished, the goal is to move this to a foundation, "
+							+ "where the player has previously placed the Ace of that suit. Once the player has done this, "
+							+ "they will have \"finished\" that suit- the goal being, of course, to finish all suits, "
+							+ "at which time the player will have won.<br><br><b> Scoring </b><br><br>"
+							+ "Moving cards directly from the Waste stack to a Foundation awards 10 points. However, "
+							+ "if the card is first moved to a Tableau, and then to a Foundation, then an extra 5 points "
+							+ "are received for a total of 15. Thus in order to receive a maximum score, no cards should be moved "
+							+ "directly from the Waste to Foundation.<p>	Time can also play a factor in Windows Solitaire, if the Timed game option is selected. For every 10 seconds of play, 2 points are taken away."
+							+ "<b><br><br>Notes On My Implementation</b><br><br>"
+							+ "Drag cards to and from any stack. As long as the move is valid the card, or stack of "
+							+ "cards, will be repositioned in the desired spot. The game follows the standard scoring and time"
+							+ " model explained above with only one waste card shown at a time."
+							+ "<p> The timer starts running as soon as "
+							+ "the game begins, but it may be paused by pressing the pause button at the bottom of"
+							+ "the screen. ";
+					rulesTextPane.setText(rulesText);
+					ruleFrame.add(scroll = new JScrollPane(rulesTextPane));
 
-	}
-
-	private static class ToggleTimerListener implements ActionListener
-	{
-		@Override
-		public void actionPerformed(ActionEvent e)
-		{
-			toggleTimer();
-			if (!timeRunning)
-			{
-				toggleTimerButton.setText("Start Timer");
-			} else
-			{
-				toggleTimerButton.setText("Pause Timer");
+					ruleFrame.setVisible(true);
 			}
-		}
-
-	}
-
-	private static class ShowRulesListener implements ActionListener
-	{
-		@Override
-		public void actionPerformed(ActionEvent e)
-		{
-			JDialog ruleFrame = new JDialog(frame, true);
-			ruleFrame.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			ruleFrame.setSize(TABLE_HEIGHT, TABLE_WIDTH);
-			JScrollPane scroll;
-			JEditorPane rulesTextPane = new JEditorPane("text/html", "");
-			rulesTextPane.setEditable(false);
-			String rulesText = "<b>Klondike Solitaire Rules</b>"
-					+ "<br><br> (From Wikipedia) Taking a shuffled standard 52-card deck of playing cards (without Jokers),"
-					+ " one upturned card is dealt on the left of the playing area, then six downturned cards"
-					+ " (from left to right).<p> On top of the downturned cards, an upturned card is dealt on the "
-					+ "left-most downturned pile, and downturned cards on the rest until all piles have an "
-					+ "upturned card. The piles should look like the figure to the right.<p>The four foundations "
-					+ "(light rectangles in the upper right of the figure) are built up by suit from Ace "
-					+ "(low in this game) to King, and the tableau piles can be built down by alternate colors,"
-					+ " and partial or complete piles can be moved if they are built down by alternate colors also. "
-					+ "Any empty piles can be filled with a King or a pile of cards with a King.<p> The point of "
-					+ "the game is to build up a stack of cards starting with 2 and ending with King, all of "
-					+ "the same suit. Once this is accomplished, the goal is to move this to a foundation, "
-					+ "where the player has previously placed the Ace of that suit. Once the player has done this, "
-					+ "they will have \"finished\" that suit- the goal being, of course, to finish all suits, "
-					+ "at which time the player will have won.<br><br><b> Scoring </b><br><br>"
-					+ "Moving cards directly from the Waste stack to a Foundation awards 10 points. However, "
-					+ "if the card is first moved to a Tableau, and then to a Foundation, then an extra 5 points "
-					+ "are received for a total of 15. Thus in order to receive a maximum score, no cards should be moved "
-					+ "directly from the Waste to Foundation.<p>	Time can also play a factor in Windows Solitaire, if the Timed game option is selected. For every 10 seconds of play, 2 points are taken away."
-					+ "<b><br><br>Notes On My Implementation</b><br><br>"
-					+ "Drag cards to and from any stack. As long as the move is valid the card, or stack of "
-					+ "cards, will be repositioned in the desired spot. The game follows the standard scoring and time"
-					+ " model explained above with only one waste card shown at a time."
-					+ "<p> The timer starts running as soon as "
-					+ "the game begins, but it may be paused by pressing the pause button at the bottom of"
-					+ "the screen. ";
-			rulesTextPane.setText(rulesText);
-			ruleFrame.add(scroll = new JScrollPane(rulesTextPane));
-
-			ruleFrame.setVisible(true);
 		}
 	}
 
@@ -668,8 +665,16 @@ public class SolitaireK
 		}// end mousePressed()
 	}
 
-	public static void playNewGame()
+	private static void playKNewGame()
 	{
+		newGameButton.removeActionListener(ae);
+		
+		showRulesButton.removeActionListener(ae);
+		
+		toggleTimerButton.removeActionListener(ae);
+		
+		frame.dispose();
+		
 		deck = new CardStackK(true); // deal 52 cards
 		deck.shuffle();
 		table.removeAll();
@@ -719,13 +724,13 @@ public class SolitaireK
 				playCardStack[y].putFirst(c = deck.pop());
 			}
 		}
-		// reset time
-		time = 0;
 
-		newGameButton.addActionListener(new NewGameListener());
+		resetTimer();
+		
+		newGameButton.addActionListener(ae);
 		newGameButton.setBounds(0, TABLE_HEIGHT - 70, 120, 30);
 
-		showRulesButton.addActionListener(new ShowRulesListener());
+		showRulesButton.addActionListener(ae);
 		showRulesButton.setBounds(120, TABLE_HEIGHT - 70, 120, 30);
 
 		gameTitle.setText("<b>Shamari's Solitaire</b> <br> COP3252 <br> Spring 2012");
@@ -746,7 +751,7 @@ public class SolitaireK
 		startTimer();
 
 		toggleTimerButton.setBounds(480, TABLE_HEIGHT - 70, 125, 30);
-		toggleTimerButton.addActionListener(new ToggleTimerListener());
+		toggleTimerButton.addActionListener(ae);
 
 		statusBox.setBounds(605, TABLE_HEIGHT - 70, 180, 30);
 		statusBox.setEditable(false);
@@ -778,26 +783,8 @@ public class SolitaireK
 		frame.setVisible(true);
 	}
 
-	/*public static void main(String[] args)
+	public static void main(String[] args)
 	{
-
-		Container contentPane;
-
-		frame.setSize(TABLE_WIDTH, TABLE_HEIGHT);
-
-		table.setLayout(null);
-		table.setBackground(new Color(0, 180, 0));
-
-		contentPane = frame.getContentPane();
-		contentPane.add(table);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-		playNewGame();
-
-		table.addMouseListener(new CardMovementManager());
-		table.addMouseMotionListener(new CardMovementManager());
-
-		frame.setVisible(true);
-
-	}*/
+		playKNewGame();
+	}
 }
