@@ -282,51 +282,59 @@ public class SolitaireFM
 					case SPADES:
 						if (d_suit == CardFM.Suit.HEARTS && d_suit == CardFM.Suit.DIAMONDS && d_suit == CardFM.Suit.CLUBS)
 							return false;
-						else
+						else if(s_suit == d_suit)
 							return true;
+						
 					case CLUBS:
 						if (d_suit == CardFM.Suit.HEARTS && d_suit == CardFM.Suit.DIAMONDS && d_suit == CardFM.Suit.SPADES)
 							return false;
-						else
+						else if(s_suit == d_suit)
 							return true;
+						
 					case HEARTS:
 						if (d_suit == CardFM.Suit.SPADES && d_suit == CardFM.Suit.CLUBS && d_suit == CardFM.Suit.DIAMONDS)
 							return false;
-						else
+						else if(s_suit == d_suit)
 							return true;
+						
 					case DIAMONDS:
 						if (d_suit == CardFM.Suit.SPADES && d_suit == CardFM.Suit.CLUBS && d_suit == CardFM.Suit.HEARTS)
 							return false;
-						else
+						else if(s_suit == d_suit)
 							return true;
+						
 					}
 					return false; // this never gets reached
 				} else if ((s_val + 1) == d_val )
 				{
-					System.out.println("2");
+					System.out.println("test 2");
 					// destination card should be same color
 					switch (s_suit)
 					{
 					case SPADES:
 						if (d_suit == CardFM.Suit.HEARTS && d_suit == CardFM.Suit.DIAMONDS && d_suit == CardFM.Suit.CLUBS)
 							return false;
-						else
+						else if(s_suit == d_suit)
 							return true;
+						
 					case CLUBS:
 						if (d_suit == CardFM.Suit.HEARTS && d_suit == CardFM.Suit.DIAMONDS && d_suit == CardFM.Suit.SPADES)
 							return false;
-						else
+						else if(s_suit == d_suit)
 							return true;
+						
 					case HEARTS:
 						if (d_suit == CardFM.Suit.SPADES && d_suit == CardFM.Suit.CLUBS && d_suit == CardFM.Suit.DIAMONDS)
 							return false;
-						else
+						else if(s_suit == d_suit)
 							return true;
+						
 					case DIAMONDS:
 						if (d_suit == CardFM.Suit.SPADES && d_suit == CardFM.Suit.CLUBS && d_suit == CardFM.Suit.HEARTS)
 							return false;
-						else
+						else if(s_suit == d_suit)
 							return true;
+						
 					}
 					return false; // this never gets reached 
 				}
@@ -394,30 +402,6 @@ public class SolitaireFM
 				}
 
 			}
-			
-
-			// preparing to move show card
-			/*if (newCardPlace.contains(start) && prevCard != null)
-			{
-				movedCard = prevCard;
-			}*/
-
-			// FINAL (FOUNDATION) CARD OPERATIONS
-			/*for (int x = 0; x < NUM_FINAL_DECKS; x++)
-			{
-
-				if (final_cards[x].contains(start))
-				{
-					source = final_cards[x];
-					card = source.getLast();
-					transferStack.putFirst(card);
-					sourceIsFinalDeck = true;
-					break;
-				}
-			}*/
-			//putBackOnDeck = true;
-
-			
 		}
 
 		@Override
@@ -428,13 +412,13 @@ public class SolitaireFM
 			boolean validMoveMade = false;
 
 			// SHOW CARD MOVEMENTS
-			if (movedCard != null)
-			{
+			/*if (movedCard != null)
+			//{
 				// Moving from SHOW TO PLAY
 				for (int x = 0; x < NUM_PLAY_DECKS; x++)
 				{
 					dest = playCardStack[x];
-					// to empty play stack, only kings can go
+					// to empty play stack
 					if (dest.empty() && movedCard != null && dest.contains(stop) && validPlayStackMove(movedCard, dest.getFirst()))
 					{
 						System.out.print("moving new card to empty spot ");
@@ -468,22 +452,8 @@ public class SolitaireFM
 				for (int x = 0; x < NUM_FINAL_DECKS; x++)
 				{
 					dest = final_cards[x];
-					// only aces can go first
 					if (dest.empty() && dest.contains(stop))
 					{
-						/*if (movedCard.getValue() == CardFM.Value.ACE || movedCard.getValue() == CardFM.Value.KING)
-						{
-							dest.push(movedCard);
-							table.remove(prevCard);
-							dest.repaint();
-							table.repaint();
-							movedCard = null;
-							putBackOnDeck = false;
-							setScore(10);
-							validMoveMade = true;
-							break;
-						}
-					}*/
 						if (!dest.empty() && dest.contains(stop) && validFinalStackMove(movedCard, dest.getLast()))
 						{
 							if(dest.getFirst().getValue() == CardFM.Value.ACE && movedCard.getValue().ordinal() == (dest.getLast().getValue().ordinal() + 1)) {
@@ -495,7 +465,7 @@ public class SolitaireFM
 								movedCard = null;
 								//putBackOnDeck = false;
 								checkForWin = true;
-								setScore(10);
+								setScore(5);
 								validMoveMade = true;
 								break;
 							} else if(dest.getFirst().getValue() == CardFM.Value.KING && movedCard.getValue().ordinal() == (dest.getLast().getValue().ordinal() - 1)) {
@@ -507,14 +477,14 @@ public class SolitaireFM
 								movedCard = null;
 								//putBackOnDeck = false;
 								checkForWin = true;
-								setScore(10);
+								setScore(5);
 								validMoveMade = true;
 								break;
 							}
 						}
 					}
 				}
-			}// END SHOW STACK OPERATIONS
+			}// END SHOW STACK OPERATIONS*/
 
 			// PLAY STACK OPERATIONS
 			if (card != null && source != null)
@@ -637,7 +607,7 @@ public class SolitaireFM
 						dest.repaint();
 
 						table.repaint();
-						setScore(5);
+						//setScore(5);
 						validMoveMade = true;
 						break;
 					}
@@ -648,37 +618,8 @@ public class SolitaireFM
 					dest = final_cards[x];
 
 					if (card.getFaceStatus() == true && source != null && dest.contains(stop) && source != dest)
-					{// TO EMPTY STACK
-						//Flea Market doesn't have empty final stacks so this shouldn't be used but will keep for reference
-						/*if (dest.empty())// empty final should only take an ACE
-						{
-							if (card.getValue() == CardFM.Value.ACE || card.getValue() == CardFM.Value.KING)
-							{
-								CardFM c = source.popFirst();
-								c.repaint();
-								if (source.getFirst() != null)
-								{
-
-									CardFM temp = source.getFirst().setFaceup();
-									temp.repaint();
-									source.repaint();
-								}
-
-								dest.setXY(dest.getXY().x, dest.getXY().y);
-								dest.push(c);
-
-								dest.repaint();
-
-								table.repaint();
-
-								System.out.print("Destination ");
-								dest.showSize();
-								card = null;
-								setScore(10);
-								validMoveMade = true;
-								break;
-							}// TO POPULATED STACK
-						} else*/ if (validFinalStackMove(card, dest.getLast()))
+					{
+						if (validFinalStackMove(card, dest.getLast()))
 						{
 							if(dest.getFirst().getValue() == CardFM.Value.ACE && card.getValue().ordinal() == (dest.getLast().getValue().ordinal() + 1)) {
 								CardFM c = source.popFirst();
@@ -750,6 +691,7 @@ public class SolitaireFM
 					CardFM c = deck.pop().setFaceup();
 					playCardStack[x].putFirst(c);
 					c.repaint();
+					statusBox.setText("Card dealt to tableau "+(x+1));
 					table.repaint();
 				}
 				}
@@ -786,7 +728,6 @@ public class SolitaireFM
 				statusBox.setText("Game Over!");
 			}
 			// RESET VARIABLES FOR NEXT EVENT
-			//transferStack.makeEmpty();
 			start = null;
 			stop = null;
 			source = null;
