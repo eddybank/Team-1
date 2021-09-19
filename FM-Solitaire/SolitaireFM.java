@@ -8,6 +8,8 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowEvent;
@@ -71,6 +73,7 @@ public class SolitaireFM
 	private static int score = -64;// keep track of the score, start of $-64
 	private static int time = 0;// keep track of seconds elapsed
 	private static int deal_deck_pos = 0;
+	private static String user;
 
 	// moves a card to abs location within a component
 	protected static CardFM moveCard(CardFM c, int x, int y)
@@ -141,15 +144,17 @@ public class SolitaireFM
 		}
 	}
 
-	// BUTTON LISTENERS
+	// BUTTON LISTENER
 	private static class setUpButtonListeners implements ActionListener
 	{
 		@Override
 		public void actionPerformed(ActionEvent e)
 		{
-			if(e.getSource() == newGameButton) {
+			if(e.getSource() == newGameButton) 
+			{
 				SolitaireFM.playFMNewGame();
-			} else if(e.getSource() == toggleTimerButton) {
+			} else if(e.getSource() == toggleTimerButton) 
+			{
 					toggleTimer();
 					if (!timeRunning)
 					{
@@ -158,7 +163,8 @@ public class SolitaireFM
 					{
 						toggleTimerButton.setText("Pause Timer");
 					}
-			} else if(e.getSource() == showRulesButton){
+			} else if(e.getSource() == showRulesButton)
+			{
 					JDialog ruleFrame = new JDialog(frame, true);
 					ruleFrame.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 					ruleFrame.setSize(TABLE_HEIGHT - (TABLE_HEIGHT/3), TABLE_WIDTH - (TABLE_WIDTH/3));
@@ -390,7 +396,8 @@ public class SolitaireFM
 					if (card.getFaceStatus() == true && dest.contains(stop) && source != dest &&
 							validPlayStackMove(card, dest.getFirst()) && transferStack.showSize() == 1)
 					{
-						if(source.showSize() > 1 && card != source.getLast()) {
+						if(source.showSize() > 1 && card != source.getLast()) 
+						{
 							CardFM c = null;
 							c = source.popFirst();
 							c.repaint();
@@ -509,7 +516,8 @@ public class SolitaireFM
 					{
 						if (validFinalStackMove(card, dest.getLast()))
 						{
-							if(dest.getFirst().getValue() == CardFM.Value.ACE && card.getValue().ordinal() == (dest.getLast().getValue().ordinal() + 1)) {
+							if(dest.getFirst().getValue() == CardFM.Value.ACE && card.getValue().ordinal() == (dest.getLast().getValue().ordinal() + 1)) 
+							{
 								CardFM c = source.popFirst();
 									c.repaint();
 	
@@ -535,7 +543,8 @@ public class SolitaireFM
 								setScore(5);
 								validMoveMade = true;
 								break;
-							}  else if(dest.getFirst().getValue() == CardFM.Value.KING && card.getValue().ordinal() == (dest.getLast().getValue().ordinal() - 1)) {
+							}  else if(dest.getFirst().getValue() == CardFM.Value.KING && card.getValue().ordinal() == (dest.getLast().getValue().ordinal() - 1)) 
+							{
 								CardFM c = source.popFirst();
 								c.repaint();
 
@@ -739,12 +748,14 @@ public class SolitaireFM
 			else if(x >= 4 && x <= 7) 
 				{
 				final_cards[x].setXY(200 + ((x-4) * (CardFM.CARD_WIDTH)), ((65/2)*FINAL_POS.y));
-					for(int y = 0; y < deck.showSize(); y++) {
+					for(int y = 0; y < deck.showSize(); y++) 
+					{
 						
 						CardFM c = deck.pop().setFaceup();
 						
 						if(c.getValue().equals(CardFM.Value.KING) && c.getSuit().equals(CardFM.Suit.SPADES)
-								&& x == 4){
+								&& x == 4)
+						{
 							
 							final_cards[x].putFirst(c);
 							break;
@@ -770,7 +781,8 @@ public class SolitaireFM
 							final_cards[x].putFirst(c);
 							break;
 							
-						} else {
+						} else 
+						{
 							System.out.println("Putting back on show stack: ");
 							c.getValue();
 							c.getSuit();
