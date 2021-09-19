@@ -34,7 +34,7 @@ class CardFM extends JPanel
 	private int x; // used for relative positioning within CardStack Container
 	private int y;
 
-	private final int x_offset = 10;
+	private final int x_offset = 15;
 	private final int y_offset = 20;
 	private final int new_x_offset = x_offset + (CARD_WIDTH - 30);
 	final static public int CARD_HEIGHT = 150;
@@ -198,14 +198,14 @@ class CardFM extends JPanel
 	private void drawSuit(Graphics2D g, String suit, Color color)
 	{
 		g.setColor(color);
-		g.drawString(suit, _location.x + x_offset, _location.y + y_offset);
-		g.drawString(suit, _location.x + x_offset, _location.y + CARD_HEIGHT - 5);
+		g.drawString(suit, _location.x + x_offset - 5, _location.y + y_offset);
+		g.drawString(suit, _location.x + x_offset - 5 , _location.y + CARD_HEIGHT - 5);
 	}
 
 	private void drawValue(Graphics2D g, String value)
 	{
-		g.drawString(value, _location.x + new_x_offset, _location.y + y_offset);
-		g.drawString(value, _location.x + new_x_offset, _location.y + y_offset + CARD_HEIGHT - 25);
+		g.drawString(value, _location.x + new_x_offset - 5, _location.y + y_offset);
+		g.drawString(value, _location.x + new_x_offset - 5 , _location.y + y_offset + CARD_HEIGHT - 25);
 	}
 
 	@Override

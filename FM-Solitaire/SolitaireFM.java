@@ -27,8 +27,8 @@ import javax.swing.JTextField;
 public class SolitaireFM
 {
 	// CONSTANTS
-	public static final int TABLE_HEIGHT = CardFM.CARD_HEIGHT * (8) + 100;
-	public static final int TABLE_WIDTH = (CardFM.CARD_WIDTH * 8) + 100;
+	public static final int TABLE_HEIGHT = CardFM.CARD_HEIGHT * (8);
+	public static final int TABLE_WIDTH = (CardFM.CARD_WIDTH * 8);
 	public static final int NUM_FINAL_DECKS = 8;
 	public static final int NUM_PLAY_DECKS = 13;
 	public static final Point DECK_POS = new Point(5, 5);
@@ -43,7 +43,7 @@ public class SolitaireFM
 	private static FinalStackFM[] deal_deck;// Foundation Stacks
 
 	// GUI COMPONENTS (top level)
-	private static final JFrame frame = new JFrame("Klondike Solitaire");
+	private static final JFrame frame = new JFrame("Flea Market Solitaire");
 	protected static final JPanel table = new JPanel();
 	protected static final JPanel menu = new JPanel();
 	// other components
@@ -185,6 +185,8 @@ public class SolitaireFM
 					ruleFrame.add(scroll = new JScrollPane(rulesTextPane));
 
 					ruleFrame.setVisible(true);
+			} else if(e.getSource() == SolitaireMenu.backgroundColorButton) {
+				
 			}
 		}
 	} 
@@ -247,7 +249,6 @@ public class SolitaireFM
 				// destination card should be one higher value
 				if (s_val  == (d_val + 1))
 				{
-					System.out.println("1");
 					// destination card should be same color
 					switch (s_suit)
 					{
@@ -279,7 +280,6 @@ public class SolitaireFM
 					return false; // this never gets reached
 				} else if ((s_val + 1) == d_val )
 				{
-					System.out.println("test 2");
 					// destination card should be same color
 					switch (s_suit)
 					{
@@ -346,9 +346,8 @@ public class SolitaireFM
 			transferStack.makeEmpty();
 
 			/*
-			 * Here we use transferStack to temporarily hold all the cards above
-			 * the selected card in case player wants to move a stack rather
-			 * than a single card
+			 * Here we use transferStack to temporarily hold the one card that
+			 * was clicked on by the user for transfer
 			 */
 			for (int x = 0; x < NUM_PLAY_DECKS; x++)
 			{
@@ -356,15 +355,12 @@ public class SolitaireFM
 					break;
 				source = playCardStack[x];
 				// pinpointing exact card pressed
-				//for (Component ca : source.getComponents())
-				//{
+
 				if(!source.empty()) {
 					CardFM c = (CardFM) source.getFirst();
-					System.out.println(c);
 					if (c.contains(start) && source.contains(start))
 					{
 						transferStack.putFirst(c);
-						System.out.println(c.toString());
 					}
 					if (c.contains(start) && source.contains(start) && c.getFaceStatus())
 					{
@@ -374,8 +370,6 @@ public class SolitaireFM
 						break;
 					}
 				}
-				//}
-
 			}
 		}
 
@@ -392,9 +386,7 @@ public class SolitaireFM
 				for (int x = 0; x < NUM_PLAY_DECKS; x++)
 				{
 					dest = playCardStack[x];
-					
-					System.out.println(card);
-					System.out.println("Last: "+source.getLast());
+
 					// MOVING TO POPULATED STACK
 					if (card.getFaceStatus() == true && dest.contains(stop) && source != dest &&
 							validPlayStackMove(card, dest.getFirst()) && transferStack.showSize() == 1)
@@ -576,7 +568,7 @@ public class SolitaireFM
 
 				}
 			}// end cycle through play decks
-			System.out.println(deal_deck_pos);
+
 			try {
 				if (deal_deck[deal_deck_pos].contains(start) && deck.showSize() > 0)
 				{
@@ -596,7 +588,6 @@ public class SolitaireFM
 			} catch (Exception ex) {
 				statusBox.setText("No more cards to deal!");
 			}
-			System.out.println(deal_deck_pos);
 			
 			//Deal a card to an empty tableau whilst there still is cards on the deck
 			if (deck.showSize() > 0)
@@ -634,14 +625,19 @@ public class SolitaireFM
 					{
 						// one deck is not full, so game is not over
 						gameNotOver = true;
-						
-						//break;
+						System.out.println("Game Not Over");
+						gameOver = false;
+						break;
+					} else { 
+						gameOver = true;
 					}
 					if (!gameNotOver)
+						System.out.println("Game Over");
 						gameOver = true;
 				}
 			}
-
+			
+			System.out.println(gameOver);
 			if (checkForWin && gameOver)
 			{
 				JOptionPane.showMessageDialog(table, "Congratulations! You've Won!");
@@ -678,7 +674,6 @@ public class SolitaireFM
 		deal_deck_pos = 0;
 		
 		deck = new CardStackFM(true); // deal 104 cards
-		System.out.println(deck.showSize());
 		deck.shuffle();
 		
 		table.removeAll();
@@ -703,7 +698,7 @@ public class SolitaireFM
 			//Bottom Up: A to K
 			if(x >= 0 && x <= 3) 
 			{
-				final_cards[x].setXY((FINAL_POS.x + (x * CardFM.CARD_WIDTH)) + 10, (FINAL_POS.y));
+				final_cards[x].setXY(200 + (x * (CardFM.CARD_WIDTH)), (FINAL_POS.y));
 				for(int y = 0; y < deck.showSize(); y++) {
 					
 					CardFM c = deck.pop().setFaceup();
@@ -746,7 +741,7 @@ public class SolitaireFM
 				//Top Down: K to A
 			else if(x >= 4 && x <= 7) 
 				{
-				final_cards[x].setXY((FINAL_POS.x + ((x-4) * CardFM.CARD_WIDTH)) + 10, ((65/2)*FINAL_POS.y));
+				final_cards[x].setXY(200 + ((x-4) * (CardFM.CARD_WIDTH)), ((65/2)*FINAL_POS.y));
 					for(int y = 0; y < deck.showSize(); y++) {
 						
 						CardFM c = deck.pop().setFaceup();
@@ -796,7 +791,7 @@ public class SolitaireFM
 		for (int x = 0; x < NUM_PLAY_DECKS; x++)
 		{
 			playCardStack[x] = new CardStackFM(false);
-			playCardStack[x].setXY((DECK_POS.x + (TABLE_WIDTH/8 + (3 * (CardFM.CARD_WIDTH) - 25))), (2*PLAY_POS.y));
+			playCardStack[x].setXY(350, (2*PLAY_POS.y));
 			
 			table.add(playCardStack[x]);
 			
@@ -804,8 +799,8 @@ public class SolitaireFM
 			{
 				
 				playCardStack[x] = new CardStackFM(false);
-				playCardStack[x].setXY((DECK_POS.x + (TABLE_WIDTH/8 + (x * (CardFM.CARD_WIDTH + 10)))), (3*PLAY_POS.y));
-				
+				playCardStack[x].setXY((125/2) + (x * (CardFM.CARD_WIDTH + 15)), (3*PLAY_POS.y));
+
 				table.add(playCardStack[x]);
 				
 			} 
@@ -813,16 +808,16 @@ public class SolitaireFM
 			{
 				
 				playCardStack[x] = new CardStackFM(false);
-				playCardStack[x].setXY((DECK_POS.x + (TABLE_WIDTH/8 + ((x-4) * (CardFM.CARD_WIDTH + 10)))), (4*PLAY_POS.y));
-				
+				playCardStack[x].setXY((125/2) + ((x-4) * (CardFM.CARD_WIDTH + 15)), (4*PLAY_POS.y));
+
 				table.add(playCardStack[x]);
 				
 			} if(x >= 9 && x <= 13) 
 			{
 				
 				playCardStack[x] = new CardStackFM(false);
-				playCardStack[x].setXY((DECK_POS.x + (TABLE_WIDTH/8 + ((x-8) * (CardFM.CARD_WIDTH + 10)))), (5*PLAY_POS.y));
-				
+				playCardStack[x].setXY((125/2) + ((x-8) * (CardFM.CARD_WIDTH + 15)), (5*PLAY_POS.y));
+
 				table.add(playCardStack[x]);
 				
 			}
@@ -833,7 +828,7 @@ public class SolitaireFM
 		for (int x = 0; x < deal_deck.length; x++)
 		{
 			deal_deck[x] = new FinalStackFM();
-			deal_deck[x].setXY(50 - (5+ (2*x)), (x*FINAL_POS.y) + 15);
+			deal_deck[x].setXY(50 - (5 + (3*x)) + ((110/2)/7), (2*PLAY_POS.y));
 			table.add(deal_deck[x]);
 		}
 		
@@ -854,7 +849,7 @@ public class SolitaireFM
 		gameTitle.setText("<b>Team 2<br>Flea Market Solitaire</b> <br> CPSC 4900 <br> Fall 2021");
 		gameTitle.setEditable(false);
 		gameTitle.setOpaque(false);
-		gameTitle.setBounds(245, 20, 100, 100);
+		gameTitle.setBounds(32, 20, 100, 100);
 
 		scoreBox.setBounds(240, TABLE_HEIGHT - 70, 120, 30);
 		scoreBox.setText("Score: 0");
@@ -880,7 +875,7 @@ public class SolitaireFM
 		frame.setSize(TABLE_WIDTH, TABLE_HEIGHT);
 
 		table.setLayout(null);
-		table.setBackground(new Color(0, 180, 0));
+		table.setBackground(SolitaireMenu.getColor());
 		
 		scoreBox.setText("Score: "+score);
 		

@@ -196,16 +196,26 @@ class CardStackFM extends JComponent
 			{
 				removeAll();
 			}
-
+			int z = 0;
 			for (; iter.hasNext();)
 			{
 				CardFM c = iter.next();
-				c.setXY(new Point(prev.x, prev.y + SPREAD));
-				add(SolitaireFM.moveCard(c, prev.x, prev.y + SPREAD));
-				prev = c.getXY();
-				// setting x & y position
-				c.setWhereAmI(new Point(prevWhereAmI.x, prevWhereAmI.y + SPREAD));
-				prevWhereAmI = c.getWhereAmI();
+				if(z <= 0) {
+					c.setXY(new Point(prev.x, prev.y + SPREAD));
+					add(SolitaireFM.moveCard(c, prev.x, prev.y + SPREAD));
+					prev = c.getXY();
+					// setting x & y position
+					c.setWhereAmI(new Point(prevWhereAmI.x , prevWhereAmI.y + SPREAD));
+					prevWhereAmI = c.getWhereAmI();
+				} else {
+					c.setXY(new Point(prev.x - (SPREAD/9), prev.y));
+					add(SolitaireFM.moveCard(c, prev.x + (SPREAD/9), prev.y));
+					prev = c.getXY();
+					// setting x & y position
+					c.setWhereAmI(new Point(prevWhereAmI.x + (SPREAD/9), prevWhereAmI.y));
+					prevWhereAmI = c.getWhereAmI();
+				}
+				z++;
 			}
 
 		}
