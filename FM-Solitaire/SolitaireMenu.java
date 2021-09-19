@@ -184,6 +184,11 @@ public class SolitaireMenu {
 	
 	private static void enterUser()
 	{
+		/*
+		 * JDialogs stop any other actions from occurring whilst the window is still open.
+		 * For this reason, we use a Dialog box for user name 
+		 * input so that a game cannot be started prior to entering.
+		 */
 		JDialog userFrame = new JDialog(frame, true);
 		JPanel userTable = new JPanel();
 		userFrame.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
