@@ -7,13 +7,17 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+
+import Klondike.SolitaireK;
 
 
 public class SolitaireMenu {
 	
-	public static final int TABLE_HEIGHT = 600;
-	public static final int TABLE_WIDTH = 800;
+	public static final int TABLE_HEIGHT = 400;
+	public static final int TABLE_WIDTH = 500;
+	public static String user;
 	
 	// GUI COMPONENTS (top level)
 	private static final JFrame frame = new JFrame("Solitaire Menu");
@@ -22,20 +26,23 @@ public class SolitaireMenu {
 	//other components
 	private static JButton klondikeStart = new JButton("Klondike");
 	private static JButton fleaMarketStart = new JButton("Flea Market");
-	protected static JButton backgroundColorButton = new JButton("Change Background");
+	private static JButton backgroundColorButton = new JButton("Change Background Color");
+	protected static JButton statisticButtton = new JButton("Game Statistics");
+	private static JLabel gameTypes = new JLabel();// displays the score
 	
 	//Action Listener
 	private static ActionListener ae = new SetUpButtonListeners();
 	
+	//Color switcher
 	private static Color c;
 	
+	//Color getter
 	public static Color getColor() {
 		 return c;
 	}
 	
 	private static class SetUpButtonListeners implements ActionListener
 	{
-
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			if(e.getSource() == klondikeStart) {
@@ -68,50 +75,62 @@ public class SolitaireMenu {
 				JButton pink = new JButton("Pink");
 				JButton white = new JButton("White");
 				
-				JPanel gameTable = SolitaireFM.table;
+				JPanel fMTable = SolitaireFM.table;
+				JPanel kTable = SolitaireK.table;
+				
 				class SetUpColorListeners implements ActionListener
 				{
 					@Override
 					public void actionPerformed(ActionEvent e) {
 						if(e.getSource() == original) {
 							menu.setBackground(Color.GRAY);
-							gameTable.setBackground(Color.GRAY);
+							fMTable.setBackground(Color.GRAY);
+							kTable.setBackground(Color.GRAY);
 							c = Color.GRAY;
 						} else if(e.getSource() == red) {
 							menu.setBackground(Color.RED);
-							gameTable.setBackground(Color.RED);
+							fMTable.setBackground(Color.RED);
+							kTable.setBackground(Color.RED);
 							c = Color.RED;
 						} else if(e.getSource() == yellow) {
 							menu.setBackground(Color.YELLOW);
-							gameTable.setBackground(Color.YELLOW);
+							fMTable.setBackground(Color.YELLOW);
+							kTable.setBackground(Color.YELLOW);
 							c = Color.BLACK;
 						} else if(e.getSource() == cyan) {
 							menu.setBackground(Color.CYAN);
-							gameTable.setBackground(Color.CYAN);
+							fMTable.setBackground(Color.CYAN);
+							kTable.setBackground(Color.CYAN);
 							c = Color.CYAN;
 						} else if(e.getSource() == blue) {
 							menu.setBackground(Color.BLUE);
-							gameTable.setBackground(Color.BLUE);
+							fMTable.setBackground(Color.BLUE);
+							kTable.setBackground(Color.BLUE);
 							c = Color.BLUE;
 						} else if(e.getSource() == green) {
 							menu.setBackground(new Color(0, 180, 0));
-							gameTable.setBackground(new Color(0, 180, 0));
+							fMTable.setBackground(new Color(0, 180, 0));
+							kTable.setBackground(new Color(0, 180, 0));
 							c = new Color(0, 180, 0);
 						} else if(e.getSource() == gray) {
 							menu.setBackground(Color.DARK_GRAY);
-							gameTable.setBackground(Color.DARK_GRAY);
+							fMTable.setBackground(Color.DARK_GRAY);
+							kTable.setBackground(Color.DARK_GRAY);
 							c = Color.DARK_GRAY;
 						} else if(e.getSource() == orange) {
 							menu.setBackground(Color.ORANGE);
-							gameTable.setBackground(Color.ORANGE);
+							fMTable.setBackground(Color.ORANGE);
+							kTable.setBackground(Color.ORANGE);
 							c = Color.ORANGE;
 						} else if(e.getSource() == pink) {
 							menu.setBackground(Color.PINK);
-							gameTable.setBackground(Color.PINK);
+							fMTable.setBackground(Color.PINK);
+							kTable.setBackground(Color.PINK);
 							c = Color.PINK;
 						} else if(e.getSource() == white) {
 							menu.setBackground(Color.WHITE);
-							gameTable.setBackground(Color.WHITE);
+							fMTable.setBackground(Color.WHITE);
+							kTable.setBackground(Color.WHITE);
 							c = Color.WHITE;
 						}
 					}
@@ -120,25 +139,25 @@ public class SolitaireMenu {
 				colorFrame.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 				
 				original.addActionListener(aL);
-				original.setBounds(0, TABLE_HEIGHT - 600, 285, 20);
+				original.setBounds(0, TABLE_HEIGHT - 400, 285, 20);
 				red.addActionListener(aL);
-				red.setBounds(0, TABLE_HEIGHT - 580, 285, 20);
+				red.setBounds(0, TABLE_HEIGHT - 380, 285, 20);
 				yellow.addActionListener(aL);
-				yellow.setBounds(0, TABLE_HEIGHT - 560, 285, 20);
+				yellow.setBounds(0, TABLE_HEIGHT - 360, 285, 20);
 				cyan.addActionListener(aL);
-				cyan.setBounds(0, TABLE_HEIGHT - 540, 285, 20);
+				cyan.setBounds(0, TABLE_HEIGHT - 340, 285, 20);
 				blue.addActionListener(aL);
-				blue.setBounds(0, TABLE_HEIGHT - 520, 285, 20);
+				blue.setBounds(0, TABLE_HEIGHT - 320, 285, 20);
 				green.addActionListener(aL);
-				green.setBounds(0, TABLE_HEIGHT - 500, 285, 20);
+				green.setBounds(0, TABLE_HEIGHT - 300, 285, 20);
 				gray.addActionListener(aL);
-				gray.setBounds(0, TABLE_HEIGHT - 480, 285, 20);
+				gray.setBounds(0, TABLE_HEIGHT - 280, 285, 20);
 				orange.addActionListener(aL);
-				orange.setBounds(0, TABLE_HEIGHT - 460, 285, 20);
+				orange.setBounds(0, TABLE_HEIGHT - 260, 285, 20);
 				pink.addActionListener(aL);
-				pink.setBounds(0, TABLE_HEIGHT - 440, 285, 20);
+				pink.setBounds(0, TABLE_HEIGHT - 240, 285, 20);
 				white.addActionListener(aL);
-				white.setBounds(0, TABLE_HEIGHT - 420, 285, 20);
+				white.setBounds(0, TABLE_HEIGHT - 220, 285, 20);
 				
 				colorMenu.add(original);
 				colorMenu.add(red);
@@ -160,18 +179,26 @@ public class SolitaireMenu {
 	
 	private static void openMenu()
 	{
+		gameTypes.setText("Available Game Modes");
+		gameTypes.setBounds(50, TABLE_HEIGHT - 375, 130, 30);
+		
 		klondikeStart.addActionListener(ae);
-		klondikeStart.setBounds(20, TABLE_HEIGHT - 545, 120, 30);
+		klondikeStart.setBounds(55, TABLE_HEIGHT - 330, 120, 30);
 		
 		fleaMarketStart.addActionListener(ae);
-		fleaMarketStart.setBounds(20, TABLE_HEIGHT - 580, 120, 30);
+		fleaMarketStart.setBounds(55, TABLE_HEIGHT - 285, 120, 30);
 		
 		backgroundColorButton.addActionListener(ae);
-		backgroundColorButton.setBounds(260, TABLE_HEIGHT - 580, 180, 30);
+		backgroundColorButton.setBounds(20, TABLE_HEIGHT - 70, 200, 30);
 		
+		statisticButtton.addActionListener(ae);
+		statisticButtton.setBounds(220, TABLE_HEIGHT - 70, 200, 30);
+		
+		menu.add(gameTypes);
 		menu.add(klondikeStart);
 		menu.add(fleaMarketStart);
 		menu.add(backgroundColorButton);
+		menu.add(statisticButtton);
 	}
 
 	public static void main(String[] args)

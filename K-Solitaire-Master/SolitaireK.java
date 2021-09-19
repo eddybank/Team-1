@@ -12,7 +12,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Timer;
 import java.util.TimerTask;
-
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JEditorPane;
@@ -21,6 +20,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+
+
 
 public class SolitaireK
 {
@@ -42,7 +43,7 @@ public class SolitaireK
 
 	// GUI COMPONENTS (top level)
 	private static final JFrame frame = new JFrame("Klondike Solitaire");
-	protected static final JPanel table = new JPanel();
+	public static final JPanel table = new JPanel();
 	// other components
 	private static JEditorPane gameTitle = new JEditorPane("text/html", "");
 	private static JButton showRulesButton = new JButton("Show Rules");
@@ -771,7 +772,7 @@ public class SolitaireK
 		frame.setSize(TABLE_WIDTH, TABLE_HEIGHT);
 
 		table.setLayout(null);
-		table.setBackground(new Color(0, 180, 0));
+		table.setBackground(getColor());
 
 		contentPane = frame.getContentPane();
 		contentPane.add(table);

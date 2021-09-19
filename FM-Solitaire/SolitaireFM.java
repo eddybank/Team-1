@@ -185,8 +185,6 @@ public class SolitaireFM
 					ruleFrame.add(scroll = new JScrollPane(rulesTextPane));
 
 					ruleFrame.setVisible(true);
-			} else if(e.getSource() == SolitaireMenu.backgroundColorButton) {
-				
 			}
 		}
 	} 
@@ -625,14 +623,12 @@ public class SolitaireFM
 					{
 						// one deck is not full, so game is not over
 						gameNotOver = true;
-						System.out.println("Game Not Over");
 						gameOver = false;
 						break;
 					} else { 
 						gameOver = true;
 					}
 					if (!gameNotOver)
-						System.out.println("Game Over");
 						gameOver = true;
 				}
 			}
