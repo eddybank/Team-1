@@ -12,6 +12,7 @@ import javax.swing.JComponent;
  */
 class CardStackFM extends JComponent
 {
+	
 	protected final int NUM_CARDS = 104;
 	protected Vector<CardFM> v;
 	protected boolean playStack = false;
@@ -21,7 +22,6 @@ class CardStackFM extends JComponent
 
 	public CardStackFM(boolean isDeck)
 	{
-		int f = 1;
 		this.setLayout(null);
 		v = new Vector<CardFM>();
 		if (isDeck)

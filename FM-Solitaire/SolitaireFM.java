@@ -1,4 +1,3 @@
-import Klondike.SolitaireK;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -28,7 +27,7 @@ import javax.swing.JTextField;
 public class SolitaireFM
 {
 	// CONSTANTS
-	public static final int TABLE_HEIGHT = CardFM.CARD_HEIGHT * 8;
+	public static final int TABLE_HEIGHT = CardFM.CARD_HEIGHT * (8) + 100;
 	public static final int TABLE_WIDTH = (CardFM.CARD_WIDTH * 8) + 100;
 	public static final int NUM_FINAL_DECKS = 8;
 	public static final int NUM_PLAY_DECKS = 13;
@@ -41,7 +40,8 @@ public class SolitaireFM
 	private static FinalStackFM[] final_cards;// Foundation Stacks
 	private static CardStackFM[] playCardStack; // Tableau stacks
 	//private static final CardFM newCardPlace = new CardFM();// waste card spot
-	private static CardStackFM deck; // populated with standard 52 card deck
+	private static CardStackFM deck; // populated with 2 standard 52 card decks
+	private static FinalStackFM[] deal_deck;// Foundation Stacks
 
 	// GUI COMPONENTS (top level)
 	private static final JFrame frame = new JFrame("Klondike Solitaire");
@@ -55,10 +55,12 @@ public class SolitaireFM
 	private static JTextField scoreBox = new JTextField();// displays the score
 	private static JTextField timeBox = new JTextField();// displays the time
 	private static JTextField statusBox = new JTextField();// status messages
-	private static JButton newCardButton = new JButton("Deal Cards");// deal waste cards
+	//private static JButton newCardButton = new JButton("Deal Cards");// deal waste cards
+	private static final CardFM newCardButton = new CardFM();
 	
 	//Action Listener for buttons
 	private static ActionListener ae = new setUpButtonListeners();
+	private static CardMovementManager cm = new CardMovementManager();
 	
 
 	// TIMER UTILITIES
@@ -69,6 +71,7 @@ public class SolitaireFM
 	private static boolean timeRunning = false;// timer running?
 	private static int score = 0;// keep track of the score
 	private static int time = 0;// keep track of seconds elapsed
+	private static int deal_deck_pos = 0;
 
 	// moves a card to abs location within a component
 	protected static CardFM moveCard(CardFM c, int x, int y)
@@ -92,10 +95,10 @@ public class SolitaireFM
 	{
 		SolitaireFM.time += 1;
 		// every 10 seconds elapsed we take away 2 points
-		if (SolitaireFM.time % 10 == 0)
+		/*if (SolitaireFM.time % 10 == 0)
 		{
 			setScore(-2);
-		}
+		}*/
 		String time = "Seconds: " + SolitaireFM.time;
 		timeBox.setText(time);
 		timeBox.repaint();
@@ -147,20 +150,6 @@ public class SolitaireFM
 		{
 			if(e.getSource() == newGameButton) {
 				SolitaireFM.playFMNewGame();
-			} else if (e.getSource() == newCardButton) {
-				// SHOW (WASTE) CARD OPERATIONS
-				// deal new card to each tableau -- needs updating, will add multiple cards because of previous mouse presses
-				if (deck.showSize() > 0)
-					{
-					for (int x = 1; x < NUM_PLAY_DECKS; x++)
-						{
-						System.out.print("poping deck ");
-						deck.showSize();
-						CardFM c = deck.pop().setFaceup();
-						playCardStack[x].putFirst(c);
-						table.repaint();
-					}
-				}
 			} else if(e.getSource() == toggleTimerButton) {
 					toggleTimer();
 					if (!timeRunning)
@@ -178,30 +167,13 @@ public class SolitaireFM
 					JEditorPane rulesTextPane = new JEditorPane("text/html", "");
 					rulesTextPane.setEditable(false);
 					String rulesText = "<b>Klondike Solitaire Rules</b>"
-							+ "<br><br> (From Wikipedia) Taking a shuffled standard 52-card deck of playing cards (without Jokers),"
-							+ " one upturned card is dealt on the left of the playing area, then six downturned cards"
-							+ " (from left to right).<p> On top of the downturned cards, an upturned card is dealt on the "
-							+ "left-most downturned pile, and downturned cards on the rest until all piles have an "
-							+ "upturned card. The piles should look like the figure to the right.<p>The four foundations "
-							+ "(light rectangles in the upper right of the figure) are built up by suit from Ace "
-							+ "(low in this game) to King, and the tableau piles can be built down by alternate colors,"
-							+ " and partial or complete piles can be moved if they are built down by alternate colors also. "
-							+ "Any empty piles can be filled with a King or a pile of cards with a King.<p> The point of "
-							+ "the game is to build up a stack of cards starting with 2 and ending with King, all of "
-							+ "the same suit. Once this is accomplished, the goal is to move this to a foundation, "
-							+ "where the player has previously placed the Ace of that suit. Once the player has done this, "
-							+ "they will have \"finished\" that suit- the goal being, of course, to finish all suits, "
-							+ "at which time the player will have won.<br><br><b> Scoring </b><br><br>"
-							+ "Moving cards directly from the Waste stack to a Foundation awards 10 points. However, "
-							+ "if the card is first moved to a Tableau, and then to a Foundation, then an extra 5 points "
-							+ "are received for a total of 15. Thus in order to receive a maximum score, no cards should be moved "
-							+ "directly from the Waste to Foundation.<p>	Time can also play a factor in Windows Solitaire, if the Timed game option is selected. For every 10 seconds of play, 2 points are taken away."
+							+ "<br><br> "
 							+ "<b><br><br>Notes On My Implementation</b><br><br>"
 							+ "Drag cards to and from any stack. As long as the move is valid the card, or stack of "
-							+ "cards, will be repositioned in the desired spot. The game follows the standard scoring and time"
-							+ " model explained above with only one waste card shown at a time."
+							+ "cards, will be repositioned in the desired spot. The game follows the standard scoring and time "
+							+ "model explained above with only one waste card shown at a time."
 							+ "<p> The timer starts running as soon as "
-							+ "the game begins, but it may be paused by pressing the pause button at the bottom of"
+							+ "the game begins, but it may be paused by pressing the pause button at the bottom of "
 							+ "the screen. ";
 					rulesTextPane.setText(rulesText);
 					ruleFrame.add(scroll = new JScrollPane(rulesTextPane));
@@ -217,8 +189,6 @@ public class SolitaireFM
 		public void windowOpened(WindowEvent e) {}
 		@Override
 		public void windowClosing(WindowEvent e) {
-			
-			newCardButton.removeActionListener(ae);
 			
 			newGameButton.removeActionListener(ae);
 			
@@ -241,7 +211,6 @@ public class SolitaireFM
 
 	}
 	
-
 	/*
 	 * This class handles all of the logic of moving the Card components as well
 	 * as the game logic. This determines where Cards can be moved according to
@@ -249,10 +218,6 @@ public class SolitaireFM
 	 */
 	private static class CardMovementManager extends MouseAdapter
 	{
-		private CardFM prevCard = null;// tracking card for waste stack
-		private CardFM movedCard = null;// card moved from waste stack
-		private boolean sourceIsFinalDeck = false;
-		//private boolean putBackOnDeck = true;// used for waste card recycling
 		private boolean checkForWin = false;// should we check if game is over?
 		private boolean gameOver = true;// easier to negate this than affirm it
 		private Point start = null;// where mouse was clicked
@@ -263,6 +228,7 @@ public class SolitaireFM
 		private CardStackFM dest = null;
 		// used for moving a stack of cards
 		private CardStackFM transferStack = new CardStackFM(false);
+		
 
 		private boolean validPlayStackMove(CardFM source, CardFM dest)
 		{
@@ -384,9 +350,11 @@ public class SolitaireFM
 					break;
 				source = playCardStack[x];
 				// pinpointing exact card pressed
-				for (Component ca : source.getComponents())
-				{
-					CardFM c = (CardFM) ca;
+				//for (Component ca : source.getComponents())
+				//{
+				if(!source.empty()) {
+					CardFM c = (CardFM) source.getFirst();
+					System.out.println(c);
 					if (c.contains(start) && source.contains(start))
 					{
 						transferStack.putFirst(c);
@@ -400,6 +368,7 @@ public class SolitaireFM
 						break;
 					}
 				}
+				//}
 
 			}
 		}
@@ -411,205 +380,127 @@ public class SolitaireFM
 			// used for status bar updates
 			boolean validMoveMade = false;
 
-			// SHOW CARD MOVEMENTS
-			/*if (movedCard != null)
-			//{
-				// Moving from SHOW TO PLAY
-				for (int x = 0; x < NUM_PLAY_DECKS; x++)
-				{
-					dest = playCardStack[x];
-					// to empty play stack
-					if (dest.empty() && movedCard != null && dest.contains(stop) && validPlayStackMove(movedCard, dest.getFirst()))
-					{
-						System.out.print("moving new card to empty spot ");
-						movedCard.setXY(dest.getXY());
-						table.remove(prevCard);
-						dest.putFirst(movedCard);
-						table.repaint();
-						movedCard = null;
-						//putBackOnDeck = false;
-						setScore(5);
-						validMoveMade = true;
-						break;
-					}
-					// to populated play stack
-					if (movedCard != null && dest.contains(stop) && !dest.empty() && dest.getFirst().getFaceStatus()
-							&& validPlayStackMove(movedCard, dest.getFirst()))
-					{
-						System.out.print("moving new card ");
-						movedCard.setXY(dest.getFirst().getXY());
-						table.remove(prevCard);
-						dest.putFirst(movedCard);
-						table.repaint();
-						movedCard = null;
-						//putBackOnDeck = false;
-						setScore(5);
-						validMoveMade = true;
-						break;
-					}
-				}
-				// Moving from SHOW TO FINAL
-				for (int x = 0; x < NUM_FINAL_DECKS; x++)
-				{
-					dest = final_cards[x];
-					if (dest.empty() && dest.contains(stop))
-					{
-						if (!dest.empty() && dest.contains(stop) && validFinalStackMove(movedCard, dest.getLast()))
-						{
-							if(dest.getFirst().getValue() == CardFM.Value.ACE && movedCard.getValue().ordinal() == (dest.getLast().getValue().ordinal() + 1)) {
-								System.out.println("Destin" + dest.showSize());
-								dest.push(movedCard);
-								table.remove(prevCard);
-								dest.repaint();
-								table.repaint();
-								movedCard = null;
-								//putBackOnDeck = false;
-								checkForWin = true;
-								setScore(5);
-								validMoveMade = true;
-								break;
-							} else if(dest.getFirst().getValue() == CardFM.Value.KING && movedCard.getValue().ordinal() == (dest.getLast().getValue().ordinal() - 1)) {
-								System.out.println("Destin" + dest.showSize());
-								dest.push(movedCard);
-								table.remove(prevCard);
-								dest.repaint();
-								table.repaint();
-								movedCard = null;
-								//putBackOnDeck = false;
-								checkForWin = true;
-								setScore(5);
-								validMoveMade = true;
-								break;
-							}
-						}
-					}
-				}
-			}// END SHOW STACK OPERATIONS*/
-
 			// PLAY STACK OPERATIONS
 			if (card != null && source != null)
 			{ // Moving from PLAY TO PLAY
 				for (int x = 0; x < NUM_PLAY_DECKS; x++)
 				{
 					dest = playCardStack[x];
+					
+					System.out.println(card);
+					System.out.println("Last: "+source.getLast());
 					// MOVING TO POPULATED STACK
 					if (card.getFaceStatus() == true && dest.contains(stop) && source != dest &&
 							validPlayStackMove(card, dest.getFirst()) && transferStack.showSize() == 1)
 					{
-						CardFM c = null;
-						
-						if (sourceIsFinalDeck)
-							c = source.pop();
-						else
+						if(source.showSize() > 1 && card != source.getLast()) {
+							CardFM c = null;
 							c = source.popFirst();
-
-						c.repaint();
-						// if playstack, turn next card up
-						if (source.getFirst() != null)
-						{
-							CardFM temp = source.getFirst().setFaceup();
-							temp.repaint();
-							source.repaint();
+							c.repaint();
+							
+							table.repaint();
+							// if playstack, turn next card up
+							if (source.getFirst() != null)
+							{
+								CardFM temp = source.getFirst().setFaceup();
+								temp.repaint();
+								source.repaint();
+							}
+	
+							dest.setXY(dest.getXY().x, dest.getXY().y);
+							dest.putFirst(c);
+	
+							dest.repaint();
+	
+							table.repaint();
+	
+							System.out.print("Destination ");
+							dest.showSize();
+							
+							setScore(5);
+							validMoveMade = true;
+							break;
+						} else {
+							CardFM c = null;
+							c = source.popFirst();
+							c.repaint();
+							
+							table.repaint();
+							if (source.getFirst() != null)
+							{
+								CardFM temp = source.getFirst().setFaceup();
+								temp.repaint();
+								source.repaint();
+							}
+	
+							dest.setXY(dest.getXY().x, dest.getXY().y);
+							dest.putFirst(c);
+	
+							dest.repaint();
+	
+							table.repaint();
+	
+							System.out.print("Destination ");
+							dest.showSize();
+							
+							setScore(5);
+							validMoveMade = true;
+							break;
 						}
-
-						dest.setXY(dest.getXY().x, dest.getXY().y);
-						dest.putFirst(c);
-
-						dest.repaint();
-
-						table.repaint();
-
-						System.out.print("Destination ");
-						dest.showSize();
-						if (sourceIsFinalDeck)
-							setScore(15);
-						else
-							setScore(10);
-						validMoveMade = true;
-						break;
 					} else if (dest.empty() && dest.contains(stop) &&
 							validPlayStackMove(card, dest.getFirst()) && transferStack.showSize() == 1)
 					{// MOVING TO EMPTY STACK
-						CardFM c = null;
-						if (sourceIsFinalDeck)
-							c = source.pop();
-						else
+						if(source.showSize() > 1 && card != source.getLast()) {
+							CardFM c = null;
 							c = source.popFirst();
-
-						c.repaint();
-						// if playstack, turn next card up
-						if (source.getFirst() != null)
-						{
-							CardFM temp = source.getFirst();//.setFaceup();
-							temp.repaint();
-							source.repaint();
+							c.repaint();
+							
+							// if playstack, turn next card up
+							if (source.getFirst() != null)
+							{
+								CardFM temp = source.getFirst();//.setFaceup();
+								temp.repaint();
+								source.repaint();
+							}
+	
+							dest.setXY(dest.getXY().x, dest.getXY().y);
+							dest.putFirst(c);
+	
+							dest.repaint();
+	
+							table.repaint();
+	
+							System.out.print("Destination ");
+							dest.showSize();
+							setScore(5);
+							validMoveMade = true;
+							break;
+						} else {
+							CardFM c = null;
+							c = source.popFirst();
+							c.repaint();
+							
+							// if playstack, turn next card up
+							if (source.getFirst() != null)
+							{
+								CardFM temp = source.getFirst();//.setFaceup();
+								temp.repaint();
+								source.repaint();
+							}
+	
+							dest.setXY(dest.getXY().x, dest.getXY().y);
+							dest.putFirst(c);
+	
+							dest.repaint();
+	
+							table.repaint();
+	
+							System.out.print("Destination ");
+							dest.showSize();
+							setScore(5);
+							validMoveMade = true;
+							break;
 						}
-
-						dest.setXY(dest.getXY().x, dest.getXY().y);
-						dest.putFirst(c);
-
-						dest.repaint();
-
-						table.repaint();
-
-						System.out.print("Destination ");
-						dest.showSize();
-						setScore(5);
-						validMoveMade = true;
-						break;
-					}
-					// Moving STACK of cards from PLAY TO PLAY
-					// to EMPTY STACK
-					/*if (dest.empty() && dest.contains(stop) && !transferStack.empty()
-							&& transferStack.getFirst().getValue() == CardFM.Value.KING)
-					{
-						System.out.println("King To Empty Stack Transfer");
-						while (!transferStack.empty())
-						{
-							System.out.println("popping from transfer: " + transferStack.getFirst().getValue());
-							dest.putFirst(transferStack.popFirst());
-							source.popFirst();
-						}
-						if (source.getFirst() != null)
-						{
-							CardFM temp = source.getFirst().setFaceup();
-							temp.repaint();
-							source.repaint();
-						}
-
-						dest.setXY(dest.getXY().x, dest.getXY().y);
-						dest.repaint();
-
-						table.repaint();
-						setScore(5);
-						validMoveMade = true;
-						break;
-					}*/
-					// to POPULATED STACK
-					if (dest.contains(stop) && !transferStack.empty() && source.contains(start)
-							&& validPlayStackMove(transferStack.getFirst(), dest.getFirst()))
-					{
-						System.out.println("Regular Stack Transfer");
-						while (!transferStack.empty())
-						{
-							System.out.println("popping from transfer: " + transferStack.getFirst().getValue());
-							dest.putFirst(transferStack.popFirst());
-							source.popFirst();
-						}
-						if (source.getFirst() != null)
-						{
-							CardFM temp = source.getFirst().setFaceup();
-							temp.repaint();
-							source.repaint();
-						}
-
-						dest.setXY(dest.getXY().x, dest.getXY().y);
-						dest.repaint();
-
-						table.repaint();
-						//setScore(5);
-						validMoveMade = true;
-						break;
 					}
 				}
 				// from PLAY TO FINAL
@@ -679,23 +570,44 @@ public class SolitaireFM
 
 				}
 			}// end cycle through play decks
-
-			//Deal a card to an empty tableau whilst there still is cards on the deck
+			System.out.println(deal_deck_pos);
+			try {
+				if (deal_deck[deal_deck_pos].contains(start) && deck.showSize() > 0)
+				{
+					for (int x = 1; x < NUM_PLAY_DECKS; x++)
+					{
+						
+						System.out.print("poping deck ");
+						deck.showSize();
+						CardFM c = deck.pop().setFaceup();
+						playCardStack[x].putFirst(c);
+						table.repaint();
+					}
+					table.remove(deal_deck[deal_deck_pos]);
+					table.repaint();
+					deal_deck_pos++;
+				}
+			} catch (Exception ex) {
+				statusBox.setText("No more cards to deal!");
+			}
+			System.out.println(deal_deck_pos);
+			
+			/*//Deal a card to an empty tableau whilst there still is cards on the deck
 			if (deck.showSize() > 0)
 			{
 				for (int x = 0; x < NUM_PLAY_DECKS; x++)
-					{
+				{
 					if(playCardStack[x].empty()) {
-					System.out.print("poping deck ");
-					deck.showSize();
-					CardFM c = deck.pop().setFaceup();
-					playCardStack[x].putFirst(c);
-					c.repaint();
-					statusBox.setText("Card dealt to tableau "+(x+1));
-					table.repaint();
+						System.out.print("poping deck ");
+						deck.showSize();
+						CardFM c = deck.pop().setFaceup();
+						playCardStack[x].putFirst(c);
+						c.repaint();
+						statusBox.setText("Card dealt to tableau "+(x+1));
+						table.repaint();
+					}
 				}
-				}
-		}
+			}*/
 			
 			
 			// SHOWING STATUS MESSAGE IF MOVE INVALID
@@ -733,15 +645,16 @@ public class SolitaireFM
 			source = null;
 			dest = null;
 			card = null;
-			sourceIsFinalDeck = false;
 			checkForWin = false;
 			gameOver = false;
 		}// end mousePressed()
 	}
 
+	
+
 	private static void playFMNewGame()
 	{
-		newCardButton.removeActionListener(ae);
+		//newCardButton.removeActionListener(ae);
 		
 		newGameButton.removeActionListener(ae);
 		
@@ -749,12 +662,19 @@ public class SolitaireFM
 		
 		showRulesButton.removeActionListener(ae);
 		
+		table.removeMouseListener(cm);
+		table.removeMouseMotionListener(cm);
+		
 		frame.dispose();
 		
 		resetTimer();
 		
-		deck = new CardStackFM(true); // deal 52 cards
+		deal_deck_pos = 0;
+		
+		deck = new CardStackFM(true); // deal 104 cards
+		System.out.println(deck.showSize());
 		deck.shuffle();
+		
 		table.removeAll();
 		// reset stacks if user starts a new game in the middle of one
 		if (playCardStack != null && final_cards != null)
@@ -864,8 +784,7 @@ public class SolitaireFM
 			table.add(final_cards[x]);
 
 		}
-		// place new card distribution button
-		table.add(newCardButton);
+		
 		// initialize & place play (tableau) decks/stacks
 		playCardStack = new CardStackFM[NUM_PLAY_DECKS];
 		for (int x = 0; x < NUM_PLAY_DECKS; x++)
@@ -902,7 +821,16 @@ public class SolitaireFM
 				
 			}
 		}
-
+		
+		
+		deal_deck = new FinalStackFM[7];
+		for (int x = 0; x < deal_deck.length; x++)
+		{
+			deal_deck[x] = new FinalStackFM();
+			deal_deck[x].setXY(50 - (5+ (2*x)), (x*FINAL_POS.y) + 15);
+			table.add(deal_deck[x]);
+		}
+		
 		// Dealing new game
 		for (int x = 0; x < NUM_PLAY_DECKS; x++)
 		{
@@ -910,13 +838,6 @@ public class SolitaireFM
 			playCardStack[x].putFirst(c);
 
 		}
-		// reset time
-		time = 0;
-		
-		
-		
-		newCardButton.addActionListener(ae);
-		newCardButton.setBounds(15, TABLE_HEIGHT - 600, 120, 120);
 		
 		newGameButton.addActionListener(ae);
 		newGameButton.setBounds(0, TABLE_HEIGHT - 70, 120, 30);
@@ -947,14 +868,13 @@ public class SolitaireFM
 		statusBox.setBounds(605, TABLE_HEIGHT - 70, 180, 30);
 		statusBox.setEditable(false);
 		statusBox.setOpaque(false);
-		//changes
+		
 		Container contentPane;
 
 		frame.setSize(TABLE_WIDTH, TABLE_HEIGHT);
 
 		table.setLayout(null);
 		table.setBackground(new Color(0, 180, 0));
-		//changes
 		
 		table.add(statusBox);
 		table.add(toggleTimerButton);
@@ -966,21 +886,22 @@ public class SolitaireFM
 		table.add(scoreBox);
 		table.repaint();
 		
-		//changes 
 		contentPane = frame.getContentPane();
 		contentPane.add(table);
 		frame.addWindowListener(new windowListener());
 
-		table.addMouseListener(new CardMovementManager());
-		table.addMouseMotionListener(new CardMovementManager());
-
+		table.addMouseListener(cm);
+		table.addMouseMotionListener(cm);
+		
+		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frame.setVisible(true);
 	}
 
 
 	public static void main(String[] args)
 	{
+		
 		playFMNewGame();
-		//playFMNewGame();
+		
 	}
 }
