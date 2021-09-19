@@ -39,7 +39,6 @@ public class SolitaireFM
 	// GAMEPLAY STRUCTURES
 	private static FinalStackFM[] final_cards;// Foundation Stacks
 	private static CardStackFM[] playCardStack; // Tableau stacks
-	//private static final CardFM newCardPlace = new CardFM();// waste card spot
 	private static CardStackFM deck; // populated with 2 standard 52 card decks
 	private static FinalStackFM[] deal_deck;// Foundation Stacks
 
@@ -55,7 +54,6 @@ public class SolitaireFM
 	private static JTextField scoreBox = new JTextField();// displays the score
 	private static JTextField timeBox = new JTextField();// displays the time
 	private static JTextField statusBox = new JTextField();// status messages
-	//private static JButton newCardButton = new JButton("Deal Cards");// deal waste cards
 	private static final CardFM newCardButton = new CardFM();
 	
 	//Action Listener for buttons
@@ -69,7 +67,7 @@ public class SolitaireFM
 
 	// MISC TRACKING VARIABLES
 	private static boolean timeRunning = false;// timer running?
-	private static int score = 0;// keep track of the score
+	private static int score = -64;// keep track of the score, start of $-64
 	private static int time = 0;// keep track of seconds elapsed
 	private static int deal_deck_pos = 0;
 
@@ -162,19 +160,27 @@ public class SolitaireFM
 			} else if(e.getSource() == showRulesButton){
 					JDialog ruleFrame = new JDialog(frame, true);
 					ruleFrame.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-					ruleFrame.setSize(TABLE_HEIGHT, TABLE_WIDTH);
+					ruleFrame.setSize(TABLE_HEIGHT - (TABLE_HEIGHT/3), TABLE_WIDTH - (TABLE_WIDTH/3));
 					JScrollPane scroll;
 					JEditorPane rulesTextPane = new JEditorPane("text/html", "");
 					rulesTextPane.setEditable(false);
-					String rulesText = "<b>Klondike Solitaire Rules</b>"
-							+ "<br><br> "
-							+ "<b><br><br>Notes On My Implementation</b><br><br>"
+					String rulesText = "<b>Flea Market Solitaire</b>"
+							+ "<b><br><br>Notes On My Implementation</b><br>"
 							+ "Drag cards to and from any stack. As long as the move is valid the card, or stack of "
-							+ "cards, will be repositioned in the desired spot. The game follows the standard scoring and time "
-							+ "model explained above with only one waste card shown at a time."
-							+ "<p> The timer starts running as soon as "
+							+ "cards, will be repositioned in the desired spot. The game starts with a score of $-64 and each move will result in 5 points."
+							+ "The timer starts running as soon as "
 							+ "the game begins, but it may be paused by pressing the pause button at the bottom of "
-							+ "the screen. ";
+							+ "the screen. "
+							+ "<b><br><br>Technical Aspects</b><br>"
+							+ "This solitaire uses 104 cards (2 decks). You have 12 main tableau piles with one card per pile, one additional tableau piles with one card and 8 foundations."
+							+ "At the start of the game an Ace and King of each suit is dealt on the foundations."
+							+ "<b><br><br>The object of the game</b><br>"
+							+ "To build the foundation Aces up in suit to Kings, to build the foundation Kings down in suit to Aces."
+							+ "<b><br><br>The rules</b><br>"
+							+ "The top cards of tableau piles are available for play on foundations. You may build tableau piles up or down by suit. Only one card at a time can be moved from pile to pile. Spaces are filled automatically from the stock pile. "
+							+ "When you have made all the moves initially available, click on the stock to deal one card on each main tableau pile. "
+							+ "When the stock pile is empty the spaces may be filled with the top cards of tableaus. "
+							+ "There is no redeal. ";
 					rulesTextPane.setText(rulesText);
 					ruleFrame.add(scroll = new JScrollPane(rulesTextPane));
 
@@ -535,7 +541,7 @@ public class SolitaireFM
 								dest.showSize();
 								card = null;
 								checkForWin = true;
-								setScore(10);
+								setScore(5);
 								validMoveMade = true;
 								break;
 							}  else if(dest.getFirst().getValue() == CardFM.Value.KING && card.getValue().ordinal() == (dest.getLast().getValue().ordinal() - 1)) {
@@ -561,7 +567,7 @@ public class SolitaireFM
 								dest.showSize();
 								card = null;
 								checkForWin = true;
-								setScore(10);
+								setScore(5);
 								validMoveMade = true;
 								break;
 							}
@@ -592,7 +598,7 @@ public class SolitaireFM
 			}
 			System.out.println(deal_deck_pos);
 			
-			/*//Deal a card to an empty tableau whilst there still is cards on the deck
+			//Deal a card to an empty tableau whilst there still is cards on the deck
 			if (deck.showSize() > 0)
 			{
 				for (int x = 0; x < NUM_PLAY_DECKS; x++)
@@ -607,7 +613,7 @@ public class SolitaireFM
 						table.repaint();
 					}
 				}
-			}*/
+			}
 			
 			
 			// SHOWING STATUS MESSAGE IF MOVE INVALID
@@ -623,15 +629,17 @@ public class SolitaireFM
 				for (int x = 0; x < NUM_FINAL_DECKS; x++)
 				{
 					dest = final_cards[x];
-					if (dest.showSize() != 13)
+					System.out.println("Final deck size "+dest.showSize());
+					if (dest.showSize() < 13)
 					{
 						// one deck is not full, so game is not over
 						gameNotOver = true;
-						break;
+						
+						//break;
 					}
+					if (!gameNotOver)
+						gameOver = true;
 				}
-				if (!gameNotOver)
-					gameOver = true;
 			}
 
 			if (checkForWin && gameOver)
@@ -654,8 +662,6 @@ public class SolitaireFM
 
 	private static void playFMNewGame()
 	{
-		//newCardButton.removeActionListener(ae);
-		
 		newGameButton.removeActionListener(ae);
 		
 		toggleTimerButton.removeActionListener(ae);
@@ -876,6 +882,8 @@ public class SolitaireFM
 		table.setLayout(null);
 		table.setBackground(new Color(0, 180, 0));
 		
+		scoreBox.setText("Score: "+score);
+		
 		table.add(statusBox);
 		table.add(toggleTimerButton);
 		table.add(gameTitle);
@@ -884,6 +892,7 @@ public class SolitaireFM
 		table.add(newCardButton);
 		table.add(showRulesButton);
 		table.add(scoreBox);
+		
 		table.repaint();
 		
 		contentPane = frame.getContentPane();
