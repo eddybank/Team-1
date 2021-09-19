@@ -772,7 +772,7 @@ public class SolitaireK
 		frame.setSize(TABLE_WIDTH, TABLE_HEIGHT);
 
 		table.setLayout(null);
-		table.setBackground(getColor());
+		table.setBackground(fleaMarket.SolitaireMenu.getColor());
 
 		contentPane = frame.getContentPane();
 		contentPane.add(table);

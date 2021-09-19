@@ -1,3 +1,4 @@
+package fleaMarket;
 
 public class StatisticAnalysis {
 
