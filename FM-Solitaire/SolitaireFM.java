@@ -199,9 +199,7 @@ public class SolitaireFM
 	{
 
 		@Override
-		public void windowOpened(WindowEvent e) {
-			SolitaireMenu.enterUser();
-		}
+		public void windowOpened(WindowEvent e) {}
 		@Override
 		public void windowClosing(WindowEvent e) {
 			

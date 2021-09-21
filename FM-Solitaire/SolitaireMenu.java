@@ -37,7 +37,7 @@ public class SolitaireMenu {
 	private static JButton klondikeStart = new JButton("Klondike");
 	private static JButton fleaMarketStart = new JButton("Flea Market");
 	private static JButton backgroundColorButton = new JButton("Change Background Color");
-	protected static JButton statisticButton = new JButton("Game Statistics");
+	//protected static JButton statisticButton = new JButton("Game Statistics");
 	private static JLabel gameTypes = new JLabel();// displays the score
 	private static JTextField userInput = new JTextField();
 	
@@ -308,14 +308,14 @@ public class SolitaireMenu {
 		backgroundColorButton.addActionListener(ae);
 		backgroundColorButton.setBounds(20, TABLE_HEIGHT - 70, 200, 30);
 		
-		statisticButton.addActionListener(ae);
-		statisticButton.setBounds(220, TABLE_HEIGHT - 70, 200, 30);
+		//statisticButton.addActionListener(ae);
+		//statisticButton.setBounds(220, TABLE_HEIGHT - 70, 200, 30);
 		
 		menu.add(gameTypes);
 		menu.add(klondikeStart);
 		menu.add(fleaMarketStart);
 		menu.add(backgroundColorButton);
-		menu.add(statisticButton);
+		//menu.add(statisticButton);
 	}
 
 	public static void main(String[] args)
