@@ -855,7 +855,7 @@ public class SolitaireFM
 		showRulesButton.addActionListener(ae);
 		showRulesButton.setBounds(120, TABLE_HEIGHT - 70, 120, 30);
 
-		gameTitle.setText("<b>Team 2<br>Flea Market Solitaire</b> <br> CPSC 4900 <br> Fall 2021");
+		gameTitle.setText("<b>Team 1<br>Flea Market Solitaire</b> <br> CPSC 4900 <br> Fall 2021");
 		gameTitle.setEditable(false);
 		gameTitle.setOpaque(false);
 		gameTitle.setBounds(32, 20, 100, 100);
