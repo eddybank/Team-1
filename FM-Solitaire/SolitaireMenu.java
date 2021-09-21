@@ -7,6 +7,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -18,13 +20,14 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
 import Klondike.SolitaireK;
+import fleaMarket.StatisticAnalysis.User;
 
 
 public class SolitaireMenu {
 	
 	public static final int TABLE_HEIGHT = 400;
 	public static final int TABLE_WIDTH = 500;
-	private static String user;
+	private static User user;
 	
 	// GUI COMPONENTS (top level)
 	private static final JFrame frame = new JFrame("Solitaire Menu");
@@ -182,7 +185,7 @@ public class SolitaireMenu {
 		colorFrame.setVisible(true);
 	}
 	
-	private static void enterUser()
+	public static void enterUser()
 	{
 		/*
 		 * JDialogs stop any other actions from occurring whilst the window is still open.
@@ -208,8 +211,8 @@ public class SolitaireMenu {
 			{
 				if(e.getKeyChar() == KeyEvent.VK_ENTER) 
 				{
-					user = userInput.getText();
-					System.out.println(user);
+					user = new User(userInput.getText(), 0);
+					System.out.println(user.getUser());
 					userFrame.dispose();
 				}
 			}
@@ -256,11 +259,39 @@ public class SolitaireMenu {
 			{
 				setUpColorChange();
 				
-			} else if(e.getSource() == statisticButton){
+			} /*else if(e.getSource() == statisticButton){
 				enterUser();
+			} */else if(e.getSource() == SolitaireFM.newGameButton)
+			{
+				if(SolitaireFM.gameOver == true)
+				{
+					user.createRecord(SolitaireFM.score, SolitaireFM.time);
+				}
 			}
 			
 		}
+	}
+	
+	private static class windowListener implements WindowListener
+	{
+
+		@Override
+		public void windowOpened(WindowEvent e) {
+			enterUser();
+		}
+		@Override
+		public void windowClosing(WindowEvent e) {}
+		@Override
+		public void windowClosed(WindowEvent e) {}
+		@Override
+		public void windowIconified(WindowEvent e) {}
+		@Override
+		public void windowDeiconified(WindowEvent e) {}
+		@Override
+		public void windowActivated(WindowEvent e) {}
+		@Override
+		public void windowDeactivated(WindowEvent e) {}
+
 	}
 	
 	private static void openMenu()
@@ -293,7 +324,9 @@ public class SolitaireMenu {
 		Container contentPane;
 
 		frame.setSize(TABLE_WIDTH, TABLE_HEIGHT);
-
+		
+		frame.addWindowListener(new windowListener());
+		
 		menu.setLayout(null);
 		c = Color.GRAY;
 		menu.setBackground(c);

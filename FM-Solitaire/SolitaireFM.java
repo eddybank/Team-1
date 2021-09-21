@@ -52,7 +52,7 @@ public class SolitaireFM
 	// other components
 	private static JEditorPane gameTitle = new JEditorPane("text/html", "");
 	private static JButton showRulesButton = new JButton("Show Rules");
-	private static JButton newGameButton = new JButton("New Game");
+	protected static JButton newGameButton = new JButton("New Game");
 	private static JButton toggleTimerButton = new JButton("Pause Timer");
 	private static JTextField scoreBox = new JTextField();// displays the score
 	private static JTextField timeBox = new JTextField();// displays the time
@@ -70,10 +70,10 @@ public class SolitaireFM
 
 	// MISC TRACKING VARIABLES
 	private static boolean timeRunning = false;// timer running?
-	private static int score = -64;// keep track of the score, start of $-64
-	private static int time = 0;// keep track of seconds elapsed
+	protected static int score = -64;// keep track of the score, start of $-64
+	protected static int time = 0;// keep track of seconds elapsed
 	private static int deal_deck_pos = 0;
-	private static String user;
+	protected static boolean gameOver = true;
 
 	// moves a card to abs location within a component
 	protected static CardFM moveCard(CardFM c, int x, int y)
@@ -199,7 +199,9 @@ public class SolitaireFM
 	{
 
 		@Override
-		public void windowOpened(WindowEvent e) {}
+		public void windowOpened(WindowEvent e) {
+			SolitaireMenu.enterUser();
+		}
 		@Override
 		public void windowClosing(WindowEvent e) {
 			
@@ -232,7 +234,7 @@ public class SolitaireFM
 	private static class CardMovementManager extends MouseAdapter
 	{
 		private boolean checkForWin = false;// should we check if game is over?
-		private boolean gameOver = true;// easier to negate this than affirm it
+		//private boolean gameOver = true;// easier to negate this than affirm it
 		private Point start = null;// where mouse was clicked
 		private Point stop = null;// where mouse was released
 		private CardFM card = null; // card to be moved
@@ -636,7 +638,7 @@ public class SolitaireFM
 						gameOver = false;
 						break;
 					} else { 
-						gameOver = true;
+						gameNotOver = false;
 					}
 					if (!gameNotOver)
 						gameOver = true;
