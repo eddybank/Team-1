@@ -125,7 +125,7 @@ class CardStackFM extends JComponent
 
 	public int showSize()
 	{
-		System.out.println("Stck Size: " + v.size());
+		//System.out.println("Stck Size: " + v.size());
 		return v.size();
 	}
 
