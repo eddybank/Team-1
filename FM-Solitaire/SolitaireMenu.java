@@ -40,6 +40,7 @@ public class SolitaireMenu {
 	//protected static JButton statisticButton = new JButton("Game Statistics");
 	private static JLabel gameTypes = new JLabel();// displays the score
 	private static JTextField userInput = new JTextField();
+	private static JTextField statusBox = new JTextField();// status messages
 	
 	//Action Listener
 	private static ActionListener ae = new SetUpButtonListeners();
@@ -212,9 +213,18 @@ public class SolitaireMenu {
 			{
 				if(e.getKeyChar() == KeyEvent.VK_ENTER) 
 				{
-					user = new User(userInput.getText(), 0);
-					System.out.println(user.getUser());
-					userFrame.dispose();
+					String username = userInput.getText();
+					if(StatisticAnalysis.doesUserExist(username))
+					{
+						user = StatisticAnalysis.setUser(username);
+						statusBox.setText("Welcome "+user.getUser());
+						userFrame.dispose();
+					} else {
+						user = new User(username, 0);
+						statusBox.setText("New User Created--Welcome: "+username);
+						System.out.println(user);
+						userFrame.dispose();
+					}
 				}
 			}
 			
@@ -298,6 +308,10 @@ public class SolitaireMenu {
 	
 	private static void openMenu()
 	{
+		statusBox.setBounds(240, TABLE_HEIGHT - 70, 240, 30);
+		statusBox.setEditable(false);
+		statusBox.setOpaque(false);
+		
 		gameTypes.setText("Available Game Modes");
 		gameTypes.setBounds(50, TABLE_HEIGHT - 375, 130, 30);
 		
@@ -317,6 +331,7 @@ public class SolitaireMenu {
 		menu.add(klondikeStart);
 		menu.add(fleaMarketStart);
 		menu.add(backgroundColorButton);
+		menu.add(statusBox);
 		//menu.add(statisticButton);
 	}
 

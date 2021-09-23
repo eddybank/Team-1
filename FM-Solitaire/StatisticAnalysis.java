@@ -23,7 +23,115 @@ public class StatisticAnalysis {
 	 */
 	//private static String user = SolitaireMenu.getUser();
 	
-	public static Record getRecords(User user) 
+	public static boolean doesUserExist(String name) 
+	{
+		ArrayList<User> allUsers = getAllUsers();
+		boolean doesExist = false;
+		for( User u : allUsers) {
+			if(u.getUser().equals(name))
+			{
+				doesExist = true;
+			} else {
+				doesExist = false;
+			}
+		}
+		return doesExist;
+	}
+	private static ArrayList<User> getAllUsers() 
+	{
+		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder documentBuilder;
+		ArrayList<User> allUsers = new ArrayList<User>();
+		Record rec = new Record();
+		User user = new User();
+	    try 
+	    {
+	    	 documentBuilder = documentBuilderFactory.newDocumentBuilder();
+	    	 Document document;
+	    	 document = documentBuilder.parse("SolitaireFileFormat.xml");
+
+	    	 NodeList users = document.getElementsByTagName("user");
+	    	 
+	    	 int time = 0;
+	    	 int score = 0;
+	    	 
+	    	 for(int i = 0; i < users.getLength(); i++)
+	    	 {
+	    		 Node node = users.item(i);
+	    		 Element ele = (Element) node;
+	    		 user = new User(ele.getElementsByTagName("name").item(0).getTextContent());
+	    		 user.setBestTime(Integer.parseInt(ele.getElementsByTagName("best_time").item(0).getTextContent()));
+	    			 if(node.getNodeType() == Node.ELEMENT_NODE) 
+	    			 {
+	    				 NodeList recs = ele.getElementsByTagName("record");
+	    				 
+	    				 for(int y = 0; y < recs.getLength(); y++)
+	    				 {
+		    				 time = Integer.parseInt(ele.getElementsByTagName("score").item(y).getTextContent());
+		    				 score = Integer.parseInt(ele.getElementsByTagName("time").item(y).getTextContent());
+		    				 rec = new Record(time, score);
+		    				 user.addRecord(rec);
+		    				//System.out.println(rec);
+	    				 }
+	    			 }
+	    			 allUsers.add(user);
+	    	 }
+		} catch (SAXException | IOException | ParserConfigurationException e) 
+	     {
+			e.printStackTrace();
+		 }
+		return allUsers;
+	}
+	
+	public static User setUser(String name) 
+	{
+		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder documentBuilder;
+
+		Record rec = new Record();
+		User user = new User();
+	    try 
+	    {
+	    	 documentBuilder = documentBuilderFactory.newDocumentBuilder();
+	    	 Document document;
+	    	 document = documentBuilder.parse("SolitaireFileFormat.xml");
+
+	    	 NodeList users = document.getElementsByTagName("user");
+	    	 
+	    	 int time = 0;
+	    	 int score = 0;
+	    	 
+	    	 for(int i = 0; i < users.getLength(); i++)
+	    	 {
+	    		 Node node = users.item(i);
+	    		 Element ele = (Element) node;
+	    		 if(name.equals(ele.getElementsByTagName("name").item(0).getTextContent())) 
+	    		 {
+	    			 user = new User(ele.getElementsByTagName("name").item(0).getTextContent());
+	    			 user.setBestTime(Integer.parseInt(ele.getElementsByTagName("best_time").item(0).getTextContent()));
+	    			 if(node.getNodeType() == Node.ELEMENT_NODE) 
+	    			 {
+	    				 NodeList recs = ele.getElementsByTagName("record");
+	    				 
+	    				 for(int y = 0; y < recs.getLength(); y++)
+	    				 {
+		    				 time = Integer.parseInt(ele.getElementsByTagName("score").item(y).getTextContent());
+		    				 score = Integer.parseInt(ele.getElementsByTagName("time").item(y).getTextContent());
+		    				 rec = new Record(time, score);
+		    				 user.addRecord(rec);
+	    				 }
+	    			 }
+	    		 }
+	    	 }
+		} catch (SAXException | IOException | ParserConfigurationException e) 
+	     {
+			e.printStackTrace();
+		 }
+	  System.out.println(user);
+	    return user;
+	}
+	
+	public static ArrayList<Record> getRecords(User user) 
 	{
 		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder documentBuilder;
@@ -59,7 +167,8 @@ public class StatisticAnalysis {
 		    				 time = Integer.parseInt(ele.getElementsByTagName("score").item(y).getTextContent());
 		    				 score = Integer.parseInt(ele.getElementsByTagName("time").item(y).getTextContent());
 		    				 rec = new Record(time, score);
-		    				 System.out.println(rec);
+		    				 user.addRecord(rec);
+		    				System.out.println(rec);
 	    				 }
 	    			 } 
 	    		 }
@@ -68,10 +177,10 @@ public class StatisticAnalysis {
 	     {
 			e.printStackTrace();
 		 }
-		return rec;
+		return user.getRecords();
 	}
 	
-	public static void setRecord(User user, Record r) 
+	private static void setRecord(User user, Record r) 
 	{
 		 DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
 	     DocumentBuilder documentBuilder;
@@ -129,7 +238,7 @@ public class StatisticAnalysis {
 			}
 	}
 	
-	public static void newUser(User user) 
+	private static void newUser(User user) 
 	{
 		 DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
 		 DocumentBuilder documentBuilder;
@@ -198,6 +307,13 @@ public class StatisticAnalysis {
 		
 		private ArrayList<Record> records = new ArrayList<Record>();
 		
+		User(){}
+		User(String user)
+		{
+			username = user;
+			best_time = 0;
+		}
+		
 		User(String user, int bt)
 		{
 			username = user;
@@ -221,25 +337,24 @@ public class StatisticAnalysis {
 			{
 				for(int x = 0; x < records.size() - 1; x++)
 				{
-					System.out.println(x+" x "+records.get(x).getTime());
-					System.out.println((x+1)+" x+1 "+records.get((x+1)).getTime());
 					if(records.get(x).getTime() > records.get((x+1)).getTime())
 					{
 						curBestTime = records.get(x+1).getTime();
-						System.out.println("test: "+curBestTime);
 					} else 
 					{
 						curBestTime = records.get(x).getTime();
-						System.out.println("test2: "+curBestTime);
 					}
 				}
 			} else
 			{
 				curBestTime = records.get(records.size()-1).getTime();
-				System.out.println("test3: "+curBestTime);
 			}
 			best_time = curBestTime;
-			System.out.println("bt: "+best_time);
+		}
+		
+		void setBestTime(int t)
+		{
+			best_time = t;
 		}
 		
 		boolean isBestTime(Record r)
@@ -251,6 +366,11 @@ public class StatisticAnalysis {
 			{
 				return false;
 			}
+		}
+		
+		void addRecord(Record rec) 
+		{
+			records.add(rec);
 		}
 
 		void createRecord(int score, int time) 
@@ -265,7 +385,15 @@ public class StatisticAnalysis {
 		{
 			return records;
 		}
-
+		public String toString()
+		{
+			String userStr = "Username: "+this.getUser()+" Best Time: "+this.getBestTime()+"\n";
+			for(Record r : this.getRecords()) 
+			{
+				userStr += "	"+r.toString()+"\n";
+			}
+			return userStr;
+		}
 	}
 	
 	private static class Record 
@@ -300,20 +428,21 @@ public class StatisticAnalysis {
 	
 	public static void main(String[] args) {
 		
-		User test1 = new User("test", 1200);
+		User test1 = new User("test");
 		
-		test1.createRecord(416, 1102);
+		//test1.createRecord(416, 1102);
 		
 		
-		User test2 = new User("bobby", 0);
-		User test3 = new User("tommy", 0);
+		//User test2 = new User("bobby", 0);
+		//User test3 = new User("tommy", 0);
 		
-		test3.createRecord(416, 999);
+		//test3.createRecord(416, 999);
 		
-		test1.createRecord(416, 1021);
+		//test1.createRecord(416, 1021);
 		
-		getRecords(test1);
-		System.out.println(test1.getBestTime());
+		System.out.println((getRecords(test1)));
+		System.out.println((getAllUsers()));
+		//System.out.println(test1.getBestTime());
 	}
 	
 }
