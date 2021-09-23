@@ -182,6 +182,7 @@ public class SolitaireMenu {
 		colorMenu.add(pink);
 		colorMenu.add(white);
 		
+		colorFrame.setLocationRelativeTo(frame);
 		colorFrame.setVisible(true);
 	}
 	
@@ -233,12 +234,13 @@ public class SolitaireMenu {
 		userFrame.add(userTable);
 		
 		userFrame.setBackground(c);
+		userFrame.setLocationRelativeTo(frame);
 		userFrame.setVisible(true);
 	}
 	
-	public static String getUser()
+	public static User getUser()
 	{
-		return userInput.getText();
+		return user;
 		
 	}
 	
