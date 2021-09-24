@@ -329,13 +329,6 @@ public class SolitaireMenu {
 			@Override
 			public void keyReleased(KeyEvent e) 
 			{
-				String sco = SolitaireFM.scoreBox.getText();
-				String times = SolitaireFM.timeBox.getText();
-				String gameS = SolitaireFM.statusBox.getText();
-				
-				String sco1 = SolitaireK.scoreBox.getText();
-				String times1 = SolitaireK.timeBox.getText();
-				String gameS1 = SolitaireK.statusBox.getText();
 				try {
 				if(e.getKeyChar() == KeyEvent.VK_ENTER) 
 				{
@@ -353,7 +346,6 @@ public class SolitaireMenu {
 							gameTypes.setText("");
 							statusBox.setText("");
 							
-							
 							StyleConstants.setForeground(style, Color.WHITE);
 					        
 					        game.insertString(game.getLength(), "Available Game Modes", style);
@@ -366,7 +358,6 @@ public class SolitaireMenu {
 							
 							gameTypes.setText("");
 							statusBox.setText("");
-							
 							
 							StyleConstants.setForeground(style, Color.BLACK);
 							
@@ -399,7 +390,6 @@ public class SolitaireMenu {
 							gameTypes.setText("");
 							statusBox.setText("");
 							
-							
 							StyleConstants.setForeground(style, Color.BLACK);
 							
 					        game.insertString(game.getLength(), "Available Game Modes", style);
@@ -413,7 +403,6 @@ public class SolitaireMenu {
 							gameTypes.setText("");
 							statusBox.setText("");
 							
-							
 							StyleConstants.setForeground(style, Color.BLACK);
 							
 					        game.insertString(game.getLength(), "Available Game Modes", style);
@@ -426,7 +415,6 @@ public class SolitaireMenu {
 							
 							gameTypes.setText("");
 							statusBox.setText("");
-							
 							
 							StyleConstants.setForeground(style, Color.WHITE);
 					        
@@ -460,7 +448,6 @@ public class SolitaireMenu {
 							gameTypes.setText("");
 							statusBox.setText("");
 							
-							
 							StyleConstants.setForeground(style, Color.WHITE);
 					        
 					        game.insertString(game.getLength(), "Available Game Modes", style);
@@ -473,7 +460,6 @@ public class SolitaireMenu {
 
 							gameTypes.setText("");
 							statusBox.setText("");
-							
 							
 							StyleConstants.setForeground(style, Color.BLACK);
 							
@@ -488,7 +474,6 @@ public class SolitaireMenu {
 							gameTypes.setText("");
 							statusBox.setText("");
 							
-							
 							StyleConstants.setForeground(style, Color.BLACK);
 							
 					        game.insertString(game.getLength(), "Available Game Modes", style);
@@ -501,7 +486,6 @@ public class SolitaireMenu {
 
 							gameTypes.setText("");
 							statusBox.setText("");
-							
 							
 							StyleConstants.setForeground(style, Color.BLACK);
 							
@@ -516,7 +500,6 @@ public class SolitaireMenu {
 							gameTypes.setText("");
 							statusBox.setText("");
 							
-							
 							StyleConstants.setForeground(style, Color.BLACK);
 							
 					        game.insertString(game.getLength(), "Available Game Modes", style);
@@ -529,7 +512,6 @@ public class SolitaireMenu {
 
 							gameTypes.setText("");
 							statusBox.setText("");
-							
 							
 							StyleConstants.setForeground(style, Color.BLACK);
 							

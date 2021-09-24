@@ -7,6 +7,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
@@ -23,9 +24,42 @@ public class StatisticAnalysis {
 	 */
 	//private static String user = SolitaireMenu.getUser();
 	
-	private static void setUserColor(User user) 
+	public static void setUserColor(User user) 
 	{
-		
+		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder documentBuilder;
+		String c = SolitaireMenu.getColorS();
+	    try 
+	    {
+	    	 documentBuilder = documentBuilderFactory.newDocumentBuilder();
+	    	 Document document;
+	    	 document = documentBuilder.parse("SolitaireFileFormat.xml");
+
+	    	 NodeList users = document.getElementsByTagName("user");
+	    	 
+	    	 for(int i = 0; i < users.getLength(); i++)
+	    	 {
+	    		 Node node = users.item(i);
+	    		 Element ele = (Element) node;
+	    		 if(user.getUser().equals(ele.getElementsByTagName("name").item(0).getTextContent()) ) {
+	    			 System.out.println(c);
+	    			 ele.getElementsByTagName("bgcolor").item(0).setTextContent(c);
+	    		 }
+	    	 }
+	    	 
+	    	 DOMSource source = new DOMSource(document);
+
+	    	 TransformerFactory transformerFactory = TransformerFactory.newInstance();
+	    	 Transformer transformer = transformerFactory.newTransformer();
+	    	 //transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+	    	 StreamResult result = new StreamResult("SolitaireFileFormat.xml");
+	    	 transformer.transform(source, result);
+	    	 
+		} catch (SAXException | IOException | ParserConfigurationException | NullPointerException | TransformerException e) 
+	     {
+			System.out.println("Error occurred - Printing stack trace");
+			e.printStackTrace();
+		 }
 	}
 	
 	public static String getUserColor(User user) 
@@ -40,9 +74,6 @@ public class StatisticAnalysis {
 	    	 document = documentBuilder.parse("SolitaireFileFormat.xml");
 
 	    	 NodeList users = document.getElementsByTagName("user");
-	    	 
-	    	 int time = 0;
-	    	 int score = 0;
 	    	 
 	    	 for(int i = 0; i < users.getLength(); i++)
 	    	 {
@@ -304,7 +335,7 @@ public class StatisticAnalysis {
 				 newUser.appendChild(bestTime);
 				 
 				 Element color = document.createElement("bgcolor");
-				 color.appendChild(document.createTextNode(SolitaireMenu.getColor().toString()));
+				 color.appendChild(document.createTextNode("N_GREEN"));
 				 newUser.appendChild(color);
 				 
 				 root.appendChild(newUser);
@@ -456,7 +487,9 @@ public class StatisticAnalysis {
 		
 		User test1 = setUser("test");
 		System.out.println(getUserColor(test1));
-		
+		User test2 = new User("testing");
+		//newUser(test2);
+		setUserColor(test2);
 		//test1.createRecord(416, 1102);
 		
 		
