@@ -23,6 +23,43 @@ public class StatisticAnalysis {
 	 */
 	//private static String user = SolitaireMenu.getUser();
 	
+	private static void setUserColor(User user) 
+	{
+		
+	}
+	
+	public static String getUserColor(User user) 
+	{
+		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder documentBuilder;
+		String color = "";
+	    try 
+	    {
+	    	 documentBuilder = documentBuilderFactory.newDocumentBuilder();
+	    	 Document document;
+	    	 document = documentBuilder.parse("SolitaireFileFormat.xml");
+
+	    	 NodeList users = document.getElementsByTagName("user");
+	    	 
+	    	 int time = 0;
+	    	 int score = 0;
+	    	 
+	    	 for(int i = 0; i < users.getLength(); i++)
+	    	 {
+	    		 Node node = users.item(i);
+	    		 Element ele = (Element) node;
+	    		 if(user.getUser().equals(ele.getElementsByTagName("name").item(0).getTextContent())) {
+	    			 color = ele.getElementsByTagName("bgcolor").item(0).getTextContent();
+	    		 }
+	    	 }
+		} catch (SAXException | IOException | ParserConfigurationException | NullPointerException e) 
+	     {
+			System.out.println("Error occurred - Printing stack trace");
+			e.printStackTrace();
+		 }
+	    return color;
+	}
+	
 	public static boolean doesUserExist(String name) 
 	{
 		ArrayList<User> allUsers = getAllUsers();
@@ -37,6 +74,7 @@ public class StatisticAnalysis {
 		}
 		return doesExist;
 	}
+	
 	private static ArrayList<User> getAllUsers() 
 	{
 		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
@@ -78,11 +116,11 @@ public class StatisticAnalysis {
 	    	 }
 		} catch (SAXException | IOException | ParserConfigurationException e) 
 	     {
+			System.out.println("Error occurred - Printing stack trace");
 			e.printStackTrace();
 		 }
 		return allUsers;
-	}
-	
+	}	
 	public static User setUser(String name) 
 	{
 		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
@@ -125,11 +163,12 @@ public class StatisticAnalysis {
 	    	 }
 		} catch (SAXException | IOException | ParserConfigurationException e) 
 	     {
+			System.out.println("Error occurred - Printing stack trace");
 			e.printStackTrace();
 		 }
 	  System.out.println(user);
 	    return user;
-	}
+	}	
 	
 	public static ArrayList<Record> getRecords(User user) 
 	{
@@ -175,10 +214,11 @@ public class StatisticAnalysis {
 	    	 }
 		} catch (SAXException | IOException | ParserConfigurationException e) 
 	     {
+			System.out.println("Error occurred - Printing stack trace");
 			e.printStackTrace();
 		 }
 		return user.getRecords();
-	}
+	}	
 	
 	private static void setRecord(User user, Record r) 
 	{
@@ -234,9 +274,10 @@ public class StatisticAnalysis {
 	        
 			} catch (SAXException | IOException | ParserConfigurationException | TransformerException e) // 
 	     	{
+				System.out.println("Error occurred - Printing stack trace");
 				e.printStackTrace();
 			}
-	}
+	}	
 	
 	private static void newUser(User user) 
 	{
@@ -249,28 +290,9 @@ public class StatisticAnalysis {
 			 Document document;
 			 document = documentBuilder.parse("SolitaireFileFormat.xml");
 			
-			 Element root = document.getDocumentElement();
-			 
-			 NodeList users = document.getElementsByTagName("user");
+			 Element root = document.getDocumentElement(); 
 	    	 
-	    	 boolean isNew = false;
-	    	 
-	    	 for(int i = 0; i < users.getLength(); i++)
-	    	 {
-	    		 Node node = users.item(i);
-	    		 Element ele = (Element) node;
-	    		 System.out.println("loop: "+ele.getElementsByTagName("name").item(0).getTextContent());
-	    		 System.out.println("user: "+user.getUser());
-	    		 if(!user.getUser().equals(ele.getElementsByTagName("name").item(0).getTextContent())) 
-	    		 {
-	    			 isNew = true;
-	    		 } else {
-	    			 isNew = false;
-	    			 break;
-	    		 }
-	    	 }
-	    	 
-	    	 if(isNew) {
+	    	 if(!doesUserExist(user.getUser())) {
 		    	 Element newUser = document.createElement("user");
 	
 				 Element name = document.createElement("name");
@@ -280,7 +302,11 @@ public class StatisticAnalysis {
 				 Element bestTime = document.createElement("best_time");
 				 bestTime.appendChild(document.createTextNode(Integer.toString(user.getBestTime())));
 				 newUser.appendChild(bestTime);
-	
+				 
+				 Element color = document.createElement("bgcolor");
+				 color.appendChild(document.createTextNode(SolitaireMenu.getColor().toString()));
+				 newUser.appendChild(color);
+				 
 				 root.appendChild(newUser);
 	    	 }
 
@@ -292,9 +318,9 @@ public class StatisticAnalysis {
 			 StreamResult result = new StreamResult("SolitaireFileFormat.xml");
 			 transformer.transform(source, result);
 	        
-	        
 			} catch (SAXException | IOException | ParserConfigurationException | TransformerException e) 
 		 	{
+				System.out.println("Error occurred - Printing stack trace");
 				e.printStackTrace();
 			}
 	}
@@ -428,7 +454,8 @@ public class StatisticAnalysis {
 	
 	public static void main(String[] args) {
 		
-		User test1 = new User("test");
+		User test1 = setUser("test");
+		System.out.println(getUserColor(test1));
 		
 		//test1.createRecord(416, 1102);
 		
@@ -440,8 +467,8 @@ public class StatisticAnalysis {
 		
 		//test1.createRecord(416, 1021);
 		
-		System.out.println((getRecords(test1)));
-		System.out.println((getAllUsers()));
+		//System.out.println((getRecords(test1)));
+		//System.out.println((getAllUsers()));
 		//System.out.println(test1.getBestTime());
 	}
 	

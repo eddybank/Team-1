@@ -22,6 +22,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.JTextPane;
 
 
 public class SolitaireFM
@@ -47,14 +48,14 @@ public class SolitaireFM
 	protected static final JPanel table = new JPanel();
 	protected static final JPanel menu = new JPanel();
 	// other components
-	private static JEditorPane gameTitle = new JEditorPane("text/html", "");
+	protected static JEditorPane gameTitle = new JEditorPane("text/html", "");
 	private static JButton showRulesButton = new JButton("Show Rules");
 	protected static JButton newGameButton = new JButton("New Game");
 	private static JButton toggleTimerButton = new JButton("Pause Timer");
 	private static JButton autoPlayButton = new JButton("Auto Play");
-	private static JTextField scoreBox = new JTextField();// displays the score
-	private static JTextField timeBox = new JTextField();// displays the time
-	private static JTextField statusBox = new JTextField();// status messages
+	protected static JTextPane scoreBox = new JTextPane();// displays the score
+	protected static JTextPane timeBox = new JTextPane();// displays the time
+	protected static JTextPane statusBox = new JTextPane();// status messages
 	
 	//Action Listener for buttons
 	private static ActionListener ae = new setUpButtonListeners();

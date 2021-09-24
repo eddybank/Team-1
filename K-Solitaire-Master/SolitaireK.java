@@ -20,6 +20,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.JTextPane;
 
 
 
@@ -45,13 +46,13 @@ public class SolitaireK
 	private static final JFrame frame = new JFrame("Klondike Solitaire");
 	public static final JPanel table = new JPanel();
 	// other components
-	private static JEditorPane gameTitle = new JEditorPane("text/html", "");
+	public static JEditorPane gameTitle = new JEditorPane("text/html", "");
 	private static JButton showRulesButton = new JButton("Show Rules");
 	private static JButton newGameButton = new JButton("New Game");
 	private static JButton toggleTimerButton = new JButton("Pause Timer");
-	private static JTextField scoreBox = new JTextField();// displays the score
-	private static JTextField timeBox = new JTextField();// displays the time
-	private static JTextField statusBox = new JTextField();// status messages
+	public static JTextPane scoreBox = new JTextPane();// displays the score
+	public static JTextPane timeBox = new JTextPane();// displays the time
+	public static JTextPane statusBox = new JTextPane();// status messages
 	private static final CardK newCardButton = new CardK();// reveal waste card
 
 	// TIMER UTILITIES

@@ -18,6 +18,11 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.JTextPane;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Style;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
 
 import Klondike.SolitaireK;
 import fleaMarket.StatisticAnalysis.User;
@@ -38,20 +43,37 @@ public class SolitaireMenu {
 	private static JButton fleaMarketStart = new JButton("Flea Market");
 	private static JButton backgroundColorButton = new JButton("Change Background Color");
 	//protected static JButton statisticButton = new JButton("Game Statistics");
-	private static JLabel gameTypes = new JLabel();// displays the score
+	private static JTextPane gameTypes = new JTextPane();// displays the score
 	private static JTextField userInput = new JTextField();
-	private static JTextField statusBox = new JTextField();// status messages
+	private static JTextPane statusBox = new JTextPane();// status messages
+	
+	static StyledDocument game = gameTypes.getStyledDocument();
+	static StyledDocument status = statusBox.getStyledDocument();
+	static StyledDocument score = SolitaireFM.scoreBox.getStyledDocument();
+	static StyledDocument time = SolitaireFM.timeBox.getStyledDocument();
+	static StyledDocument gameStatus = SolitaireFM.statusBox.getStyledDocument();
+	static StyledDocument scoreK = SolitaireK.scoreBox.getStyledDocument();
+	static StyledDocument timeK = SolitaireK.timeBox.getStyledDocument();
+	static StyledDocument gameStatusK = SolitaireK.statusBox.getStyledDocument();
+	
+	static Style style = gameTypes.addStyle("I'm a Style", null);
 	
 	//Action Listener
 	private static ActionListener ae = new SetUpButtonListeners();
 	
 	//Color switcher
 	private static Color c;
+	private static String col;
+	private static final Color n_Green = new Color(0, 180, 0);
 	
 	//Color getter
 	public static Color getColor() 
 	{
 		 return c;
+	}
+	public static String getColorS() 
+	{
+		 return col;
 	}
 	
 	private static void setUpColorChange() 
@@ -85,69 +107,165 @@ public class SolitaireMenu {
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
-				if(e.getSource() == original) 
-				{
-					menu.setBackground(Color.GRAY);
-					fMTable.setBackground(Color.GRAY);
-					kTable.setBackground(Color.GRAY);
-					c = Color.GRAY;
-				} else if(e.getSource() == red) 
-				{
-					menu.setBackground(Color.RED);
-					fMTable.setBackground(Color.RED);
-					kTable.setBackground(Color.RED);
-					c = Color.RED;
-				} else if(e.getSource() == yellow) 
-				{
-					menu.setBackground(Color.YELLOW);
-					fMTable.setBackground(Color.YELLOW);
-					kTable.setBackground(Color.YELLOW);
-					c = Color.BLACK;
-				} else if(e.getSource() == cyan) 
-				{
-					menu.setBackground(Color.CYAN);
-					fMTable.setBackground(Color.CYAN);
-					kTable.setBackground(Color.CYAN);
-					c = Color.CYAN;
-				} else if(e.getSource() == blue) 
-				{
-					menu.setBackground(Color.BLUE);
-					fMTable.setBackground(Color.BLUE);
-					kTable.setBackground(Color.BLUE);
-					c = Color.BLUE;
-				} else if(e.getSource() == green) 
-				{
-					menu.setBackground(new Color(0, 180, 0));
-					fMTable.setBackground(new Color(0, 180, 0));
-					kTable.setBackground(new Color(0, 180, 0));
-					c = new Color(0, 180, 0);
-				} else if(e.getSource() == gray) 
-				{
-					menu.setBackground(Color.DARK_GRAY);
-					fMTable.setBackground(Color.DARK_GRAY);
-					kTable.setBackground(Color.DARK_GRAY);
-					c = Color.DARK_GRAY;
-				} else if(e.getSource() == orange) 
-				{
-					menu.setBackground(Color.ORANGE);
-					fMTable.setBackground(Color.ORANGE);
-					kTable.setBackground(Color.ORANGE);
-					c = Color.ORANGE;
-				} else if(e.getSource() == pink) 
-				{
-					menu.setBackground(Color.PINK);
-					fMTable.setBackground(Color.PINK);
-					kTable.setBackground(Color.PINK);
-					c = Color.PINK;
-				} else if(e.getSource() == white) 
-				{
-					menu.setBackground(Color.WHITE);
-					fMTable.setBackground(Color.WHITE);
-					kTable.setBackground(Color.WHITE);
-					c = Color.WHITE;
+				String sco = SolitaireFM.scoreBox.getText();
+				String times = SolitaireFM.timeBox.getText();
+				String gameS = SolitaireFM.statusBox.getText();
+
+				String sco1 = SolitaireK.scoreBox.getText();
+				String times1 = SolitaireK.timeBox.getText();
+				String gameS1 = SolitaireK.statusBox.getText();
+				
+				SolitaireFM.toggleTimer();
+				try {
+					if(e.getSource() == original) 
+					{
+						menu.setBackground(Color.GRAY);
+						fMTable.setBackground(Color.GRAY);
+						kTable.setBackground(Color.GRAY);
+						c = Color.GRAY;
+						col = "GRAY";
+						
+					} else if(e.getSource() == red) 
+					{
+						menu.setBackground(Color.RED);
+						fMTable.setBackground(Color.RED);
+						kTable.setBackground(Color.RED);
+						c = Color.RED;
+						col = "RED";
+
+					} else if(e.getSource() == yellow) 
+					{
+						menu.setBackground(Color.YELLOW);
+						fMTable.setBackground(Color.YELLOW);
+						kTable.setBackground(Color.YELLOW);
+						c = Color.YELLOW;
+						col = "YELLOW";
+						
+					} else if(e.getSource() == cyan) 
+					{
+						menu.setBackground(Color.CYAN);
+						fMTable.setBackground(Color.CYAN);
+						kTable.setBackground(Color.CYAN);
+						c = Color.CYAN;
+						col = "CYAN";
+						
+					} else if(e.getSource() == blue) 
+					{
+						menu.setBackground(Color.BLUE);
+						fMTable.setBackground(Color.BLUE);
+						kTable.setBackground(Color.BLUE);
+						c = Color.BLUE;
+						col = "BLUE";
+						
+					} else if(e.getSource() == green) 
+					{
+						menu.setBackground(new Color(0, 180, 0));
+						fMTable.setBackground(new Color(0, 180, 0));
+						kTable.setBackground(new Color(0, 180, 0));
+						c = n_Green;
+						col = "N_GREEN";
+						
+					} else if(e.getSource() == gray || e.getSource() == green || e.getSource() == blue) 
+					{
+						menu.setBackground(Color.DARK_GRAY);
+						fMTable.setBackground(Color.DARK_GRAY);
+						kTable.setBackground(Color.DARK_GRAY);
+						c = Color.DARK_GRAY;
+						col = "DARK_GRAY";
+						
+					} else if(e.getSource() == orange) 
+					{
+						menu.setBackground(Color.ORANGE);
+						fMTable.setBackground(Color.ORANGE);
+						kTable.setBackground(Color.ORANGE);
+						c = Color.ORANGE;
+						col = "ORANGE";
+						
+					} else if(e.getSource() == pink) 
+					{
+						menu.setBackground(Color.PINK);
+						fMTable.setBackground(Color.PINK);
+						kTable.setBackground(Color.PINK);
+						c = Color.PINK;
+						col = "PINK";
+						
+					} else if(e.getSource() == white) 
+					{
+						menu.setBackground(Color.WHITE);
+						fMTable.setBackground(Color.WHITE);
+						kTable.setBackground(Color.WHITE);
+						c = Color.WHITE;
+						col = "WHITE";
+				        	
+					}
+					
+					if(e.getSource() == gray || e.getSource() == green || e.getSource() == blue)
+					{
+						gameTypes.setText("");
+						statusBox.setText("");
+						SolitaireFM.scoreBox.setText("");
+						SolitaireFM.timeBox.setText("");
+						SolitaireFM.statusBox.setText("");
+						SolitaireFM.gameTitle.setText("");
+						
+						StyleConstants.setForeground(style, Color.WHITE);
+				        
+						game.insertString(game.getLength(), "Available Game Modes", style);
+						status.insertString(status.getLength(), "Welcome "+user.getUser(), style);
+				        score.insertString(score.getLength(), sco, style);
+				        time.insertString(time.getLength(), times, style);
+				        gameStatus.insertString(gameStatus.getLength(), gameS, style);
+				        SolitaireFM.gameTitle.setText("<span style =\"color:white\"><b>Team 1<br>Flea Market Solitaire</b> <br> CPSC 4900 <br> Fall 2021</span>");
+				        
+				        SolitaireK.scoreBox.setText("");
+						SolitaireK.timeBox.setText("");
+						SolitaireK.statusBox.setText("");
+						SolitaireK.gameTitle.setText("");
+
+				        System.out.println(sco);
+				        scoreK.insertString(scoreK.getLength(), sco1, style);
+				        timeK.insertString(timeK.getLength(), times1, style);
+				        gameStatusK.insertString(gameStatusK.getLength(), gameS1, style);
+				        SolitaireK.gameTitle.setText("<span style =\"color:white\"><b>Team 1<br>Klondike Solitaire</b> <br> CPSC 4900 <br> Fall 2021</span>");
+				        
+					} else if(e.getSource() == white || e.getSource() == pink || e.getSource() == orange || 
+							e.getSource() == cyan || e.getSource() == yellow || e.getSource() == red || e.getSource() == original)
+					{
+						gameTypes.setText("");
+						statusBox.setText("");
+						SolitaireFM.scoreBox.setText("");
+						SolitaireFM.timeBox.setText("");
+						SolitaireFM.statusBox.setText("");
+						SolitaireFM.gameTitle.setText("");
+						
+						StyleConstants.setForeground(style, Color.BLACK);
+						
+				        game.insertString(game.getLength(), "Available Game Modes", style);
+						status.insertString(status.getLength(), "Welcome "+user.getUser(), style);
+						score.insertString(score.getLength(), sco, style);
+				        time.insertString(time.getLength(), times, style);
+				        gameStatus.insertString(gameStatus.getLength(), gameS, style);
+				        SolitaireFM.gameTitle.setText("<span style =\"color:black\"><b>Team 1<br>Flea Market Solitaire</b> <br> CPSC 4900 <br> Fall 2021</span>");
+				        
+				        SolitaireK.scoreBox.setText("");
+						SolitaireK.timeBox.setText("");
+						SolitaireK.statusBox.setText("");
+						SolitaireK.gameTitle.setText("");
+						
+						scoreK.insertString(scoreK.getLength(), sco1, style);
+				        timeK.insertString(timeK.getLength(), times1, style);
+				        gameStatusK.insertString(gameStatusK.getLength(), gameS1, style);
+				        SolitaireK.gameTitle.setText("<span style =\"color:black\"><b>Team 1<br>Klondike Solitaire</b> <br> CPSC 4900 <br> Fall 2021</span>");
+				        
+					}
+				} catch (BadLocationException e1) {
+					System.out.println("Error occurred - Printing stack trace");
+					e1.printStackTrace();
 				}
+				SolitaireFM.toggleTimer();
 			}
 		}
+		
 		ActionListener aL = new SetUpColorListeners();
 		colorFrame.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		
@@ -211,20 +329,231 @@ public class SolitaireMenu {
 			@Override
 			public void keyReleased(KeyEvent e) 
 			{
+				String sco = SolitaireFM.scoreBox.getText();
+				String times = SolitaireFM.timeBox.getText();
+				String gameS = SolitaireFM.statusBox.getText();
+				
+				String sco1 = SolitaireK.scoreBox.getText();
+				String times1 = SolitaireK.timeBox.getText();
+				String gameS1 = SolitaireK.statusBox.getText();
+				try {
 				if(e.getKeyChar() == KeyEvent.VK_ENTER) 
 				{
 					String username = userInput.getText();
 					if(StatisticAnalysis.doesUserExist(username))
 					{
 						user = StatisticAnalysis.setUser(username);
+						String n = StatisticAnalysis.getUserColor(user);
+						System.out.println();
+						
+						if(n.equals("GRAY"))
+						{
+							c = Color.GRAY;
+
+							gameTypes.setText("");
+							statusBox.setText("");
+							
+							
+							StyleConstants.setForeground(style, Color.WHITE);
+					        
+					        game.insertString(game.getLength(), "Available Game Modes", style);
+					        status.insertString(status.getLength(), "Welcome "+user.getUser(), style);
+					        
+					        
+						} else if(n.equals("RED"))
+						{
+							c = Color.RED;
+							
+							gameTypes.setText("");
+							statusBox.setText("");
+							
+							
+							StyleConstants.setForeground(style, Color.BLACK);
+							
+					        game.insertString(game.getLength(), "Available Game Modes", style);
+							status.insertString(status.getLength(), "Welcome "+user.getUser(), style);
+							
+							/*SolitaireFM.scoreBox.setText("");
+							SolitaireFM.timeBox.setText("");
+							SolitaireFM.statusBox.setText("");
+							SolitaireFM.gameTitle.setText("");
+							score.insertString(score.getLength(), sco, style);
+					        time.insertString(time.getLength(), times, style);
+					        gameStatus.insertString(gameStatus.getLength(), gameS, style);
+					        SolitaireFM.gameTitle.setText("<span style =\"color:black\"><b>Team 1<br>Flea Market Solitaire</b> <br> CPSC 4900 <br> Fall 2021</span>");
+					        
+					        SolitaireK.scoreBox.setText("");
+							SolitaireK.timeBox.setText("");
+							SolitaireK.statusBox.setText("");
+							SolitaireK.gameTitle.setText("");
+							
+							scoreK.insertString(scoreK.getLength(), sco1, style);
+					        timeK.insertString(timeK.getLength(), times1, style);
+					        gameStatusK.insertString(gameStatusK.getLength(), gameS1, style);
+					        SolitaireK.gameTitle.setText("<span style =\"color:black\"><b>Team 1<br>Klondike Solitaire</b> <br> CPSC 4900 <br> Fall 2021</span>");*/
+					        
+						} else if(n.equals("YELLOW"))
+						{
+							c = Color.BLACK;
+
+							gameTypes.setText("");
+							statusBox.setText("");
+							
+							
+							StyleConstants.setForeground(style, Color.BLACK);
+							
+					        game.insertString(game.getLength(), "Available Game Modes", style);
+							status.insertString(status.getLength(), "Welcome "+user.getUser(), style);
+							
+					        
+						} else if(n.equals("CYAN"))
+						{
+							c = Color.CYAN;
+
+							gameTypes.setText("");
+							statusBox.setText("");
+							
+							
+							StyleConstants.setForeground(style, Color.BLACK);
+							
+					        game.insertString(game.getLength(), "Available Game Modes", style);
+							status.insertString(status.getLength(), "Welcome "+user.getUser(), style);
+							
+					        
+						} else if(n.equals("BLUE"))
+						{
+							c = Color.BLUE;
+							
+							gameTypes.setText("");
+							statusBox.setText("");
+							
+							
+							StyleConstants.setForeground(style, Color.WHITE);
+					        
+					        game.insertString(game.getLength(), "Available Game Modes", style);
+					        status.insertString(status.getLength(), "Welcome "+user.getUser(), style);
+					        
+					        /*SolitaireFM.scoreBox.setText("");
+							SolitaireFM.timeBox.setText("");
+							SolitaireFM.statusBox.setText("");
+							SolitaireFM.gameTitle.setText("");
+					        score.insertString(score.getLength(), sco, style);
+					        time.insertString(time.getLength(), times, style);
+					        gameStatus.insertString(gameStatus.getLength(), gameS, style);
+					        SolitaireFM.gameTitle.setText("<span style =\"color:white\"><b>Team 1<br>Flea Market Solitaire</b> <br> CPSC 4900 <br> Fall 2021</span>");
+					        
+					        SolitaireK.scoreBox.setText("");
+							SolitaireK.timeBox.setText("");
+							SolitaireK.statusBox.setText("");
+							SolitaireK.gameTitle.setText("");
+
+					        System.out.println(sco);
+					        scoreK.insertString(scoreK.getLength(), sco1, style);
+					        timeK.insertString(timeK.getLength(), times1, style);
+					        gameStatusK.insertString(gameStatusK.getLength(), gameS1, style);
+					        SolitaireK.gameTitle.setText("<span style =\"color:white\"><b>Team 1<br>Klondike Solitaire</b> <br> CPSC 4900 <br> Fall 2021</span>");*/
+							
+						} else if(n.equals("N_GREEN"))
+						{
+							c = new Color(0, 180, 0);
+
+							gameTypes.setText("");
+							statusBox.setText("");
+							
+							
+							StyleConstants.setForeground(style, Color.WHITE);
+					        
+					        game.insertString(game.getLength(), "Available Game Modes", style);
+					        status.insertString(status.getLength(), "Welcome "+user.getUser(), style);
+					        
+					        
+						} else if(n.equals("DARK_GRAY"))
+						{
+							c = Color.DARK_GRAY;
+
+							gameTypes.setText("");
+							statusBox.setText("");
+							
+							
+							StyleConstants.setForeground(style, Color.BLACK);
+							
+					        game.insertString(game.getLength(), "Available Game Modes", style);
+							status.insertString(status.getLength(), "Welcome "+user.getUser(), style);
+							
+					        
+						} else if(n.equals("ORANGE"))
+						{
+							c = Color.ORANGE;
+
+							gameTypes.setText("");
+							statusBox.setText("");
+							
+							
+							StyleConstants.setForeground(style, Color.BLACK);
+							
+					        game.insertString(game.getLength(), "Available Game Modes", style);
+							status.insertString(status.getLength(), "Welcome "+user.getUser(), style);
+							
+					        
+						} else if(n.equals("PINK"))
+						{
+							c = Color.PINK;
+
+							gameTypes.setText("");
+							statusBox.setText("");
+							
+							
+							StyleConstants.setForeground(style, Color.BLACK);
+							
+					        game.insertString(game.getLength(), "Available Game Modes", style);
+							status.insertString(status.getLength(), "Welcome "+user.getUser(), style);
+							
+					        
+						} else if(n.equals("WHITE"))
+						{
+							c = Color.WHITE;
+
+							gameTypes.setText("");
+							statusBox.setText("");
+							
+							
+							StyleConstants.setForeground(style, Color.BLACK);
+							
+					        game.insertString(game.getLength(), "Available Game Modes", style);
+							status.insertString(status.getLength(), "Welcome "+user.getUser(), style);
+							
+					        
+						} else
+						{
+							c = Color.LIGHT_GRAY;
+
+							gameTypes.setText("");
+							statusBox.setText("");
+							
+							
+							StyleConstants.setForeground(style, Color.BLACK);
+							
+					        game.insertString(game.getLength(), "Available Game Modes", style);
+							status.insertString(status.getLength(), "Welcome "+user.getUser(), style);
+							
+						}
+						
+						menu.setBackground(c);
 						statusBox.setText("Welcome "+user.getUser());
 						userFrame.dispose();
 					} else {
 						user = new User(username, 0);
 						statusBox.setText("New User Created--Welcome: "+username);
 						System.out.println(user);
+						c = Color.LIGHT_GRAY;
+						menu.setBackground(c);
 						userFrame.dispose();
 					}
+				}
+				} catch (BadLocationException e2)
+				{
+					System.out.println("Error occurred - Printing stack trace");
+					e2.printStackTrace();
 				}
 			}
 			
@@ -255,32 +584,115 @@ public class SolitaireMenu {
 	}
 	
 	private static class SetUpButtonListeners implements ActionListener
-	{
+	{	
 		@Override
 		public void actionPerformed(ActionEvent e) 
 		{
-			if(e.getSource() == klondikeStart) 
-			{
-				Klondike.SolitaireK.main(null);
-				
-			} else if(e.getSource() == fleaMarketStart) 
-			{
-				SolitaireFM.main(null);
-				
-			} else if(e.getSource() == backgroundColorButton) 
-			{
-				setUpColorChange();
-				
-			} /*else if(e.getSource() == statisticButton){
-				enterUser();
-			} */else if(e.getSource() == SolitaireFM.newGameButton)
-			{
-				if(SolitaireFM.gameOver == true)
-				{
-					user.createRecord(SolitaireFM.score, SolitaireFM.time);
-				}
-			}
 			
+			Style style = gameTypes.addStyle("I'm a Style", null);
+			
+			try {
+				if(e.getSource() == klondikeStart) 
+				{
+					Klondike.SolitaireK.main(null);
+					
+					String sco = SolitaireK.scoreBox.getText();
+					String times = SolitaireK.timeBox.getText();
+					String gameS = SolitaireK.statusBox.getText();
+					if(getColor() == Color.GRAY || getColor() == Color.GREEN || getColor() == Color.BLUE)
+					{
+						SolitaireK.scoreBox.setText("");
+						SolitaireK.timeBox.setText("");
+						SolitaireK.statusBox.setText("");
+						SolitaireK.gameTitle.setText("");
+						
+						StyleConstants.setForeground(style, Color.WHITE);
+				        System.out.println(sco);
+				        scoreK.insertString(scoreK.getLength(), sco, style);
+				        timeK.insertString(timeK.getLength(), times, style);
+				        gameStatusK.insertString(gameStatusK.getLength(), gameS, style);
+				        SolitaireK.gameTitle.setText("<span style =\"color:white\"><b>Team 1<br>Klondike Solitaire</b> <br> CPSC 4900 <br> Fall 2021</span>");
+				        
+					} else if (getColor() == Color.WHITE || getColor() == Color.PINK || getColor() == Color.ORANGE || 
+							getColor() == Color.CYAN || getColor() == Color.YELLOW || getColor() == Color.RED || getColor() == Color.LIGHT_GRAY)
+					{
+						SolitaireK.scoreBox.setText("");
+						SolitaireK.timeBox.setText("");
+						SolitaireK.statusBox.setText("");
+						SolitaireK.gameTitle.setText("");
+						
+						StyleConstants.setForeground(style, Color.BLACK);
+						
+						scoreK.insertString(scoreK.getLength(), sco, style);
+				        timeK.insertString(timeK.getLength(), times, style);
+				        gameStatusK.insertString(gameStatusK.getLength(), gameS, style);
+				        SolitaireK.gameTitle.setText("<span style =\"color:black\"><b>Team 1<br>Klondike Solitaire</b> <br> CPSC 4900 <br> Fall 2021</span>");
+					}
+					
+				} else if(e.getSource() == fleaMarketStart) 
+				{
+					System.out.println(getColor());
+					SolitaireFM.main(null);
+					
+					String sco = SolitaireFM.scoreBox.getText();
+					String times = SolitaireFM.timeBox.getText();
+					String gameS = SolitaireFM.statusBox.getText();
+					
+					if(getColor() == Color.GRAY || getColor() == Color.GREEN || getColor() == Color.BLUE)
+					{
+						//gameTypes.setText("");
+						//statusBox.setText("");
+						SolitaireFM.scoreBox.setText("");
+						SolitaireFM.timeBox.setText("");
+						SolitaireFM.statusBox.setText("");
+						SolitaireFM.gameTitle.setText("");
+						System.out.println(sco);
+						StyleConstants.setForeground(style, Color.WHITE);
+				        
+				        //game.insertString(game.getLength(), "Game Modes", style);
+				        //status.insertString(status.getLength(), "Welcome "+user.getUser(), style);
+				        score.insertString(score.getLength(), sco, style);
+				        time.insertString(time.getLength(), times, style);
+				        gameStatus.insertString(gameStatus.getLength(), gameS, style);
+				        SolitaireFM.gameTitle.setText("<span style =\"color:white\"><b>Team 1<br>Flea Market Solitaire</b> <br> CPSC 4900 <br> Fall 2021</span>");
+				        
+					} else if (getColor() == Color.WHITE || getColor() == Color.PINK || getColor() == Color.ORANGE || 
+							getColor() == Color.CYAN || getColor() == Color.YELLOW || getColor() == Color.RED || getColor() == Color.LIGHT_GRAY)
+					{
+						//gameTypes.setText("");
+						//statusBox.setText("");
+						SolitaireFM.scoreBox.setText("");
+						SolitaireFM.timeBox.setText("");
+						SolitaireFM.statusBox.setText("");
+						SolitaireFM.gameTitle.setText("");
+						System.out.println(sco);
+						StyleConstants.setForeground(style, Color.BLACK);
+						
+				        //game.insertString(game.getLength(), "Available Game Modes", style);
+						//status.insertString(status.getLength(), "Welcome "+user.getUser(), style);
+						score.insertString(score.getLength(), sco, style);
+				        time.insertString(time.getLength(), times, style);
+				        gameStatus.insertString(gameStatus.getLength(), gameS, style);
+				        SolitaireFM.gameTitle.setText("<span style =\"color:black\"><b>Team 1<br>Flea Market Solitaire</b> <br> CPSC 4900 <br> Fall 2021</span>");
+					}
+					
+				} else if(e.getSource() == backgroundColorButton) 
+				{
+					setUpColorChange();
+					
+				} /*else if(e.getSource() == statisticButton){
+					enterUser();
+				} */else if(e.getSource() == SolitaireFM.newGameButton)
+				{
+					if(SolitaireFM.gameOver == true)
+					{
+						user.createRecord(SolitaireFM.score, SolitaireFM.time);
+					}
+				}
+			} catch (BadLocationException e3) {
+				System.out.println("Error occurred - Printing stack trace");
+				e3.printStackTrace();
+			}
 		}
 	}
 	
@@ -306,14 +718,16 @@ public class SolitaireMenu {
 
 	}
 	
-	private static void openMenu()
+	private static void openMenu() throws BadLocationException
 	{
 		statusBox.setBounds(240, TABLE_HEIGHT - 70, 240, 30);
 		statusBox.setEditable(false);
 		statusBox.setOpaque(false);
 		
 		gameTypes.setText("Available Game Modes");
-		gameTypes.setBounds(50, TABLE_HEIGHT - 375, 130, 30);
+		gameTypes.setEditable(false);
+		gameTypes.setOpaque(false);
+		gameTypes.setBounds(50, TABLE_HEIGHT - 375, 150, 30);
 		
 		klondikeStart.addActionListener(ae);
 		klondikeStart.setBounds(55, TABLE_HEIGHT - 330, 120, 30);
@@ -335,7 +749,7 @@ public class SolitaireMenu {
 		//menu.add(statisticButton);
 	}
 
-	public static void main(String[] args)
+	public static void main(String[] args) throws BadLocationException
 	{
 
 		Container contentPane;
@@ -345,16 +759,16 @@ public class SolitaireMenu {
 		frame.addWindowListener(new windowListener());
 		
 		menu.setLayout(null);
-		c = Color.GRAY;
-		menu.setBackground(c);
-
+		//menu.setBackground(Color.GRAY);
+		
 		contentPane = frame.getContentPane();
 		contentPane.add(menu);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
+		
 		openMenu();
 
 		frame.setVisible(true);
+		StatisticAnalysis.main(null);
 
 	}
 
