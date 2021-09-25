@@ -64,7 +64,7 @@ public class SolitaireMenu {
 	//Color switcher
 	private static Color c;
 	private static String col;
-	private static final Color n_Green = new Color(0, 180, 0);
+	private static final Color N_GREEN = new Color(0, 180, 0);
 	
 	//Color getter
 	public static Color getColor() 
@@ -162,7 +162,7 @@ public class SolitaireMenu {
 						menu.setBackground(new Color(0, 180, 0));
 						fMTable.setBackground(new Color(0, 180, 0));
 						kTable.setBackground(new Color(0, 180, 0));
-						c = n_Green;
+						c = N_GREEN;
 						col = "N_GREEN";
 						
 					} else if(e.getSource() == gray || e.getSource() == green || e.getSource() == blue) 
@@ -363,25 +363,6 @@ public class SolitaireMenu {
 							
 					        game.insertString(game.getLength(), "Available Game Modes", style);
 							status.insertString(status.getLength(), "Welcome "+user.getUser(), style);
-							
-							/*SolitaireFM.scoreBox.setText("");
-							SolitaireFM.timeBox.setText("");
-							SolitaireFM.statusBox.setText("");
-							SolitaireFM.gameTitle.setText("");
-							score.insertString(score.getLength(), sco, style);
-					        time.insertString(time.getLength(), times, style);
-					        gameStatus.insertString(gameStatus.getLength(), gameS, style);
-					        SolitaireFM.gameTitle.setText("<span style =\"color:black\"><b>Team 1<br>Flea Market Solitaire</b> <br> CPSC 4900 <br> Fall 2021</span>");
-					        
-					        SolitaireK.scoreBox.setText("");
-							SolitaireK.timeBox.setText("");
-							SolitaireK.statusBox.setText("");
-							SolitaireK.gameTitle.setText("");
-							
-							scoreK.insertString(scoreK.getLength(), sco1, style);
-					        timeK.insertString(timeK.getLength(), times1, style);
-					        gameStatusK.insertString(gameStatusK.getLength(), gameS1, style);
-					        SolitaireK.gameTitle.setText("<span style =\"color:black\"><b>Team 1<br>Klondike Solitaire</b> <br> CPSC 4900 <br> Fall 2021</span>");*/
 					        
 						} else if(n.equals("YELLOW"))
 						{
@@ -420,26 +401,6 @@ public class SolitaireMenu {
 					        
 					        game.insertString(game.getLength(), "Available Game Modes", style);
 					        status.insertString(status.getLength(), "Welcome "+user.getUser(), style);
-					        
-					        /*SolitaireFM.scoreBox.setText("");
-							SolitaireFM.timeBox.setText("");
-							SolitaireFM.statusBox.setText("");
-							SolitaireFM.gameTitle.setText("");
-					        score.insertString(score.getLength(), sco, style);
-					        time.insertString(time.getLength(), times, style);
-					        gameStatus.insertString(gameStatus.getLength(), gameS, style);
-					        SolitaireFM.gameTitle.setText("<span style =\"color:white\"><b>Team 1<br>Flea Market Solitaire</b> <br> CPSC 4900 <br> Fall 2021</span>");
-					        
-					        SolitaireK.scoreBox.setText("");
-							SolitaireK.timeBox.setText("");
-							SolitaireK.statusBox.setText("");
-							SolitaireK.gameTitle.setText("");
-
-					        System.out.println(sco);
-					        scoreK.insertString(scoreK.getLength(), sco1, style);
-					        timeK.insertString(timeK.getLength(), times1, style);
-					        gameStatusK.insertString(gameStatusK.getLength(), gameS1, style);
-					        SolitaireK.gameTitle.setText("<span style =\"color:white\"><b>Team 1<br>Klondike Solitaire</b> <br> CPSC 4900 <br> Fall 2021</span>");*/
 							
 						} else if(n.equals("N_GREEN"))
 						{

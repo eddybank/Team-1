@@ -159,6 +159,7 @@ public class SolitaireFM
 			public void actionPerformed(ActionEvent e) {
 				if(e.getSource() == yes) {
 					SolitaireMenu.getUser().createRecord(SolitaireFM.score, SolitaireFM.time);
+					saveFrame.dispose();
 				} else if(e.getSource() == no)
 				{
 					saveFrame.dispose();
@@ -626,6 +627,8 @@ public class SolitaireFM
 		
 		deal_deck_pos = 0;
 		
+		score = -64;
+		
 		deck = new CardStackFM(true); // deal 104 cards
 		deck.shuffle();
 		
@@ -644,91 +647,90 @@ public class SolitaireFM
 		}
 		// initialize & place final (foundation) decks/stacks
 		final_cards = new FinalStackFM[NUM_FINAL_DECKS];
+		
 		for (int x = 0; x < NUM_FINAL_DECKS; x++)
 		{
+			for(int y = 0; y < deck.showSize(); y++) 
+			{
 			final_cards[x] = new FinalStackFM();
-
+			CardFM c = deck.pop().setFaceup();
 			//Bottom Up: A to K
 			if(x >= 0 && x <= 3) 
 			{
 				final_cards[x].setXY(200 + (x * (CardFM.CARD_WIDTH)), (FINAL_POS.y));
-				for(int y = 0; y < deck.showSize(); y++) {
 					
-					CardFM c = deck.pop().setFaceup();
+				
 					
-					if(c.getValue().equals(CardFM.Value.ACE) && c.getSuit().equals(CardFM.Suit.SPADES) 
-							&& x == 0)
-					{
-						final_cards[x].putFirst(c);
-						break;	
-					}
-					else if(c.getValue().equals(CardFM.Value.ACE) && c.getSuit().equals(CardFM.Suit.HEARTS) 
-							&& x == 1) 
-					{	
-						final_cards[x].putFirst(c);
-						break;
-					} 
-					else if(c.getValue().equals(CardFM.Value.ACE) && c.getSuit().equals(CardFM.Suit.DIAMONDS) 
-							&& x == 2) 
-					{
-						final_cards[x].putFirst(c);
-						break;
-					}
-					else if(c.getValue().equals(CardFM.Value.ACE) && c.getSuit().equals(CardFM.Suit.CLUBS) 
-							&& x == 3) 
-					{
-						final_cards[x].putFirst(c);
-						break;
-					} else {
-						System.out.println("Putting back on show stack: ");
-						c.getValue();
-						c.getSuit();
-						deck.putFirst(c);
-					}
+				if(c.getValue().equals(CardFM.Value.ACE) && c.getSuit().equals(CardFM.Suit.SPADES) 
+						&& x == 0)
+				{
+					final_cards[x].putFirst(c);
+					break;	
+				}
+				else if(c.getValue().equals(CardFM.Value.ACE) && c.getSuit().equals(CardFM.Suit.HEARTS) 
+						&& x == 1) 
+				{	
+					final_cards[x].putFirst(c);
+					break;
+				} 
+				else if(c.getValue().equals(CardFM.Value.ACE) && c.getSuit().equals(CardFM.Suit.DIAMONDS) 
+						&& x == 2) 
+				{
+					final_cards[x].putFirst(c);
+					break;
+				}
+				else if(c.getValue().equals(CardFM.Value.ACE) && c.getSuit().equals(CardFM.Suit.CLUBS) 
+						&& x == 3) 
+				{
+					final_cards[x].putFirst(c);
+					break;
+				} else {
+					/*System.out.println("Putting back on show stack: ");
+					System.out.println(c.getValue());
+					System.out.println(c.getSuit());*/
+					deck.putFirst(c);
 				}
 			}
 				//Top Down: K to A
 			else if(x >= 4 && x <= 7) 
-				{
+			{
 				final_cards[x].setXY(200 + ((x-4) * (CardFM.CARD_WIDTH)), ((65/2)*FINAL_POS.y));
-					for(int y = 0; y < deck.showSize(); y++) 
-					{
-						CardFM c = deck.pop().setFaceup();
+
+					//CardFM c = deck.pop().setFaceup();
 						
-						if(c.getValue().equals(CardFM.Value.KING) && c.getSuit().equals(CardFM.Suit.SPADES)
-								&& x == 4)
-						{
-							final_cards[x].putFirst(c);
-							break;
-						}
-						else if(c.getValue().equals(CardFM.Value.KING) && c.getSuit().equals(CardFM.Suit.HEARTS)
-								&& x == 5) 
-						{
-							final_cards[x].putFirst(c);
-							break;
-						} 
-						else if(c.getValue().equals(CardFM.Value.KING) && c.getSuit().equals(CardFM.Suit.DIAMONDS)
-								&& x == 6) 
-						{
-							final_cards[x].putFirst(c);
-							break;
+					if(c.getValue().equals(CardFM.Value.KING) && c.getSuit().equals(CardFM.Suit.SPADES)
+							&& x == 4)
+					{
+						final_cards[x].putFirst(c);
+						break;
+					}
+					else if(c.getValue().equals(CardFM.Value.KING) && c.getSuit().equals(CardFM.Suit.HEARTS)
+							&& x == 5) 
+					{
+						final_cards[x].putFirst(c);
+						break;
+					} 
+					else if(c.getValue().equals(CardFM.Value.KING) && c.getSuit().equals(CardFM.Suit.DIAMONDS)
+							&& x == 6) 
+					{
+						final_cards[x].putFirst(c);
+						break;
 							
-						}
-						else if(c.getValue().equals(CardFM.Value.KING) && c.getSuit().equals(CardFM.Suit.CLUBS)
-								&& x == 7) 
-						{
-							final_cards[x].putFirst(c);
-							break;
-						} else 
-						{
-							System.out.println("Putting back on show stack: ");
-							c.getValue();
-							c.getSuit();
-							deck.putFirst(c);
-						}
+					}
+					else if(c.getValue().equals(CardFM.Value.KING) && c.getSuit().equals(CardFM.Suit.CLUBS)
+							&& x == 7) 
+					{
+						final_cards[x].putFirst(c);
+						break;
+					} else 
+					{
+						/*System.out.println("Putting back on show stack: ");
+						System.out.println(c.getValue());
+						System.out.println(c.getSuit());*/
+						deck.putFirst(c);
 					}
 				}
-			
+			}
 			table.add(final_cards[x]);
 		}
 		

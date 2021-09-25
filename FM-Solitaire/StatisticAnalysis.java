@@ -1,5 +1,6 @@
 package fleaMarket;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import javax.xml.parsers.DocumentBuilder;
@@ -19,10 +20,46 @@ import org.xml.sax.SAXException;
 public class StatisticAnalysis {
 
 	/*
-	 * We will either use txt files or XML files to store record for individual users
-	 * Upon clicking on "Check Game Stats" we will ask for a username and then find the user within the file
+	 * Create Directory based on users system--Directory path would be 'C:\Users\"NameofUser"' on windows
+	 * XML files to store record for individual users
 	 */
 	//private static String user = SolitaireMenu.getUser();
+	private static final File savedir = new File(System.getProperty("user.home"), ".solitairegame");
+	private static boolean dircreate = savedir.mkdir();
+	private static final File savefile = new File(savedir, "users.xml");
+	private static File filePP = new File(savedir, "usersPP.xml");
+	
+	public static void createFiles()
+	{
+		try {
+			final boolean save = savefile.createNewFile();
+			if(save)
+			{
+			
+				DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+				DocumentBuilder documentBuilder;
+	
+			    documentBuilder = documentBuilderFactory.newDocumentBuilder();
+			    Document document;
+			    document = documentBuilder.newDocument();
+			    
+			    Element newUsers = document.createElement("users");
+	
+			    document.appendChild(newUsers);
+			    
+			    DOMSource source = new DOMSource(document);
+			    TransformerFactory transformerFactory = TransformerFactory.newInstance();
+			    Transformer transformer = transformerFactory.newTransformer();
+			    StreamResult result = new StreamResult(savefile);
+			    transformer.transform(source, result);
+			}
+		    	 
+		} catch (IOException | ParserConfigurationException | NullPointerException | TransformerException e) 
+		{
+				System.out.println("Error occurred - Printing stack trace");
+				e.printStackTrace();
+		}
+	}
 	
 	public static void setUserColor(User user) 
 	{
@@ -33,7 +70,7 @@ public class StatisticAnalysis {
 	    {
 	    	 documentBuilder = documentBuilderFactory.newDocumentBuilder();
 	    	 Document document;
-	    	 document = documentBuilder.parse("SolitaireFileFormat.xml");
+	    	 document = documentBuilder.parse(savefile);
 
 	    	 NodeList users = document.getElementsByTagName("user");
 	    	 
@@ -52,14 +89,15 @@ public class StatisticAnalysis {
 	    	 TransformerFactory transformerFactory = TransformerFactory.newInstance();
 	    	 Transformer transformer = transformerFactory.newTransformer();
 	    	 //transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-	    	 StreamResult result = new StreamResult("SolitaireFileFormat.xml");
+	    	 StreamResult result = new StreamResult(savefile);
 	    	 transformer.transform(source, result);
 	    	 
 		} catch (SAXException | IOException | ParserConfigurationException | NullPointerException | TransformerException e) 
-	     {
+	    {
 			System.out.println("Error occurred - Printing stack trace");
 			e.printStackTrace();
-		 }
+		}
+	    prettyPrint();
 	}
 	
 	public static String getUserColor(User user) 
@@ -71,7 +109,7 @@ public class StatisticAnalysis {
 	    {
 	    	 documentBuilder = documentBuilderFactory.newDocumentBuilder();
 	    	 Document document;
-	    	 document = documentBuilder.parse("SolitaireFileFormat.xml");
+	    	 document = documentBuilder.parse(savefile);
 
 	    	 NodeList users = document.getElementsByTagName("user");
 	    	 
@@ -84,10 +122,10 @@ public class StatisticAnalysis {
 	    		 }
 	    	 }
 		} catch (SAXException | IOException | ParserConfigurationException | NullPointerException e) 
-	     {
+	    {
 			System.out.println("Error occurred - Printing stack trace");
 			e.printStackTrace();
-		 }
+		}
 	    return color;
 	}
 	
@@ -117,7 +155,7 @@ public class StatisticAnalysis {
 	    {
 	    	 documentBuilder = documentBuilderFactory.newDocumentBuilder();
 	    	 Document document;
-	    	 document = documentBuilder.parse("SolitaireFileFormat.xml");
+	    	 document = documentBuilder.parse(savefile);
 
 	    	 NodeList users = document.getElementsByTagName("user");
 	    	 
@@ -146,10 +184,10 @@ public class StatisticAnalysis {
 	    			 allUsers.add(user);
 	    	 }
 		} catch (SAXException | IOException | ParserConfigurationException e) 
-	     {
+	    {
 			System.out.println("Error occurred - Printing stack trace");
 			e.printStackTrace();
-		 }
+		}
 		return allUsers;
 	}	
 	public static User setUser(String name) 
@@ -163,7 +201,7 @@ public class StatisticAnalysis {
 	    {
 	    	 documentBuilder = documentBuilderFactory.newDocumentBuilder();
 	    	 Document document;
-	    	 document = documentBuilder.parse("SolitaireFileFormat.xml");
+	    	 document = documentBuilder.parse(savefile);
 
 	    	 NodeList users = document.getElementsByTagName("user");
 	    	 
@@ -193,11 +231,10 @@ public class StatisticAnalysis {
 	    		 }
 	    	 }
 		} catch (SAXException | IOException | ParserConfigurationException e) 
-	     {
+	    {
 			System.out.println("Error occurred - Printing stack trace");
 			e.printStackTrace();
-		 }
-	  System.out.println(user);
+		}
 	    return user;
 	}	
 	
@@ -210,7 +247,7 @@ public class StatisticAnalysis {
 	    {
 	    	 documentBuilder = documentBuilderFactory.newDocumentBuilder();
 	    	 Document document;
-	    	 document = documentBuilder.parse("SolitaireFileFormat.xml");
+	    	 document = documentBuilder.parse(savefile);
 
 	    	 NodeList users = document.getElementsByTagName("user");
 	    	 
@@ -238,16 +275,16 @@ public class StatisticAnalysis {
 		    				 score = Integer.parseInt(ele.getElementsByTagName("time").item(y).getTextContent());
 		    				 rec = new Record(time, score);
 		    				 user.addRecord(rec);
-		    				System.out.println(rec);
+		    				//System.out.println(rec);
 	    				 }
 	    			 } 
 	    		 }
 	    	 }
 		} catch (SAXException | IOException | ParserConfigurationException e) 
-	     {
+	    {
 			System.out.println("Error occurred - Printing stack trace");
 			e.printStackTrace();
-		 }
+		}
 		return user.getRecords();
 	}	
 	
@@ -259,18 +296,12 @@ public class StatisticAnalysis {
 	     {
 	    	 documentBuilder = documentBuilderFactory.newDocumentBuilder();
 	    	 Document document;
-	    	 document = documentBuilder.parse("SolitaireFileFormat.xml");
-				
-	    	 Element root = document.getDocumentElement();
+	    	 document = documentBuilder.parse(savefile);
 	    	 
-	    	 
-	    	 
-	    	 System.out.println(root.getElementsByTagName("user").item(0));
-	    	 // user elements
+	    	// user elements
 	    	 NodeList users = document.getElementsByTagName("user");
-	    	 System.out.println(users.item(0));
 	    	 
-	    	for(int i = 0; i < users.getLength(); i++)
+	    	 for(int i = 0; i < users.getLength(); i++)
 	    	 {
 	    		 Node node = users.item(i);
 	    		 Element ele = (Element) node;
@@ -293,33 +324,33 @@ public class StatisticAnalysis {
 	    			 ele.appendChild(record);
 	    		 }
 	    	 }
-	        
+	    	 
 	    	 DOMSource source = new DOMSource(document);
 
 	    	 TransformerFactory transformerFactory = TransformerFactory.newInstance();
 	    	 Transformer transformer = transformerFactory.newTransformer();
-	    	 //transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-	    	 StreamResult result = new StreamResult("SolitaireFileFormat.xml");
+	    	 StreamResult result = new StreamResult(savefile);
 	    	 transformer.transform(source, result);
 	        
 	        
-			} catch (SAXException | IOException | ParserConfigurationException | TransformerException e) // 
-	     	{
+	     } catch (SAXException | IOException | ParserConfigurationException | TransformerException e) // 
+	     {
 				System.out.println("Error occurred - Printing stack trace");
 				e.printStackTrace();
-			}
+	     }
+	     prettyPrint();
 	}	
 	
 	private static void newUser(User user) 
 	{
 		 DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
 		 DocumentBuilder documentBuilder;
-		 
+		 createFiles();
 		 try 
 		 {
 			 documentBuilder = documentBuilderFactory.newDocumentBuilder();
 			 Document document;
-			 document = documentBuilder.parse("SolitaireFileFormat.xml");
+			 document = documentBuilder.parse(savefile);
 			
 			 Element root = document.getDocumentElement(); 
 	    	 
@@ -346,15 +377,38 @@ public class StatisticAnalysis {
 			 TransformerFactory transformerFactory = TransformerFactory.newInstance();
 			 Transformer transformer = transformerFactory.newTransformer();
 			 //transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-			 StreamResult result = new StreamResult("SolitaireFileFormat.xml");
+			 StreamResult result = new StreamResult(savefile);
 			 transformer.transform(source, result);
 	        
-			} catch (SAXException | IOException | ParserConfigurationException | TransformerException e) 
-		 	{
+		 } catch (SAXException | IOException | ParserConfigurationException | TransformerException e)
+		 {
 				System.out.println("Error occurred - Printing stack trace");
 				e.printStackTrace();
-			}
+		 }
+		 prettyPrint();
 	}
+	
+	public static void prettyPrint(){
+	    try{
+	    	boolean deleted = filePP.delete();
+	        Transformer transformer = TransformerFactory.newInstance().newTransformer();
+	        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+	        transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+	        
+	        DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+	        DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+	        Document doc = docBuilder.parse(savefile);
+	        
+	        DOMSource source = new DOMSource(doc);
+	        filePP = new File(savedir, "usersPP.xml");
+	        StreamResult result = new StreamResult(filePP);
+
+	        transformer.transform(source, result);
+	        }
+	        catch(Exception e){
+	            e.printStackTrace();
+	        }
+	    }
 	
 	public static class User 
 	{
@@ -368,7 +422,7 @@ public class StatisticAnalysis {
 		User(String user)
 		{
 			username = user;
-			best_time = 0;
+			//best_time = 0;
 		}
 		
 		User(String user, int bt)
@@ -389,29 +443,26 @@ public class StatisticAnalysis {
 		}
 		void setBestTime()
 		{
-			int curBestTime = 0;
-			if(records.size() > 1)
+			ArrayList<Record> r = StatisticAnalysis.getRecords(this);
+			if(r.size() >= 1)
 			{
-				for(int x = 0; x < records.size() - 1; x++)
+				for(int x = 0; x < r.size(); x++)
 				{
-					if(records.get(x).getTime() > records.get((x+1)).getTime())
+					if(r.get(x).getScore() == 416)
 					{
-						curBestTime = records.get(x+1).getTime();
-					} else 
-					{
-						curBestTime = records.get(x).getTime();
+						System.out.println(" BT "+best_time+" > RS "+r.get(x).getTime());
+						if(best_time > r.get(x).getTime())
+						{
+							best_time = r.get(x).getTime();
+						}
 					}
 				}
-			} else
-			{
-				curBestTime = records.get(records.size()-1).getTime();
 			}
-			best_time = curBestTime;
 		}
 		
-		void setBestTime(int t)
+		void setBestTime(int i)
 		{
-			best_time = t;
+			best_time = i;
 		}
 		
 		boolean isBestTime(Record r)
@@ -485,12 +536,15 @@ public class StatisticAnalysis {
 	
 	public static void main(String[] args) {
 		
-		User test1 = setUser("test");
-		System.out.println(getUserColor(test1));
-		User test2 = new User("testing");
-		//newUser(test2);
-		setUserColor(test2);
-		//test1.createRecord(416, 1102);
+		//User test1 = setUser("test");
+		//System.out.println(getUserColor(test1));
+		System.out.println(System.getProperty("user.home"));
+		System.out.println(savefile.getPath());
+		//createFiles();
+		//User test2 = setUser("testing");
+		
+		//setUserColor(test2);
+		//test2.createRecord(416, 780);
 		
 		
 		//User test2 = new User("bobby", 0);

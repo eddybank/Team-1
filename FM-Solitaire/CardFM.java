@@ -14,12 +14,37 @@ class CardFM extends JPanel
 
 	public static enum Value
 	{
-		ACE, TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE, TEN, JACK, QUEEN, KING
+		ACE("ACE"), TWO("TWO"), THREE("THREE"), FOUR("FOUR"), FIVE("FIVE"), SIX("SIX"), 
+		SEVEN("SEVEN"), EIGHT("EIGHT"), NINE("NINE"), TEN("TEN"), JACK("JACK"), QUEEN("QUEEN"), KING("KING");
+		
+		private String asString;
+		
+	    Value(String value)
+	    { 
+	    	this.asString = value; 
+	    }
+	    
+	    public String toString() 
+	    { 
+	    	return this.asString; 
+	    }
 	}
 
 	public static enum Suit
 	{
-		SPADES, CLUBS, DIAMONDS, HEARTS
+		SPADES("SPADES"), CLUBS("CLUBS"), DIAMONDS("DIAMONDS"), HEARTS("HEARTS");
+		
+		private String asString;
+		
+	    Suit(String value)
+	    { 
+	    	this.asString = value; 
+	    }
+	    
+	    public String toString() 
+	    { 
+	    	return this.asString; 
+	    }
 	}
 
 	private Suit _suit;
@@ -76,16 +101,16 @@ class CardFM extends JPanel
 		switch (_suit)
 		{
 		case HEARTS:
-			System.out.println("Hearts");
+			//System.out.println("Hearts");
 			break;
 		case DIAMONDS:
-			System.out.println("Diamonds");
+			//System.out.println("Diamonds");
 			break;
 		case SPADES:
-			System.out.println("Spades");
+			//System.out.println("Spades");
 			break;
 		case CLUBS:
-			System.out.println("Clubs");
+			//System.out.println("Clubs");
 			break;
 		}
 		return _suit;
@@ -96,43 +121,43 @@ class CardFM extends JPanel
 		switch (_value)
 		{
 		case ACE:
-			System.out.println(" Ace");
+			//System.out.println(" Ace");
 			break;
 		case TWO:
-			System.out.println(" 2");
+			//System.out.println(" 2");
 			break;
 		case THREE:
-			System.out.println(" 3");
+			//System.out.println(" 3");
 			break;
 		case FOUR:
-			System.out.println(" 4");
+			//System.out.println(" 4");
 			break;
 		case FIVE:
-			System.out.println(" 5");
+			//System.out.println(" 5");
 			break;
 		case SIX:
-			System.out.println(" 6");
+			//System.out.println(" 6");
 			break;
 		case SEVEN:
-			System.out.println(" 7");
+			//System.out.println(" 7");
 			break;
 		case EIGHT:
-			System.out.println(" 8");
+			//System.out.println(" 8");
 			break;
 		case NINE:
-			System.out.println(" 9");
+			//System.out.println(" 9");
 			break;
 		case TEN:
-			System.out.println(" 10");
+			//System.out.println(" 10");
 			break;
 		case JACK:
-			System.out.println(" Jack");
+			//System.out.println(" Jack");
 			break;
 		case QUEEN:
-			System.out.println(" Queen");
+			//System.out.println(" Queen");
 			break;
 		case KING:
-			System.out.println(" King");
+			//System.out.println(" King");
 			break;
 		}
 		return _value;
@@ -185,9 +210,6 @@ class CardFM extends JPanel
 	{
 		_faceup = false;
 		return this;
-	}
-	public String toString() {
-		return "Card: Suit "+this._suit+" Value "+this._value;
 	}
 
 	@Override
