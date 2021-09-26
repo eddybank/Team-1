@@ -504,7 +504,7 @@ public class StatisticAnalysis {
 		}
 	}
 	
-	private static class Record 
+	public static class Record 
 	{
 		private int time;
 		private int score;

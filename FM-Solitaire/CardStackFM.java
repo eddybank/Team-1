@@ -99,8 +99,9 @@ class CardStackFM extends JComponent
 	{
 		if (!this.empty())
 		{
-			//CardFM c = v.lastElement();
-			return v.remove(v.size() - 1);
+			CardFM c = v.lastElement();
+			v.remove(v.size() - 1);
+			return c;
 		} else
 			return null;
 	}

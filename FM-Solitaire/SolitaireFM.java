@@ -10,9 +10,13 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JEditorPane;
@@ -21,8 +25,9 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextField;
 import javax.swing.JTextPane;
+
+import fleaMarket.StatisticAnalysis.User;
 
 
 public class SolitaireFM
@@ -57,6 +62,9 @@ public class SolitaireFM
 	protected static JTextPane timeBox = new JTextPane();// displays the time
 	protected static JTextPane statusBox = new JTextPane();// status messages
 	
+	protected static JEditorPane recordBox = new JEditorPane("text/html", "");// status messages
+	protected static fleaMarket.StatisticAnalysis.Record bestRecord;
+	
 	//Action Listener for buttons
 	private static ActionListener ae = new setUpButtonListeners();
 	private static CardMovementManager cm = new CardMovementManager();
@@ -72,6 +80,32 @@ public class SolitaireFM
 	protected static int time = 0;// keep track of seconds elapsed
 	private static int deal_deck_pos = 0;
 	protected static boolean gameOver = true;
+	
+	//Sound
+	//private static boolean SolitaireMenu.getSoundState() = SolitaireMenu.soundO;
+	private static String filePath = "C:\\Users\\Evan_\\Desktop\\UTC Senior\\CPSC 4900\\Sounds\\dealing_card.wav";
+	private static String filePath2 = "C:\\Users\\Evan_\\Desktop\\UTC Senior\\CPSC 4900\\Sounds\\card_contact.wav";
+	private static String filePath3 = "C:\\Users\\Evan_\\Desktop\\UTC Senior\\CPSC 4900\\Sounds\\deal_cards_f.wav";
+	private static SimpleAudioPlayer card_contact_ap;
+	private static SimpleAudioPlayer deal_card_ap;
+	
+	public static SimpleAudioPlayer ap(String fp, int loops) {
+		try {
+			SimpleAudioPlayer audioPlayer = new SimpleAudioPlayer(fp, loops);
+			return audioPlayer;
+		} catch (UnsupportedAudioFileException | IOException | LineUnavailableException e1) {
+			System.out.println("Error occurred--Printing stack trace");
+			e1.printStackTrace();
+		}
+		return null;
+			
+			
+	}
+	
+	public static fleaMarket.StatisticAnalysis.Record getBestRecord()
+	{
+		return bestRecord;
+	}
 
 	// moves a card to abs location within a component
 	protected static CardFM moveCard(CardFM c, int x, int y)
@@ -287,6 +321,8 @@ public class SolitaireFM
 		private CardStackFM dest = null;
 		// used for moving a stack of cards
 		private CardStackFM transferStack = new CardStackFM(false);
+		//private SimpleAudioPlayer deal_card_ap = ap("C:\\Users\\Evan_\\Desktop\\UTC Senior\\CPSC 4900\\Sounds\\dealing_card.wav");
+		//private SimpleAudioPlayer card_contact_ap = ap("C:\\Users\\Evan_\\Desktop\\UTC Senior\\CPSC 4900\\Sounds\\card_contact.wav");
 		
 		public static boolean validStackMove(CardFM source, CardFM dest)
 		{
@@ -326,6 +362,12 @@ public class SolitaireFM
 						System.out.print("poping deck ");
 						deck.showSize();
 						CardFM c = deck.pop().setFaceup();
+						System.out.println("sound: "+SolitaireMenu.getSoundState());
+						if(SolitaireMenu.getSoundState())
+						{
+							deal_card_ap = ap(filePath, 0);
+							deal_card_ap.play();
+						}
 						playCardStack[x].putFirst(c);
 						c.repaint();
 						statusBox.setText("Card dealt to tableau "+(x+1));
@@ -342,7 +384,7 @@ public class SolitaireFM
 			boolean stopSearch = false;
 			statusBox.setText("");
 			transferStack.makeEmpty();
-
+			
 			/*
 			 * Here we use transferStack to temporarily hold the one card that
 			 * was clicked on by the user for transfer
@@ -492,11 +534,18 @@ public class SolitaireFM
 			}// end cycle through play decks
 
 			try {
+				
 				if (deal_deck[deal_deck_pos].contains(start) && deck.showSize() > 0)
 				{
+					if(SolitaireMenu.getSoundState()) toggleTimer();
 					for (int x = 1; x < NUM_PLAY_DECKS; x++)
 					{
-						
+						if(SolitaireMenu.getSoundState()) 
+						{
+							deal_card_ap = ap(filePath3, 0);
+							deal_card_ap.play();
+							Thread.sleep((deal_card_ap.getClip().getMicrosecondLength())/6000);
+						}
 						System.out.print("poping deck ");
 						deck.showSize();
 						CardFM c = deck.pop().setFaceup();
@@ -506,6 +555,7 @@ public class SolitaireFM
 					table.remove(deal_deck[deal_deck_pos]);
 					table.repaint();
 					deal_deck_pos++;
+					if(SolitaireMenu.getSoundState()) toggleTimer();
 				} else if(deck.showSize() == 0)
 				{
 					statusBox.setText("No more cards to deal!");
@@ -544,7 +594,7 @@ public class SolitaireFM
 				}
 			}
 			
-			System.out.println(gameOver);
+			//System.out.println(gameOver);
 			if (checkForWin && gameOver)
 			{
 				JOptionPane.showMessageDialog(table, "Congratulations! You've Won!");
@@ -558,6 +608,12 @@ public class SolitaireFM
 			card = null;
 			checkForWin = false;
 			gameOver = false;
+			System.out.println(SolitaireMenu.getSoundState());
+			if(validMoveMade && SolitaireMenu.getSoundState())
+			{
+				card_contact_ap = ap(filePath2, 0);
+				card_contact_ap.play();
+			}
 		}// end mousePressed()
 	}
 	
@@ -598,11 +654,35 @@ public class SolitaireFM
 							dest_stack.showSize();
 							CardMovementManager.dealSingleCard();
 							setScore(5);
+							System.out.println("Sound "+SolitaireMenu.getSoundState());
+							if(SolitaireMenu.getSoundState()) 
+							{
+								card_contact_ap = ap(filePath2, 0);
+								card_contact_ap.play();
+							}
 						}
 						playCardStack[x].repaint();
 						table.repaint();
 					}
 				}
+			}
+		}
+	}
+	
+	private static void placeBestRecord() 
+	{
+		User u = SolitaireMenu.getUser();
+		StatisticAnalysis.setUser(u.getUser());
+		for(int x = 0; x < u.getRecords().size(); x++)
+		{
+			//System.out.println(u.getRecords().get(x));
+			if(u.getBestTime() == u.getRecords().get(x).getTime())
+			{
+				//System.out.println("BT: "+u.getBestTime());
+				recordBox.setText("<span><b>User Record<br>Klondike Solitaire</b> <br> "
+						+ "Best Win Time: "+u.getRecords().get(x).getTime()+" seconds <br> Highest Score: "+u.getRecords().get(x).getScore()+"</span>");
+				bestRecord = u.getRecords().get(x);
+				//recordBox.setText("Test");
 			}
 		}
 		
@@ -782,6 +862,11 @@ public class SolitaireFM
 
 		}
 		
+		recordBox.setBounds(30, 5*PLAY_POS.y, 100, 150);
+		recordBox.setEditable(false);
+		recordBox.setOpaque(false);
+		placeBestRecord();
+		
 		autoPlayButton.addActionListener(ae);
 		autoPlayButton.setBounds(0, TABLE_HEIGHT - 100, 120, 30);
 		
@@ -824,6 +909,7 @@ public class SolitaireFM
 		
 		scoreBox.setText("Score: "+score);
 		
+		table.add(recordBox);
 		table.add(statusBox);
 		table.add(toggleTimerButton);
 		table.add(gameTitle);

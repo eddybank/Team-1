@@ -1,14 +1,17 @@
 package fleaMarket;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.io.File;
+import java.io.IOException;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -19,10 +22,14 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
+import javax.swing.JCheckBox;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
+
+//import javax.sound.*;
+import javax.sound.sampled.*;
 
 import Klondike.SolitaireK;
 import fleaMarket.StatisticAnalysis.User;
@@ -42,11 +49,15 @@ public class SolitaireMenu {
 	private static JButton klondikeStart = new JButton("Klondike");
 	private static JButton fleaMarketStart = new JButton("Flea Market");
 	private static JButton backgroundColorButton = new JButton("Change Background Color");
+	private static JButton enable = new JButton("Enable Sound");
+	private static JButton disable = new JButton("Disable Sound");
 	//protected static JButton statisticButton = new JButton("Game Statistics");
 	private static JTextPane gameTypes = new JTextPane();// displays the score
 	private static JTextField userInput = new JTextField();
 	private static JTextPane statusBox = new JTextPane();// status messages
+	private static boolean soundO = true;
 	
+	//Styled docs to allow for text color changes
 	static StyledDocument game = gameTypes.getStyledDocument();
 	static StyledDocument status = statusBox.getStyledDocument();
 	static StyledDocument score = SolitaireFM.scoreBox.getStyledDocument();
@@ -65,6 +76,12 @@ public class SolitaireMenu {
 	private static Color c;
 	private static String col;
 	private static final Color N_GREEN = new Color(0, 180, 0);
+	
+	//sound boolean getter
+	public static boolean getSoundState()
+	{
+		return soundO;
+	}
 	
 	//Color getter
 	public static Color getColor() 
@@ -216,6 +233,8 @@ public class SolitaireMenu {
 				        time.insertString(time.getLength(), times, style);
 				        gameStatus.insertString(gameStatus.getLength(), gameS, style);
 				        SolitaireFM.gameTitle.setText("<span style =\"color:white\"><b>Team 1<br>Flea Market Solitaire</b> <br> CPSC 4900 <br> Fall 2021</span>");
+				        SolitaireFM.recordBox.setText("<span style =\"color:white\"><b>User Record<br>Klondike Solitaire</b> <br> "
+								+ "Best Win Time: "+SolitaireFM.getBestRecord().getTime()+" seconds <br> Highest Score: "+SolitaireFM.getBestRecord().getScore()+"</span>");
 				        
 				        SolitaireK.scoreBox.setText("");
 						SolitaireK.timeBox.setText("");
@@ -246,6 +265,8 @@ public class SolitaireMenu {
 				        time.insertString(time.getLength(), times, style);
 				        gameStatus.insertString(gameStatus.getLength(), gameS, style);
 				        SolitaireFM.gameTitle.setText("<span style =\"color:black\"><b>Team 1<br>Flea Market Solitaire</b> <br> CPSC 4900 <br> Fall 2021</span>");
+				        SolitaireFM.recordBox.setText("<span style =\"color:black\"><b>User Record<br>Klondike Solitaire</b> <br> "
+								+ "Best Win Time: "+SolitaireFM.getBestRecord().getTime()+" seconds <br> Highest Score: "+SolitaireFM.getBestRecord().getScore()+"</span>");
 				        
 				        SolitaireK.scoreBox.setText("");
 						SolitaireK.timeBox.setText("");
@@ -598,6 +619,8 @@ public class SolitaireMenu {
 				        time.insertString(time.getLength(), times, style);
 				        gameStatus.insertString(gameStatus.getLength(), gameS, style);
 				        SolitaireFM.gameTitle.setText("<span style =\"color:white\"><b>Team 1<br>Flea Market Solitaire</b> <br> CPSC 4900 <br> Fall 2021</span>");
+				        SolitaireFM.recordBox.setText("<span style =\"color:white\"><b>User Record<br>Klondike Solitaire</b> <br> "
+								+ "Best Win Time: "+SolitaireFM.getBestRecord().getTime()+" seconds <br> Highest Score: "+SolitaireFM.getBestRecord().getScore()+"</span>");
 				        
 					} else if (getColor() == Color.WHITE || getColor() == Color.PINK || getColor() == Color.ORANGE || 
 							getColor() == Color.CYAN || getColor() == Color.YELLOW || getColor() == Color.RED || getColor() == Color.LIGHT_GRAY)
@@ -617,20 +640,28 @@ public class SolitaireMenu {
 				        time.insertString(time.getLength(), times, style);
 				        gameStatus.insertString(gameStatus.getLength(), gameS, style);
 				        SolitaireFM.gameTitle.setText("<span style =\"color:black\"><b>Team 1<br>Flea Market Solitaire</b> <br> CPSC 4900 <br> Fall 2021</span>");
+				        SolitaireFM.recordBox.setText("<span style =\"color:black\"><b>User Record<br>Klondike Solitaire</b> <br> "
+								+ "Best Win Time: "+SolitaireFM.getBestRecord().getTime()+" seconds <br> Highest Score: "+SolitaireFM.getBestRecord().getScore()+"</span>");
 					}
 					
 				} else if(e.getSource() == backgroundColorButton) 
 				{
 					setUpColorChange();
 					
-				} /*else if(e.getSource() == statisticButton){
-					enterUser();
-				} */else if(e.getSource() == SolitaireFM.newGameButton)
+				} else if(e.getSource() == SolitaireFM.newGameButton)
 				{
 					if(SolitaireFM.gameOver == true)
 					{
 						user.createRecord(SolitaireFM.score, SolitaireFM.time);
 					}
+				} else if(e.getSource() == disable) {
+					enable.setVisible(true);
+					soundO = false;
+					disable.setVisible(false);
+				} else if(e.getSource() == enable) {
+					enable.setVisible(false);
+					soundO = true;
+					disable.setVisible(true);
 				}
 			} catch (BadLocationException e3) {
 				System.out.println("Error occurred - Printing stack trace");
@@ -681,15 +712,20 @@ public class SolitaireMenu {
 		backgroundColorButton.addActionListener(ae);
 		backgroundColorButton.setBounds(20, TABLE_HEIGHT - 70, 200, 30);
 		
-		//statisticButton.addActionListener(ae);
-		//statisticButton.setBounds(220, TABLE_HEIGHT - 70, 200, 30);
+		enable.addActionListener(ae);
+		enable.setBounds(220, TABLE_HEIGHT - 70, 200, 30);
+		enable.setVisible(false);
 		
+		disable.addActionListener(ae);
+		disable.setBounds(220, TABLE_HEIGHT - 70, 200, 30);
+		
+		menu.add(enable);
+		menu.add(disable);
 		menu.add(gameTypes);
 		menu.add(klondikeStart);
 		menu.add(fleaMarketStart);
 		menu.add(backgroundColorButton);
 		menu.add(statusBox);
-		//menu.add(statisticButton);
 	}
 
 	public static void main(String[] args) throws BadLocationException
