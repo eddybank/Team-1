@@ -176,6 +176,7 @@ public class SolitaireFM
 		}
 	}
 
+	//Move this method to Game Menu so that is the only class to change the DB
 	private static void saveGame()
 	{
 		toggleTimer();
