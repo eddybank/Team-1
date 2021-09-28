@@ -1,7 +1,13 @@
 package fleaMarket;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
+import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -12,7 +18,10 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
+import javax.swing.BoxLayout;
+import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JEditorPane;
@@ -22,8 +31,11 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.JCheckBox;
 import javax.swing.text.BadLocationException;
+import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
@@ -51,6 +63,7 @@ public class SolitaireMenu {
 	private static JButton backgroundColorButton = new JButton("Change Background Color");
 	private static JButton enable = new JButton("Enable Sound");
 	private static JButton disable = new JButton("Disable Sound");
+	private static JButton records = new JButton("Look At Records");
 	//protected static JButton statisticButton = new JButton("Game Statistics");
 	private static JTextPane gameTypes = new JTextPane();// displays the score
 	private static JTextField userInput = new JTextField();
@@ -66,6 +79,8 @@ public class SolitaireMenu {
 	static StyledDocument scoreK = SolitaireK.scoreBox.getStyledDocument();
 	static StyledDocument timeK = SolitaireK.timeBox.getStyledDocument();
 	static StyledDocument gameStatusK = SolitaireK.statusBox.getStyledDocument();
+	
+	static SimpleAttributeSet center = new SimpleAttributeSet();
 	
 	static Style style = gameTypes.addStyle("I'm a Style", null);
 	
@@ -662,6 +677,61 @@ public class SolitaireMenu {
 					enable.setVisible(false);
 					soundO = true;
 					disable.setVisible(true);
+				} else if (e.getSource() == records)
+				{
+					Container cP;
+					
+					JFrame recordFrame = new JFrame("Records Menu");
+					JPanel recordMenu = new JPanel();
+
+					JScrollPane scroll;
+					recordFrame.setSize(800, TABLE_HEIGHT);
+					recordMenu.setSize(800, TABLE_HEIGHT);
+					recordMenu.setLayout(new GridBagLayout()); //new GridLayout(0,4)
+					GridBagConstraints c = new GridBagConstraints();
+					
+					cP = recordFrame.getContentPane();
+					recordFrame.add(scroll = new JScrollPane(recordMenu, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED));
+					
+					JEditorPane recordBox;
+					//JEditorPane recordBox = new JEditorPane("text/html", "");
+					ArrayList<fleaMarket.StatisticAnalysis.Record> rec = user.getRecords();
+					c.fill = GridBagConstraints.HORIZONTAL;
+					c.gridx = 0;
+					c.gridy = 0;
+					JEditorPane box = new JEditorPane("text/html", "<pre><b>Klondike Solitaire</b><br>"+user.getUser()+"'s Records <br>Score for Win = 416</pre>");
+					//box.setBounds(0, 5, 120, 20);
+					box.setEditable(false);
+					box.setOpaque(false);
+					
+					recordMenu.add(box, c);
+					System.out.println(rec.size());
+					for(int r = 0; r < rec.size() ; r++)
+					{
+						c.fill = GridBagConstraints.HORIZONTAL;
+						c.gridx = r%4;
+						c.gridy = (r/4)+1;
+						recordBox = new JEditorPane("text/html", "");
+						recordBox.setText("<pre><b>'"+user.getUser()+"'<br> Record "+(r+1)+"</b><br>"
+								+ "  - Time: "+rec.get(r).getTime()+" seconds<br>  - Highest Score: "+rec.get(r).getScore()+"</pre><br>");
+						//recordBox.setBounds(((TABLE_WIDTH/4)*(r%4)), ((r/4)*100)+50, 100, 100);
+						recordBox.setEditable(false);
+						recordBox.setOpaque(false);
+
+						recordMenu.add(recordBox, c);
+					}
+					SwingUtilities.invokeLater(new Runnable() {
+
+			            @Override
+			            public void run() {
+			                scroll.getVerticalScrollBar().setValue(0);
+			                scroll.getVerticalScrollBar().setUnitIncrement(16);
+			            }
+			        });
+					recordFrame.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+					recordFrame.setLocationRelativeTo(frame);
+					recordFrame.setVisible(true);
+					
 				}
 			} catch (BadLocationException e3) {
 				System.out.println("Error occurred - Printing stack trace");
@@ -694,9 +764,11 @@ public class SolitaireMenu {
 	
 	private static void openMenu() throws BadLocationException
 	{
-		statusBox.setBounds(240, TABLE_HEIGHT - 70, 240, 30);
+		statusBox.setBounds(220, TABLE_HEIGHT - 100, 200, 30);
 		statusBox.setEditable(false);
 		statusBox.setOpaque(false);
+		StyleConstants.setAlignment(center, StyleConstants.ALIGN_CENTER);
+		status.setParagraphAttributes(0, status.getLength(), center, false);
 		
 		gameTypes.setText("Available Game Modes");
 		gameTypes.setEditable(false);
@@ -719,6 +791,10 @@ public class SolitaireMenu {
 		disable.addActionListener(ae);
 		disable.setBounds(220, TABLE_HEIGHT - 70, 200, 30);
 		
+		records.setBounds(240, TABLE_HEIGHT - 200, 150, 30);
+		records.addActionListener(ae);
+		
+		menu.add(records);
 		menu.add(enable);
 		menu.add(disable);
 		menu.add(gameTypes);

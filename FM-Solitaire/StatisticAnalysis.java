@@ -275,7 +275,7 @@ public class StatisticAnalysis {
 		    				 score = Integer.parseInt(ele.getElementsByTagName("time").item(y).getTextContent());
 		    				 rec = new Record(time, score);
 		    				 user.addRecord(rec);
-		    				//System.out.println(rec);
+		    				//System.out.println("y: "+rec);
 	    				 }
 	    			 } 
 	    		 }
