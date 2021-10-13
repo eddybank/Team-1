@@ -132,13 +132,13 @@ public class StatisticAnalysis {
 	public static boolean doesUserExist(String name) 
 	{
 		ArrayList<User> allUsers = getAllUsers();
+		System.out.println(allUsers);
 		boolean doesExist = false;
 		for( User u : allUsers) {
+			
 			if(u.getUser().equals(name))
 			{
 				doesExist = true;
-			} else {
-				doesExist = false;
 			}
 		}
 		return doesExist;
@@ -167,6 +167,7 @@ public class StatisticAnalysis {
 	    		 Node node = users.item(i);
 	    		 Element ele = (Element) node;
 	    		 user = new User(ele.getElementsByTagName("name").item(0).getTextContent());
+	    		 System.out.println(user);
 	    		 user.setBestTime(Integer.parseInt(ele.getElementsByTagName("best_time").item(0).getTextContent()));
 	    			 if(node.getNodeType() == Node.ELEMENT_NODE) 
 	    			 {
@@ -243,6 +244,7 @@ public class StatisticAnalysis {
 		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder documentBuilder;
 		Record rec = new Record();
+		user.resetRecords();
 	    try 
 	    {
 	    	 documentBuilder = documentBuilderFactory.newDocumentBuilder();
@@ -366,7 +368,7 @@ public class StatisticAnalysis {
 				 newUser.appendChild(bestTime);
 				 
 				 Element color = document.createElement("bgcolor");
-				 color.appendChild(document.createTextNode("N_GREEN"));
+				 color.appendChild(document.createTextNode("LIGHT_GRAY"));
 				 newUser.appendChild(color);
 				 
 				 root.appendChild(newUser);
@@ -474,6 +476,9 @@ public class StatisticAnalysis {
 			{
 				return false;
 			}
+		}
+		void resetRecords() {
+			records = new ArrayList<Record>();
 		}
 		
 		void addRecord(Record rec) 

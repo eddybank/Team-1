@@ -64,6 +64,7 @@ public class SolitaireMenu {
 	private static JButton enable = new JButton("Enable Sound");
 	private static JButton disable = new JButton("Disable Sound");
 	private static JButton records = new JButton("Look At Records");
+	private static JButton changeUser = new JButton("Change User");
 	//protected static JButton statisticButton = new JButton("Game Statistics");
 	private static JTextPane gameTypes = new JTextPane();// displays the score
 	private static JTextField userInput = new JTextField();
@@ -106,6 +107,12 @@ public class SolitaireMenu {
 	public static String getColorS() 
 	{
 		 return col;
+	}
+	
+	public static User getUser()
+	{
+		return user;
+		
 	}
 	
 	private static void setUpColorChange() 
@@ -369,6 +376,7 @@ public class SolitaireMenu {
 				if(e.getKeyChar() == KeyEvent.VK_ENTER) 
 				{
 					String username = userInput.getText();
+					System.out.println("dUE: "+StatisticAnalysis.doesUserExist(username));
 					if(StatisticAnalysis.doesUserExist(username))
 					{
 						user = StatisticAnalysis.setUser(username);
@@ -556,10 +564,64 @@ public class SolitaireMenu {
 		userFrame.setVisible(true);
 	}
 	
-	public static User getUser()
+	
+	
+	private static void openRecords()
 	{
-		return user;
+		Container cP;
 		
+		JFrame recordFrame = new JFrame("Records Menu");
+		JPanel recordMenu = new JPanel();
+		
+		ArrayList<fleaMarket.StatisticAnalysis.Record> rec = StatisticAnalysis.getRecords(user);
+		
+		JScrollPane scroll;
+		recordFrame.setSize(800, (rec.size()/8)*(50) + 250);
+		recordMenu.setSize(800, (rec.size()/8)*(50) + 250);
+		recordMenu.setLayout(new GridBagLayout()); //new GridLayout(0,4)
+		GridBagConstraints c = new GridBagConstraints();
+		
+		cP = recordFrame.getContentPane();
+		recordFrame.add(scroll = new JScrollPane(recordMenu, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED));
+		
+		JEditorPane recordBox;
+		//JEditorPane recordBox = new JEditorPane("text/html", "");
+		
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.gridx = 0;
+		c.gridy = 0;
+		JEditorPane box = new JEditorPane("text/html", "<pre><b>Klondike Solitaire</b><br>"+user.getUser()+"'s Records <br>Score for Win = 416</pre>");
+		//box.setBounds(0, 5, 120, 20);
+		box.setEditable(false);
+		box.setOpaque(false);
+		
+		recordMenu.add(box, c);
+		System.out.println(rec.size());
+		for(int r = 0; r < rec.size() ; r++)
+		{
+			c.fill = GridBagConstraints.HORIZONTAL;
+			c.gridx = r%4;
+			c.gridy = (r/4)+1;
+			recordBox = new JEditorPane("text/html", "");
+			recordBox.setText("<pre><b>'"+user.getUser()+"'<br> Record "+(r+1)+"</b><br>"
+					+ "  - Time: "+rec.get(r).getTime()+" seconds<br>  - Highest Score: "+rec.get(r).getScore()+"</pre><br>");
+			//recordBox.setBounds(((TABLE_WIDTH/4)*(r%4)), ((r/4)*100)+50, 100, 100);
+			recordBox.setEditable(false);
+			recordBox.setOpaque(false);
+
+			recordMenu.add(recordBox, c);
+		}
+		SwingUtilities.invokeLater(new Runnable() {
+
+            @Override
+            public void run() {
+                scroll.getVerticalScrollBar().setValue(0);
+                scroll.getVerticalScrollBar().setUnitIncrement(16);
+            }
+        });
+		recordFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		recordFrame.setLocationRelativeTo(frame);
+		recordFrame.setVisible(true);
 	}
 	
 	private static class SetUpButtonListeners implements ActionListener
@@ -679,61 +741,12 @@ public class SolitaireMenu {
 					disable.setVisible(true);
 				} else if (e.getSource() == records)
 				{
-					Container cP;
-					
-					JFrame recordFrame = new JFrame("Records Menu");
-					JPanel recordMenu = new JPanel();
-
-					JScrollPane scroll;
-					recordFrame.setSize(800, TABLE_HEIGHT);
-					recordMenu.setSize(800, TABLE_HEIGHT);
-					recordMenu.setLayout(new GridBagLayout()); //new GridLayout(0,4)
-					GridBagConstraints c = new GridBagConstraints();
-					
-					cP = recordFrame.getContentPane();
-					recordFrame.add(scroll = new JScrollPane(recordMenu, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED));
-					
-					JEditorPane recordBox;
-					//JEditorPane recordBox = new JEditorPane("text/html", "");
-					ArrayList<fleaMarket.StatisticAnalysis.Record> rec = user.getRecords();
-					c.fill = GridBagConstraints.HORIZONTAL;
-					c.gridx = 0;
-					c.gridy = 0;
-					JEditorPane box = new JEditorPane("text/html", "<pre><b>Klondike Solitaire</b><br>"+user.getUser()+"'s Records <br>Score for Win = 416</pre>");
-					//box.setBounds(0, 5, 120, 20);
-					box.setEditable(false);
-					box.setOpaque(false);
-					
-					recordMenu.add(box, c);
-					System.out.println(rec.size());
-					for(int r = 0; r < rec.size() ; r++)
-					{
-						c.fill = GridBagConstraints.HORIZONTAL;
-						c.gridx = r%4;
-						c.gridy = (r/4)+1;
-						recordBox = new JEditorPane("text/html", "");
-						recordBox.setText("<pre><b>'"+user.getUser()+"'<br> Record "+(r+1)+"</b><br>"
-								+ "  - Time: "+rec.get(r).getTime()+" seconds<br>  - Highest Score: "+rec.get(r).getScore()+"</pre><br>");
-						//recordBox.setBounds(((TABLE_WIDTH/4)*(r%4)), ((r/4)*100)+50, 100, 100);
-						recordBox.setEditable(false);
-						recordBox.setOpaque(false);
-
-						recordMenu.add(recordBox, c);
-					}
-					SwingUtilities.invokeLater(new Runnable() {
-
-			            @Override
-			            public void run() {
-			                scroll.getVerticalScrollBar().setValue(0);
-			                scroll.getVerticalScrollBar().setUnitIncrement(16);
-			            }
-			        });
-					recordFrame.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-					recordFrame.setLocationRelativeTo(frame);
-					recordFrame.setVisible(true);
-					
+					openRecords();
+				} else if(e.getSource() == changeUser)
+				{
+					enterUser();
 				}
-			} catch (BadLocationException e3) {
+			} catch (BadLocationException | NullPointerException e3) {
 				System.out.println("Error occurred - Printing stack trace");
 				e3.printStackTrace();
 			}
@@ -794,6 +807,10 @@ public class SolitaireMenu {
 		records.setBounds(240, TABLE_HEIGHT - 200, 150, 30);
 		records.addActionListener(ae);
 		
+		changeUser.setBounds(240, TABLE_HEIGHT - 230, 150, 30);
+		changeUser.addActionListener(ae);
+		
+		menu.add(changeUser);
 		menu.add(records);
 		menu.add(enable);
 		menu.add(disable);
