@@ -166,6 +166,13 @@ public class SolitaireFM
 			startTimer();
 		}
 	}
+	
+	//Move this method to Game Menu so that is the only class to change the DB
+	private static void saveGame()
+	{
+		SolitaireMenu.saveGame();
+	}
+	
 
 	private static class ScoreClock extends TimerTask
 	{
@@ -176,51 +183,6 @@ public class SolitaireFM
 		}
 	}
 
-	//Move this method to Game Menu so that is the only class to change the DB
-	private static void saveGame()
-	{
-		toggleTimer();
-		JDialog saveFrame = new JDialog(frame, true);
-		JPanel saveTable = new JPanel();
-		saveFrame.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-		saveFrame.setSize(300, 100);
-		JLabel save = new JLabel("Would you like to save this games results?");
-		JButton yes = new JButton("YES");
-		JButton no = new JButton("NO");
-		
-		class saveGameListener implements ActionListener
-		{
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if(e.getSource() == yes) {
-					SolitaireMenu.getUser().createRecord(SolitaireFM.score, SolitaireFM.time);
-					saveFrame.dispose();
-				} else if(e.getSource() == no)
-				{
-					saveFrame.dispose();
-				}
-				
-			}
-		}
-	
-		ActionListener act = new saveGameListener();
-		
-		save.setBounds(0, 0, 200, 30);
-		yes.setBounds(0, 0, 120, 30);
-		yes.addActionListener(act);
-		no.setBounds(120, 0, 120, 30);
-		no.addActionListener(act);
-		
-		saveTable.add(save);
-		saveTable.add(yes);
-		saveTable.add(no);
-		saveFrame.add(saveTable);
-		
-		saveFrame.setLocationRelativeTo(frame);
-		saveFrame.setVisible(true);
-		
-	}
-	
 	// BUTTON LISTENER
 	private static class setUpButtonListeners implements ActionListener
 	{

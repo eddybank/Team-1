@@ -1,27 +1,18 @@
 package fleaMarket;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
-import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
-import java.awt.Point;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 
-import javax.swing.BoxLayout;
-import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JEditorPane;
@@ -39,10 +30,6 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
-
-//import javax.sound.*;
-import javax.sound.sampled.*;
-
 import Klondike.SolitaireK;
 import fleaMarket.StatisticAnalysis.User;
 
@@ -751,6 +738,50 @@ public class SolitaireMenu {
 				e3.printStackTrace();
 			}
 		}
+	}
+	
+	public static void saveGame()
+	{
+		SolitaireFM.toggleTimer();
+		JDialog saveFrame = new JDialog(frame, true);
+		JPanel saveTable = new JPanel();
+		saveFrame.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+		saveFrame.setSize(300, 100);
+		JLabel save = new JLabel("Would you like to save this games results?");
+		JButton yes = new JButton("YES");
+		JButton no = new JButton("NO");
+		
+		class saveGameListener implements ActionListener
+		{
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if(e.getSource() == yes) {
+					SolitaireMenu.getUser().createRecord(SolitaireFM.score, SolitaireFM.time);
+					saveFrame.dispose();
+				} else if(e.getSource() == no)
+				{
+					saveFrame.dispose();
+				}
+				
+			}
+		}
+	
+		ActionListener act = new saveGameListener();
+		
+		save.setBounds(0, 0, 200, 30);
+		yes.setBounds(0, 0, 120, 30);
+		yes.addActionListener(act);
+		no.setBounds(120, 0, 120, 30);
+		no.addActionListener(act);
+		
+		saveTable.add(save);
+		saveTable.add(yes);
+		saveTable.add(no);
+		saveFrame.add(saveTable);
+		
+		saveFrame.setLocationRelativeTo(frame);
+		saveFrame.setVisible(true);
+		
 	}
 	
 	private static class windowListener implements WindowListener
