@@ -1,4 +1,4 @@
-package fleaMarket;
+package global;
 
 import java.awt.Color;
 import java.awt.Container;
@@ -37,8 +37,9 @@ import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 import Klondike.SolitaireK;
-import fleaMarket.StatisticAnalysis.User;
-import fleaMarket.StatisticAnalysis.Record;
+import global.StatisticAnalysis.User;
+import fleaMarket.SolitaireFM;
+import global.StatisticAnalysis.Record;
 
 public class SolitaireMenu {
 	
@@ -65,6 +66,7 @@ public class SolitaireMenu {
 	private static boolean soundO = true;
 	
 	private static Record record;
+	public static String gameType = "";
 	
 	//Styled docs to allow for text color changes
 	static StyledDocument game = gameTypes.getStyledDocument();
@@ -703,11 +705,11 @@ public class SolitaireMenu {
 		JFrame recordFrame = new JFrame("Records Menu");
 		JPanel recordMenu = new JPanel();
 		
-		ArrayList<fleaMarket.StatisticAnalysis.Record> rec = StatisticAnalysis.getRecords(user);
+		ArrayList<Record> rec = StatisticAnalysis.getRecords(user);
 		
 		JScrollPane scroll;
-		recordFrame.setSize(750, (rec.size()*25)+50);
-		recordMenu.setSize(750, (rec.size()*25)+50);
+		recordFrame.setSize(750, (rec.size()*25)+150);
+		recordMenu.setSize(750, (rec.size()*25)+150);
 		recordMenu.setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
 		
@@ -743,7 +745,7 @@ public class SolitaireMenu {
 			c.gridx = 0;
 			c.gridy = r+1;
 			recordBox = new JEditorPane("text/html", "");
-			recordBox.setText("<pre><b>'"+user.getUser()+"', Game Type, Record "+(r+1)+"</b>"
+			recordBox.setText("<pre><b>'"+user.getUser()+"', "+rec.get(r).getGame()+", Record "+(r+1)+"</b>"
 							+ ", Time: "+rec.get(r).getTime()+" seconds, Score: "+rec.get(r).getScore()+""
 							+ ", Date: "+sDF.format(rec.get(r).getDate())+"</pre>");
 			recordBox.setEditable(false);
@@ -775,6 +777,7 @@ public class SolitaireMenu {
 			try {
 				if(e.getSource() == klondikeStart) 
 				{
+					gameType = "Klondike";
 					Klondike.SolitaireK.main(null);
 					
 					String sco = SolitaireK.scoreBox.getText();
@@ -813,6 +816,7 @@ public class SolitaireMenu {
 				} else if(e.getSource() == fleaMarketStart) 
 				{
 					System.out.println(getColor());
+					gameType = "Flea Market";
 					SolitaireFM.main(null);
 					
 					String sco = SolitaireFM.scoreBox.getText();
@@ -890,7 +894,7 @@ public class SolitaireMenu {
 	public static void saveGame() throws ParseException
 	{
 		if(record != null) {
-			getUser().createRecord(record.getScore(), record.getTime());
+			getUser().createRecord(gameType, record.getScore(), record.getTime());
 		}
 		
 	}
@@ -934,7 +938,7 @@ public class SolitaireMenu {
 		public void windowActivated(WindowEvent e) {}
 		@Override
 		public void windowDeactivated(WindowEvent e) {
-			record = new Record(Integer.parseInt(SolitaireFM.scoreBox.getText().substring(7)), Integer.parseInt(SolitaireFM.timeBox.getText().substring(9)), new Date());
+			record = new Record(gameType, Integer.parseInt(SolitaireFM.scoreBox.getText().substring(7)), Integer.parseInt(SolitaireFM.timeBox.getText().substring(9)), new Date());
 			
 			try {
 				saveGame();

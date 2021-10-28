@@ -1,6 +1,5 @@
 package Klondike;
 
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -19,12 +18,12 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextField;
 import javax.swing.JTextPane;
 
 import global.Card;
 import global.CardStack;
 import global.FinalStack;
+import global.SolitaireMenu;
 
 
 
@@ -777,7 +776,7 @@ public class SolitaireK
 		frame.setSize(TABLE_WIDTH, TABLE_HEIGHT);
 
 		table.setLayout(null);
-		table.setBackground(fleaMarket.SolitaireMenu.getColor());
+		table.setBackground(SolitaireMenu.getColor());
 
 		contentPane = frame.getContentPane();
 		contentPane.add(table);

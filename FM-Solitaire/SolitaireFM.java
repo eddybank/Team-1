@@ -3,7 +3,10 @@ package fleaMarket;
 import global.Card;
 import global.CardStack;
 import global.FinalStack;
-import fleaMarket.StatisticAnalysis.Record;
+import global.SimpleAudioPlayer;
+import global.StatisticAnalysis.Record;
+import global.StatisticAnalysis.User;
+import global.SolitaireMenu;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Point;
@@ -12,27 +15,21 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
-
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JEditorPane;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 
-import fleaMarket.StatisticAnalysis.User;
+//import global.StatisticAnalysis.User;
 
 
 public class SolitaireFM
@@ -55,25 +52,25 @@ public class SolitaireFM
 
 	// GUI COMPONENTS (top level)
 	private static final JFrame frame = new JFrame("Flea Market Solitaire");
-	protected static final JPanel table = new JPanel();
+	public static final JPanel table = new JPanel();
 	protected static final JPanel menu = new JPanel();
 	// other components
-	protected static JEditorPane gameTitle = new JEditorPane("text/html", "");
+	public static JEditorPane gameTitle = new JEditorPane("text/html", "");
 	private static JButton showRulesButton = new JButton("Show Rules");
 	protected static JButton newGameButton = new JButton("New Game");
 	private static JButton toggleTimerButton = new JButton("Pause Timer");
 	private static JButton autoPlayButton = new JButton("Auto Play");
-	protected static JTextPane scoreBox = new JTextPane();// displays the score
-	protected static JTextPane timeBox = new JTextPane();// displays the time
-	protected static JTextPane statusBox = new JTextPane();// status messages
+	public static JTextPane scoreBox = new JTextPane();// displays the score
+	public static JTextPane timeBox = new JTextPane();// displays the time
+	public static JTextPane statusBox = new JTextPane();// status messages
 	
 	protected static JEditorPane recordBox = new JEditorPane("text/html", "");// status messages
-	protected static fleaMarket.StatisticAnalysis.Record bestRecord;
+	protected static global.StatisticAnalysis.Record bestRecord;
 	
 	//Action Listener for buttons
 	private static ActionListener ae = new setUpButtonListeners();
 	private static CardMovementManager cm = new CardMovementManager();
-	private static SolitaireMenu.gameListener gl = new SolitaireMenu.gameListener();
+	private static global.SolitaireMenu.gameListener gl = new global.SolitaireMenu.gameListener();
 
 	// TIMER UTILITIES
 	private static Timer timer = new Timer();
@@ -107,7 +104,7 @@ public class SolitaireFM
 			
 	}
 	
-	public static fleaMarket.StatisticAnalysis.Record getBestRecord()
+	public static Record getBestRecord()
 	{
 		return bestRecord;
 	}
@@ -160,7 +157,7 @@ public class SolitaireFM
 	}
 
 	// the pause timer button uses this
-	protected static void toggleTimer()
+	public static void toggleTimer()
 	{
 		if (timeRunning && scoreClock != null)
 		{
@@ -606,7 +603,7 @@ public class SolitaireFM
 	private static void placeBestRecord() 
 	{
 		User u = SolitaireMenu.getUser();
-		StatisticAnalysis.setUser(u.getUser());
+		global.StatisticAnalysis.setUser(u.getUser());
 		for(int x = 0; x < u.getRecords().size(); x++)
 		{
 			//System.out.println(u.getRecords().get(x));

@@ -1,4 +1,4 @@
-package fleaMarket;
+package global;
 
 import java.io.File;
 import java.io.IOException;
@@ -165,6 +165,7 @@ public class StatisticAnalysis {
 
 	    	 NodeList users = document.getElementsByTagName("user");
 	    	 
+	    	 String game = "";
 	    	 int time = 0;
 	    	 int score = 0;
 	    	 Date date = null;
@@ -181,10 +182,11 @@ public class StatisticAnalysis {
 	    				 
 	    				 for(int y = 0; y < recs.getLength(); y++)
 	    				 {
+	    					 game = ele.getElementsByTagName("game").item(y).getTextContent();
 		    				 time = Integer.parseInt(ele.getElementsByTagName("score").item(y).getTextContent());
 		    				 score = Integer.parseInt(ele.getElementsByTagName("time").item(y).getTextContent());
 		    				 date = sDF.parse(ele.getElementsByTagName("date").item(y).getTextContent());
-		    				 rec = new Record(time, score, date);
+		    				 rec = new Record(game, time, score, date);
 		    				 user.addRecord(rec);
 		    				//System.out.println(rec);
 	    				 }
@@ -213,6 +215,7 @@ public class StatisticAnalysis {
 
 	    	 NodeList users = document.getElementsByTagName("user");
 	    	 
+	    	 String game = "";
 	    	 int time = 0;
 	    	 int score = 0;
 	    	 Date date = null;
@@ -231,10 +234,11 @@ public class StatisticAnalysis {
 	    				 
 	    				 for(int y = 0; y < recs.getLength(); y++)
 	    				 {
+	    					 game = ele.getElementsByTagName("game").item(y).getTextContent();
 		    				 time = Integer.parseInt(ele.getElementsByTagName("score").item(y).getTextContent());
 		    				 score = Integer.parseInt(ele.getElementsByTagName("time").item(y).getTextContent());
 		    				 date = sDF.parse(ele.getElementsByTagName("date").item(y).getTextContent());
-		    				 rec = new Record(time, score, date);
+		    				 rec = new Record(game, time, score, date);
 		    				 user.addRecord(rec);
 	    				 }
 	    			 }
@@ -262,6 +266,7 @@ public class StatisticAnalysis {
 
 	    	 NodeList users = document.getElementsByTagName("user");
 	    	 
+	    	 String game = "";
 	    	 int best_time = 0;
 	    	 int time = 0;
 	    	 int score = 0;
@@ -283,10 +288,11 @@ public class StatisticAnalysis {
 	    				 
 	    				 for(int y = 0; y < recs.getLength(); y++)
 	    				 {
+	    					 game = ele.getElementsByTagName("game").item(y).getTextContent();
 		    				 time = Integer.parseInt(ele.getElementsByTagName("score").item(y).getTextContent());
 		    				 score = Integer.parseInt(ele.getElementsByTagName("time").item(y).getTextContent());
 		    				 date = sDF.parse(ele.getElementsByTagName("date").item(y).getTextContent());
-		    				 rec = new Record(time, score, date);
+		    				 rec = new Record(game, time, score, date);
 		    				 user.addRecord(rec);
 		    				//System.out.println("y: "+rec);
 	    				 }
@@ -326,6 +332,10 @@ public class StatisticAnalysis {
 	    			 
 	    			 Element record = document.createElement("record");
 
+	    			 Element game = document.createElement("game");
+	    			 game.appendChild(document.createTextNode(SolitaireMenu.gameType));
+	    			 record.appendChild(game);
+	    			 
 	    			 Element score = document.createElement("score");
 	    			 score.appendChild(document.createTextNode(Integer.toString(r.getScore())));
 	    			 record.appendChild(score);
@@ -435,30 +445,30 @@ public class StatisticAnalysis {
 		
 		private ArrayList<Record> records = new ArrayList<Record>();
 		
-		User(){}
-		User(String user)
+		public User(){}
+		public User(String user)
 		{
 			username = user;
 			//best_time = 0;
 		}
 		
-		User(String user, int bt)
+		public User(String user, int bt)
 		{
 			username = user;
 			best_time = bt;
 			newUser(this);
 		}
 		
-		String getUser() 
+		public String getUser() 
 		{
 			return username;
 		}
 		
-		int getBestTime() 
+		public int getBestTime() 
 		{
 			return best_time;
 		}
-		void setBestTime()
+		public void setBestTime()
 		{
 			ArrayList<Record> r = StatisticAnalysis.getRecords(this);
 			if(r.size() >= 1)
@@ -477,12 +487,12 @@ public class StatisticAnalysis {
 			}
 		}
 		
-		void setBestTime(int i)
+		public void setBestTime(int i)
 		{
 			best_time = i;
 		}
 		
-		boolean isBestTime(Record r)
+		public boolean isBestTime(Record r)
 		{
 			if(r.getTime() >= getBestTime())
 			{
@@ -492,24 +502,24 @@ public class StatisticAnalysis {
 				return false;
 			}
 		}
-		void resetRecords() {
+		public void resetRecords() {
 			records = new ArrayList<Record>();
 		}
 		
-		void addRecord(Record rec) 
+		public void addRecord(Record rec) 
 		{
 			records.add(rec);
 		}
 
-		void createRecord(int score, int time) throws ParseException 
+		public void createRecord(String game, int score, int time) throws ParseException 
 		{
-			Record newR = new Record(score, time, new Date());
+			Record newR = new Record(game, score, time, new Date());
 			records.add(newR);
 			setBestTime();
 			setRecord(this, newR);
 		}
 		
-		ArrayList<Record> getRecords()
+		public ArrayList<Record> getRecords()
 		{
 			return records;
 		}
@@ -526,29 +536,36 @@ public class StatisticAnalysis {
 	
 	public static class Record 
 	{
+		private String game;
 		private int time;
 		private int score;
 		private Date date;
 			
-		Record(){}
+		public Record(){}
 		
-		Record(int s, int t, Date d){
+		public Record(String g, int s, int t, Date d){
+			game = g;
 			score = s;
 			time = t;
 			date = d;
 		}
-				
-		int getScore()
+			
+		public String getGame()
+		{
+			return game;
+		}
+		
+		public int getScore()
 		{
 			return score;
 		}
 			
-		int getTime()
+		public int getTime()
 		{
 			return time;
 		}
 		
-		Date getDate()
+		public Date getDate()
 		{
 			return date;
 		}
