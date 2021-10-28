@@ -2,7 +2,11 @@ package fleaMarket;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -28,6 +32,7 @@ public class StatisticAnalysis {
 	private static boolean dircreate = savedir.mkdir();
 	private static final File savefile = new File(savedir, "users.xml");
 	private static File filePP = new File(savedir, "usersPP.xml");
+	private static SimpleDateFormat sDF = new SimpleDateFormat("dd/MM/yy hh:mm:ss");
 	
 	public static void createFiles()
 	{
@@ -131,8 +136,9 @@ public class StatisticAnalysis {
 	
 	public static boolean doesUserExist(String name) 
 	{
+		createFiles();
 		ArrayList<User> allUsers = getAllUsers();
-		System.out.println(allUsers);
+		//System.out.println(allUsers);
 		boolean doesExist = false;
 		for( User u : allUsers) {
 			
@@ -161,13 +167,13 @@ public class StatisticAnalysis {
 	    	 
 	    	 int time = 0;
 	    	 int score = 0;
-	    	 
+	    	 Date date = null;
 	    	 for(int i = 0; i < users.getLength(); i++)
 	    	 {
 	    		 Node node = users.item(i);
 	    		 Element ele = (Element) node;
 	    		 user = new User(ele.getElementsByTagName("name").item(0).getTextContent());
-	    		 System.out.println(user);
+	    		 //System.out.println(user);
 	    		 user.setBestTime(Integer.parseInt(ele.getElementsByTagName("best_time").item(0).getTextContent()));
 	    			 if(node.getNodeType() == Node.ELEMENT_NODE) 
 	    			 {
@@ -177,14 +183,15 @@ public class StatisticAnalysis {
 	    				 {
 		    				 time = Integer.parseInt(ele.getElementsByTagName("score").item(y).getTextContent());
 		    				 score = Integer.parseInt(ele.getElementsByTagName("time").item(y).getTextContent());
-		    				 rec = new Record(time, score);
+		    				 date = sDF.parse(ele.getElementsByTagName("date").item(y).getTextContent());
+		    				 rec = new Record(time, score, date);
 		    				 user.addRecord(rec);
 		    				//System.out.println(rec);
 	    				 }
 	    			 }
 	    			 allUsers.add(user);
 	    	 }
-		} catch (SAXException | IOException | ParserConfigurationException e) 
+		} catch (SAXException | IOException | ParserConfigurationException | DOMException | ParseException e) 
 	    {
 			System.out.println("Error occurred - Printing stack trace");
 			e.printStackTrace();
@@ -208,6 +215,7 @@ public class StatisticAnalysis {
 	    	 
 	    	 int time = 0;
 	    	 int score = 0;
+	    	 Date date = null;
 	    	 
 	    	 for(int i = 0; i < users.getLength(); i++)
 	    	 {
@@ -225,13 +233,14 @@ public class StatisticAnalysis {
 	    				 {
 		    				 time = Integer.parseInt(ele.getElementsByTagName("score").item(y).getTextContent());
 		    				 score = Integer.parseInt(ele.getElementsByTagName("time").item(y).getTextContent());
-		    				 rec = new Record(time, score);
+		    				 date = sDF.parse(ele.getElementsByTagName("date").item(y).getTextContent());
+		    				 rec = new Record(time, score, date);
 		    				 user.addRecord(rec);
 	    				 }
 	    			 }
 	    		 }
 	    	 }
-		} catch (SAXException | IOException | ParserConfigurationException e) 
+		} catch (SAXException | IOException | ParserConfigurationException | DOMException | ParseException e) 
 	    {
 			System.out.println("Error occurred - Printing stack trace");
 			e.printStackTrace();
@@ -256,6 +265,7 @@ public class StatisticAnalysis {
 	    	 int best_time = 0;
 	    	 int time = 0;
 	    	 int score = 0;
+	    	 Date date = null;
 	    	 
 	    	 for(int i = 0; i < users.getLength(); i++)
 	    	 {
@@ -275,14 +285,15 @@ public class StatisticAnalysis {
 	    				 {
 		    				 time = Integer.parseInt(ele.getElementsByTagName("score").item(y).getTextContent());
 		    				 score = Integer.parseInt(ele.getElementsByTagName("time").item(y).getTextContent());
-		    				 rec = new Record(time, score);
+		    				 date = sDF.parse(ele.getElementsByTagName("date").item(y).getTextContent());
+		    				 rec = new Record(time, score, date);
 		    				 user.addRecord(rec);
 		    				//System.out.println("y: "+rec);
 	    				 }
 	    			 } 
 	    		 }
 	    	 }
-		} catch (SAXException | IOException | ParserConfigurationException e) 
+		} catch (SAXException | IOException | ParserConfigurationException | DOMException | ParseException e) 
 	    {
 			System.out.println("Error occurred - Printing stack trace");
 			e.printStackTrace();
@@ -322,6 +333,10 @@ public class StatisticAnalysis {
 	    			 Element time = document.createElement("time");
 	    			 time.appendChild(document.createTextNode(Integer.toString(r.getTime())));
 	    			 record.appendChild(time);
+	    			 
+	    			 Element date = document.createElement("date");
+	    			 date.appendChild(document.createTextNode(sDF.format(r.getDate())));
+	    			 record.appendChild(date);
 	    	        
 	    			 ele.appendChild(record);
 	    		 }
@@ -486,9 +501,9 @@ public class StatisticAnalysis {
 			records.add(rec);
 		}
 
-		void createRecord(int score, int time) 
+		void createRecord(int score, int time) throws ParseException 
 		{
-			Record newR = new Record(score, time);
+			Record newR = new Record(score, time, new Date());
 			records.add(newR);
 			setBestTime();
 			setRecord(this, newR);
@@ -513,12 +528,14 @@ public class StatisticAnalysis {
 	{
 		private int time;
 		private int score;
+		private Date date;
 			
 		Record(){}
 		
-		Record(int s, int t){
+		Record(int s, int t, Date d){
 			score = s;
 			time = t;
+			date = d;
 		}
 				
 		int getScore()
@@ -530,6 +547,12 @@ public class StatisticAnalysis {
 		{
 			return time;
 		}
+		
+		Date getDate()
+		{
+			return date;
+		}
+		
 		public String toString()
 		{
 			return "Time: "+time+", Score: "+score;

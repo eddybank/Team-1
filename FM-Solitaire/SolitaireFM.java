@@ -1,5 +1,9 @@
 package fleaMarket;
 
+import global.Card;
+import global.CardStack;
+import global.FinalStack;
+import fleaMarket.StatisticAnalysis.Record;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Point;
@@ -12,6 +16,7 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -33,20 +38,20 @@ import fleaMarket.StatisticAnalysis.User;
 public class SolitaireFM
 {
 	// CONSTANTS
-	public static final int TABLE_HEIGHT = CardFM.CARD_HEIGHT * (8);
-	public static final int TABLE_WIDTH = (CardFM.CARD_WIDTH * 8);
+	public static final int TABLE_HEIGHT = Card.CARD_HEIGHT * (8);
+	public static final int TABLE_WIDTH = (Card.CARD_WIDTH * 8);
 	public static final int NUM_FINAL_DECKS = 8;
 	public static final int NUM_PLAY_DECKS = 13;
 	public static final Point DECK_POS = new Point(5, 5);
-	public static final Point SHOW_POS = new Point(DECK_POS.x + CardFM.CARD_WIDTH + 5, DECK_POS.y);
-	public static final Point FINAL_POS = new Point(SHOW_POS.x + CardFM.CARD_WIDTH + 150, DECK_POS.y);
-	public static final Point PLAY_POS = new Point(DECK_POS.x, FINAL_POS.y + CardFM.CARD_HEIGHT + 30);
+	public static final Point SHOW_POS = new Point(DECK_POS.x + Card.CARD_WIDTH + 5, DECK_POS.y);
+	public static final Point FINAL_POS = new Point(SHOW_POS.x + Card.CARD_WIDTH + 150, DECK_POS.y);
+	public static final Point PLAY_POS = new Point(DECK_POS.x, FINAL_POS.y + Card.CARD_HEIGHT + 30);
 
 	// GAMEPLAY STRUCTURES
-	private static FinalStackFM[] final_cards;// Foundation Stacks
-	private static CardStackFM[] playCardStack; // Tableau stacks
-	private static CardStackFM deck; // populated with 2 standard 52 card decks
-	private static FinalStackFM[] deal_deck;// Foundation Stacks
+	private static FinalStack[] final_cards;// Foundation Stacks
+	private static CardStack[] playCardStack; // Tableau stacks
+	private static CardStack deck; // populated with 2 standard 52 card decks
+	private static FinalStack[] deal_deck;// Foundation Stacks
 
 	// GUI COMPONENTS (top level)
 	private static final JFrame frame = new JFrame("Flea Market Solitaire");
@@ -68,7 +73,7 @@ public class SolitaireFM
 	//Action Listener for buttons
 	private static ActionListener ae = new setUpButtonListeners();
 	private static CardMovementManager cm = new CardMovementManager();
-	
+	private static SolitaireMenu.gameListener gl = new SolitaireMenu.gameListener();
 
 	// TIMER UTILITIES
 	private static Timer timer = new Timer();
@@ -83,9 +88,9 @@ public class SolitaireFM
 	
 	//Sound
 	//private static boolean SolitaireMenu.getSoundState() = SolitaireMenu.soundO;
-	private static String filePath = "C:\\Users\\Evan_\\Desktop\\UTC Senior\\CPSC 4900\\Sounds\\dealing_card.wav";
-	private static String filePath2 = "C:\\Users\\Evan_\\Desktop\\UTC Senior\\CPSC 4900\\Sounds\\card_contact.wav";
-	private static String filePath3 = "C:\\Users\\Evan_\\Desktop\\UTC Senior\\CPSC 4900\\Sounds\\deal_cards_f.wav";
+	private static String filePath = "src/global/Sounds/dealing_card.wav";
+	private static String filePath2 = "src/global/Sounds/card_contact.wav";
+	private static String filePath3 = "src/global/Sounds/deal_cards_f.wav";
 	private static SimpleAudioPlayer card_contact_ap;
 	private static SimpleAudioPlayer deal_card_ap;
 	
@@ -108,9 +113,9 @@ public class SolitaireFM
 	}
 
 	// moves a card to abs location within a component
-	protected static CardFM moveCard(CardFM c, int x, int y)
+	protected static Card moveCard(Card c, int x, int y)
 	{
-		c.setBounds(new Rectangle(new Point(x, y), new Dimension(CardFM.CARD_WIDTH + 10, CardFM.CARD_HEIGHT + 10)));
+		c.setBounds(new Rectangle(new Point(x, y), new Dimension(Card.CARD_WIDTH + 10, Card.CARD_HEIGHT + 10)));
 		c.setXY(new Point(x, y));
 		return c;
 	}
@@ -166,13 +171,6 @@ public class SolitaireFM
 			startTimer();
 		}
 	}
-	
-	//Move this method to Game Menu so that is the only class to change the DB
-	private static void saveGame()
-	{
-		SolitaireMenu.saveGame();
-	}
-	
 
 	private static class ScoreClock extends TimerTask
 	{
@@ -191,8 +189,8 @@ public class SolitaireFM
 		{
 			if(e.getSource() == newGameButton) 
 			{
-				saveGame();
 				SolitaireFM.playFMNewGame();
+				statusBox.setText("Game Reset");
 			} else if(e.getSource() == toggleTimerButton) 
 			{
 					toggleTimer();
@@ -238,34 +236,7 @@ public class SolitaireFM
 			}
 		}
 	} 
-	private static class windowListener implements WindowListener
-	{
-
-		@Override
-		public void windowOpened(WindowEvent e) {}
-		@Override
-		public void windowClosing(WindowEvent e) {
-			
-			newGameButton.removeActionListener(ae);
-			
-			toggleTimerButton.removeActionListener(ae);
-			
-			showRulesButton.removeActionListener(ae);
-			
-			frame.dispose();
-		}
-		@Override
-		public void windowClosed(WindowEvent e) {}
-		@Override
-		public void windowIconified(WindowEvent e) {}
-		@Override
-		public void windowDeiconified(WindowEvent e) {}
-		@Override
-		public void windowActivated(WindowEvent e) {}
-		@Override
-		public void windowDeactivated(WindowEvent e) {}
-
-	}
+	
 	
 	/*
 	 * This class handles all of the logic of moving the Card components as well
@@ -278,22 +249,22 @@ public class SolitaireFM
 		//private boolean gameOver = true;// easier to negate this than affirm it
 		private Point start = null;// where mouse was clicked
 		private Point stop = null;// where mouse was released
-		private CardFM card = null; // card to be moved
+		private Card card = null; // card to be moved
 		// used for moving single cards
-		private CardStackFM source = null;
-		private CardStackFM dest = null;
+		private CardStack source = null;
+		private CardStack dest = null;
 		// used for moving a stack of cards
-		private CardStackFM transferStack = new CardStackFM(false);
+		private CardStack transferStack = new CardStack(false);
 		//private SimpleAudioPlayer deal_card_ap = ap("C:\\Users\\Evan_\\Desktop\\UTC Senior\\CPSC 4900\\Sounds\\dealing_card.wav");
 		//private SimpleAudioPlayer card_contact_ap = ap("C:\\Users\\Evan_\\Desktop\\UTC Senior\\CPSC 4900\\Sounds\\card_contact.wav");
 		
-		public static boolean validStackMove(CardFM source, CardFM dest)
+		public static boolean validStackMove(Card source, Card dest)
 		{
 			if(dest != null) {
 				int s_val = source.getValue().ordinal();
 				int d_val = dest.getValue().ordinal();
-				CardFM.Suit s_suit = source.getSuit();
-				CardFM.Suit d_suit = dest.getSuit();
+				Card.Suit s_suit = source.getSuit();
+				Card.Suit d_suit = dest.getSuit();
 	
 				// destination card should be one higher value
 				if (s_val  == (d_val + 1))
@@ -324,7 +295,7 @@ public class SolitaireFM
 					if(playCardStack[x].empty()) {
 						System.out.print("poping deck ");
 						deck.showSize();
-						CardFM c = deck.pop().setFaceup();
+						Card c = deck.pop().setFaceup();
 						System.out.println("sound: "+SolitaireMenu.getSoundState());
 						if(SolitaireMenu.getSoundState())
 						{
@@ -360,7 +331,7 @@ public class SolitaireFM
 				// pinpointing exact card pressed
 
 				if(!source.empty()) {
-					CardFM c = (CardFM) source.getFirst();
+					Card c = (Card) source.getFirst();
 					if (c.contains(start) && source.contains(start))
 					{
 						transferStack.putFirst(c);
@@ -393,14 +364,14 @@ public class SolitaireFM
 					if (card.getFaceStatus() == true && dest.contains(stop) && source != dest &&
 							validStackMove(card, dest.getFirst()) && transferStack.showSize() == 1 && card == source.getFirst())
 					{
-						CardFM c = null;
+						Card c = null;
 						c = source.popFirst();
 						c.repaint();
 							
 						table.repaint();
 						if (source.getFirst() != null)
 						{
-							CardFM temp = source.getFirst().setFaceup();
+							Card temp = source.getFirst().setFaceup();
 							temp.repaint();
 							source.repaint();
 						}
@@ -426,14 +397,14 @@ public class SolitaireFM
 						  * if(source.showSize() > 1 && card != source.getLast()) {
 							
 						} */
-						CardFM c = null;
+						Card c = null;
 						c = source.popFirst();
 						c.repaint();
 							
 						// if playstack, turn next card up
 						if (source.getFirst() != null)
 						{
-							CardFM temp = source.getFirst();//.setFaceup();
+							Card temp = source.getFirst();//.setFaceup();
 							temp.repaint();
 							source.repaint();
 						}
@@ -461,16 +432,16 @@ public class SolitaireFM
 					{
 						if (validStackMove(card, dest.getLast()))
 						{
-							if(dest.getFirst().getValue() == CardFM.Value.ACE && card.getValue().ordinal() == (dest.getLast().getValue().ordinal() + 1) ||
-									dest.getFirst().getValue() == CardFM.Value.KING && card.getValue().ordinal() == (dest.getLast().getValue().ordinal() - 1)) 
+							if(dest.getFirst().getValue() == Card.Value.ACE && card.getValue().ordinal() == (dest.getLast().getValue().ordinal() + 1) ||
+									dest.getFirst().getValue() == Card.Value.KING && card.getValue().ordinal() == (dest.getLast().getValue().ordinal() - 1)) 
 							{
-								CardFM c = source.popFirst();
+								Card c = source.popFirst();
 									c.repaint();
 	
 								if (source.getFirst() != null)
 								{
 	
-									CardFM temp = source.getFirst().setFaceup();
+									Card temp = source.getFirst().setFaceup();
 									temp.repaint();
 									source.repaint();
 								}
@@ -511,7 +482,7 @@ public class SolitaireFM
 						}
 						System.out.print("poping deck ");
 						deck.showSize();
-						CardFM c = deck.pop().setFaceup();
+						Card c = deck.pop().setFaceup();
 						playCardStack[x].putFirst(c);
 						table.repaint();
 					}
@@ -588,23 +559,23 @@ public class SolitaireFM
 			{
 				for(int y = 0; y < playCardStack[x].showSize(); y++)
 				{
-					CardFM source1 = playCardStack[x].getFirst();
-					CardFM dest = final_cards[z].getLast();
-					CardStackFM source_stack = playCardStack[x];
-					FinalStackFM dest_stack = final_cards[z];
+					Card source1 = playCardStack[x].getFirst();
+					Card dest = final_cards[z].getLast();
+					CardStack source_stack = playCardStack[x];
+					FinalStack dest_stack = final_cards[z];
 						
 					//System.out.println("Final first: "+dest_stack.getFirst().getValue());
 					//System.out.println("Start");
 					//System.out.println("z: "+z+" x: "+x+" all "+(z*x));
 					//System.out.println("Card to move: "+source1+" Destination Card: "+dest+" Valid move: "+(CardMovementManager.validStackMove(source1, dest)));
 					
-					if(dest_stack.getFirst().getValue() == CardFM.Value.ACE && source1.getValue().ordinal() == (dest.getValue().ordinal() + 1) ||
-							dest_stack.getFirst().getValue() == CardFM.Value.KING && source1.getValue().ordinal() == (dest.getValue().ordinal() - 1)) 
+					if(dest_stack.getFirst().getValue() == Card.Value.ACE && source1.getValue().ordinal() == (dest.getValue().ordinal() + 1) ||
+							dest_stack.getFirst().getValue() == Card.Value.KING && source1.getValue().ordinal() == (dest.getValue().ordinal() - 1)) 
 					{
 						if(CardMovementManager.validStackMove(source1, dest)) 
 						{
 							System.out.println("MOVE MADE");
-							CardFM source = source_stack.popFirst();
+							Card source = source_stack.popFirst();
 							dest_stack.setXY(dest_stack.getXY().x, dest_stack.getXY().y);
 							dest_stack.push(source);
 								
@@ -661,10 +632,13 @@ public class SolitaireFM
 		
 		autoPlayButton.removeActionListener(ae);
 		
+		frame.removeWindowListener(gl);
+
+		
 		table.removeMouseListener(cm);
 		table.removeMouseMotionListener(cm);
 		
-		frame.dispose();
+		//frame.setVisible(false);
 		
 		resetTimer();
 		
@@ -672,7 +646,7 @@ public class SolitaireFM
 		
 		score = -64;
 		
-		deck = new CardStackFM(true); // deal 104 cards
+		deck = new CardStack(true); // deal 104 cards
 		deck.shuffle();
 		
 		table.removeAll();
@@ -689,40 +663,40 @@ public class SolitaireFM
 			}
 		}
 		// initialize & place final (foundation) decks/stacks
-		final_cards = new FinalStackFM[NUM_FINAL_DECKS];
+		final_cards = new FinalStack[NUM_FINAL_DECKS];
 		
 		for (int x = 0; x < NUM_FINAL_DECKS; x++)
 		{
 			for(int y = 0; y < deck.showSize(); y++) 
 			{
-			final_cards[x] = new FinalStackFM();
-			CardFM c = deck.pop().setFaceup();
+			final_cards[x] = new FinalStack();
+			Card c = deck.pop().setFaceup();
 			//Bottom Up: A to K
 			if(x >= 0 && x <= 3) 
 			{
-				final_cards[x].setXY(200 + (x * (CardFM.CARD_WIDTH)), (FINAL_POS.y));
+				final_cards[x].setXY(200 + (x * (Card.CARD_WIDTH)), (FINAL_POS.y));
 					
 				
 					
-				if(c.getValue().equals(CardFM.Value.ACE) && c.getSuit().equals(CardFM.Suit.SPADES) 
+				if(c.getValue().equals(Card.Value.ACE) && c.getSuit().equals(Card.Suit.SPADES) 
 						&& x == 0)
 				{
 					final_cards[x].putFirst(c);
 					break;	
 				}
-				else if(c.getValue().equals(CardFM.Value.ACE) && c.getSuit().equals(CardFM.Suit.HEARTS) 
+				else if(c.getValue().equals(Card.Value.ACE) && c.getSuit().equals(Card.Suit.HEARTS) 
 						&& x == 1) 
 				{	
 					final_cards[x].putFirst(c);
 					break;
 				} 
-				else if(c.getValue().equals(CardFM.Value.ACE) && c.getSuit().equals(CardFM.Suit.DIAMONDS) 
+				else if(c.getValue().equals(Card.Value.ACE) && c.getSuit().equals(Card.Suit.DIAMONDS) 
 						&& x == 2) 
 				{
 					final_cards[x].putFirst(c);
 					break;
 				}
-				else if(c.getValue().equals(CardFM.Value.ACE) && c.getSuit().equals(CardFM.Suit.CLUBS) 
+				else if(c.getValue().equals(Card.Value.ACE) && c.getSuit().equals(Card.Suit.CLUBS) 
 						&& x == 3) 
 				{
 					final_cards[x].putFirst(c);
@@ -737,30 +711,30 @@ public class SolitaireFM
 				//Top Down: K to A
 			else if(x >= 4 && x <= 7) 
 			{
-				final_cards[x].setXY(200 + ((x-4) * (CardFM.CARD_WIDTH)), ((65/2)*FINAL_POS.y));
+				final_cards[x].setXY(200 + ((x-4) * (Card.CARD_WIDTH)), ((65/2)*FINAL_POS.y));
 
-					//CardFM c = deck.pop().setFaceup();
+					//Card c = deck.pop().setFaceup();
 						
-					if(c.getValue().equals(CardFM.Value.KING) && c.getSuit().equals(CardFM.Suit.SPADES)
+					if(c.getValue().equals(Card.Value.KING) && c.getSuit().equals(Card.Suit.SPADES)
 							&& x == 4)
 					{
 						final_cards[x].putFirst(c);
 						break;
 					}
-					else if(c.getValue().equals(CardFM.Value.KING) && c.getSuit().equals(CardFM.Suit.HEARTS)
+					else if(c.getValue().equals(Card.Value.KING) && c.getSuit().equals(Card.Suit.HEARTS)
 							&& x == 5) 
 					{
 						final_cards[x].putFirst(c);
 						break;
 					} 
-					else if(c.getValue().equals(CardFM.Value.KING) && c.getSuit().equals(CardFM.Suit.DIAMONDS)
+					else if(c.getValue().equals(Card.Value.KING) && c.getSuit().equals(Card.Suit.DIAMONDS)
 							&& x == 6) 
 					{
 						final_cards[x].putFirst(c);
 						break;
 							
 					}
-					else if(c.getValue().equals(CardFM.Value.KING) && c.getSuit().equals(CardFM.Suit.CLUBS)
+					else if(c.getValue().equals(Card.Value.KING) && c.getSuit().equals(Card.Suit.CLUBS)
 							&& x == 7) 
 					{
 						final_cards[x].putFirst(c);
@@ -778,41 +752,41 @@ public class SolitaireFM
 		}
 		
 		// initialize & place play (tableau) decks/stacks
-		playCardStack = new CardStackFM[NUM_PLAY_DECKS];
+		playCardStack = new CardStack[NUM_PLAY_DECKS];
 		for (int x = 0; x < NUM_PLAY_DECKS; x++)
 		{
-			playCardStack[x] = new CardStackFM(false);
+			playCardStack[x] = new CardStack(false);
 			playCardStack[x].setXY(350, (2*PLAY_POS.y));
 			
 			table.add(playCardStack[x]);
 			
 			if(x >= 1 && x <=4) 
 			{
-				playCardStack[x] = new CardStackFM(false);
-				playCardStack[x].setXY((125/2) + (x * (CardFM.CARD_WIDTH + 15)), (3*PLAY_POS.y));
+				playCardStack[x] = new CardStack(false);
+				playCardStack[x].setXY((125/2) + (x * (Card.CARD_WIDTH + 15)), (3*PLAY_POS.y));
 
 				table.add(playCardStack[x]);
 			} 
 			if(x >= 5 && x <= 8) 
 			{
-				playCardStack[x] = new CardStackFM(false);
-				playCardStack[x].setXY((125/2) + ((x-4) * (CardFM.CARD_WIDTH + 15)), (4*PLAY_POS.y));
+				playCardStack[x] = new CardStack(false);
+				playCardStack[x].setXY((125/2) + ((x-4) * (Card.CARD_WIDTH + 15)), (4*PLAY_POS.y));
 
 				table.add(playCardStack[x]);
 			} if(x >= 9 && x <= 13) 
 			{
-				playCardStack[x] = new CardStackFM(false);
-				playCardStack[x].setXY((125/2) + ((x-8) * (CardFM.CARD_WIDTH + 15)), (5*PLAY_POS.y));
+				playCardStack[x] = new CardStack(false);
+				playCardStack[x].setXY((125/2) + ((x-8) * (Card.CARD_WIDTH + 15)), (5*PLAY_POS.y));
 
 				table.add(playCardStack[x]);
 			}
 		}
 		
 		
-		deal_deck = new FinalStackFM[7];
+		deal_deck = new FinalStack[7];
 		for (int x = 0; x < deal_deck.length; x++)
 		{
-			deal_deck[x] = new FinalStackFM();
+			deal_deck[x] = new FinalStack();
 			deal_deck[x].setXY(50 - (5 + (3*x)) + ((110/2)/7), (2*PLAY_POS.y));
 			table.add(deal_deck[x]);
 		}
@@ -820,7 +794,7 @@ public class SolitaireFM
 		// Dealing new game
 		for (int x = 0; x < NUM_PLAY_DECKS; x++)
 		{
-			CardFM c = deck.pop().setFaceup();
+			Card c = deck.pop().setFaceup();
 			playCardStack[x].putFirst(c);
 
 		}
@@ -828,7 +802,7 @@ public class SolitaireFM
 		recordBox.setBounds(30, 5*PLAY_POS.y, 100, 150);
 		recordBox.setEditable(false);
 		recordBox.setOpaque(false);
-		placeBestRecord();
+		//placeBestRecord();
 		
 		autoPlayButton.addActionListener(ae);
 		autoPlayButton.setBounds(0, TABLE_HEIGHT - 100, 120, 30);
@@ -886,7 +860,7 @@ public class SolitaireFM
 		
 		contentPane = frame.getContentPane();
 		contentPane.add(table);
-		frame.addWindowListener(new windowListener());
+		frame.addWindowListener(gl);
 
 		table.addMouseListener(cm);
 		table.addMouseMotionListener(cm);
@@ -900,6 +874,7 @@ public class SolitaireFM
 	{
 		
 		playFMNewGame();
+		//System.out.println("Record: "+r);
 		
 	}
 }

@@ -7,11 +7,16 @@ import java.awt.GridBagLayout;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -22,6 +27,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
+import javax.swing.JToggleButton;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.JCheckBox;
@@ -32,7 +38,7 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 import Klondike.SolitaireK;
 import fleaMarket.StatisticAnalysis.User;
-
+import fleaMarket.StatisticAnalysis.Record;
 
 public class SolitaireMenu {
 	
@@ -58,6 +64,8 @@ public class SolitaireMenu {
 	private static JTextPane statusBox = new JTextPane();// status messages
 	private static boolean soundO = true;
 	
+	private static Record record;
+	
 	//Styled docs to allow for text color changes
 	static StyledDocument game = gameTypes.getStyledDocument();
 	static StyledDocument status = statusBox.getStyledDocument();
@@ -79,6 +87,8 @@ public class SolitaireMenu {
 	private static Color c;
 	private static String col;
 	private static final Color N_GREEN = new Color(0, 180, 0);
+	
+	private static SimpleDateFormat sDF = new SimpleDateFormat("dd/MM/yy hh:mm:ss");
 	
 	//sound boolean getter
 	public static boolean getSoundState()
@@ -108,11 +118,13 @@ public class SolitaireMenu {
 		
 		JFrame colorFrame = new JFrame("Color Change Menu");
 		JPanel colorMenu = new JPanel();
-		colorFrame.setSize(300, 239);
+		colorFrame.setSize(300, 269);
 		colorMenu.setLayout(null);
 		
 		cP = colorFrame.getContentPane();
 		cP.add(colorMenu);
+		
+		JCheckBox favColor = new JCheckBox("Allow Favorite Color Change");
 		
 		JButton original = new JButton("Default");
 		JButton red = new JButton("Red");
@@ -125,9 +137,20 @@ public class SolitaireMenu {
 		JButton pink = new JButton("Pink");
 		JButton white = new JButton("White");
 		
+		JButton originalC = new JButton("Default");
+		JButton redC = new JButton("Red");
+		JButton yellowC = new JButton("Yellow");
+		JButton cyanC = new JButton("Cyan");
+		JButton blueC = new JButton("Blue");
+		JButton greenC = new JButton("Green");
+		JButton grayC = new JButton("Dark Gray");
+		JButton orangeC = new JButton("Orange");
+		JButton pinkC = new JButton("Pink");
+		JButton whiteC = new JButton("White");
+		
 		JPanel fMTable = SolitaireFM.table;
 		JPanel kTable = SolitaireK.table;
-		
+
 		class SetUpColorListeners implements ActionListener
 		{
 			@Override
@@ -151,6 +174,10 @@ public class SolitaireMenu {
 						c = Color.GRAY;
 						col = "GRAY";
 						
+						if(favColor.isSelected()) {
+							StatisticAnalysis.setUserColor(user);
+						}
+						
 					} else if(e.getSource() == red) 
 					{
 						menu.setBackground(Color.RED);
@@ -158,6 +185,10 @@ public class SolitaireMenu {
 						kTable.setBackground(Color.RED);
 						c = Color.RED;
 						col = "RED";
+						
+						if(favColor.isSelected()) {
+							StatisticAnalysis.setUserColor(user);
+						}
 
 					} else if(e.getSource() == yellow) 
 					{
@@ -167,6 +198,10 @@ public class SolitaireMenu {
 						c = Color.YELLOW;
 						col = "YELLOW";
 						
+						if(favColor.isSelected()) {
+							StatisticAnalysis.setUserColor(user);
+						}
+						
 					} else if(e.getSource() == cyan) 
 					{
 						menu.setBackground(Color.CYAN);
@@ -174,6 +209,10 @@ public class SolitaireMenu {
 						kTable.setBackground(Color.CYAN);
 						c = Color.CYAN;
 						col = "CYAN";
+						
+						if(favColor.isSelected()) {
+							StatisticAnalysis.setUserColor(user);
+						}
 						
 					} else if(e.getSource() == blue) 
 					{
@@ -183,6 +222,10 @@ public class SolitaireMenu {
 						c = Color.BLUE;
 						col = "BLUE";
 						
+						if(favColor.isSelected()) {
+							StatisticAnalysis.setUserColor(user);
+						}
+						
 					} else if(e.getSource() == green) 
 					{
 						menu.setBackground(new Color(0, 180, 0));
@@ -191,13 +234,21 @@ public class SolitaireMenu {
 						c = N_GREEN;
 						col = "N_GREEN";
 						
-					} else if(e.getSource() == gray || e.getSource() == green || e.getSource() == blue) 
+						if(favColor.isSelected()) {
+							StatisticAnalysis.setUserColor(user);
+						}
+						
+					} else if(e.getSource() == gray) 
 					{
 						menu.setBackground(Color.DARK_GRAY);
 						fMTable.setBackground(Color.DARK_GRAY);
 						kTable.setBackground(Color.DARK_GRAY);
 						c = Color.DARK_GRAY;
 						col = "DARK_GRAY";
+						
+						if(favColor.isSelected()) {
+							StatisticAnalysis.setUserColor(user);
+						}
 						
 					} else if(e.getSource() == orange) 
 					{
@@ -207,6 +258,10 @@ public class SolitaireMenu {
 						c = Color.ORANGE;
 						col = "ORANGE";
 						
+						if(favColor.isSelected()) {
+							StatisticAnalysis.setUserColor(user);
+						}
+						
 					} else if(e.getSource() == pink) 
 					{
 						menu.setBackground(Color.PINK);
@@ -215,6 +270,10 @@ public class SolitaireMenu {
 						c = Color.PINK;
 						col = "PINK";
 						
+						if(favColor.isSelected()) {
+							StatisticAnalysis.setUserColor(user);
+						}
+						
 					} else if(e.getSource() == white) 
 					{
 						menu.setBackground(Color.WHITE);
@@ -222,10 +281,14 @@ public class SolitaireMenu {
 						kTable.setBackground(Color.WHITE);
 						c = Color.WHITE;
 						col = "WHITE";
+						
+						if(favColor.isSelected()) {
+							StatisticAnalysis.setUserColor(user);
+						}
 				        	
 					}
 					
-					if(e.getSource() == gray || e.getSource() == green || e.getSource() == blue)
+					if(e.getSource() == original || e.getSource() == gray || e.getSource() == green || e.getSource() == blue)
 					{
 						gameTypes.setText("");
 						statusBox.setText("");
@@ -242,8 +305,8 @@ public class SolitaireMenu {
 				        time.insertString(time.getLength(), times, style);
 				        gameStatus.insertString(gameStatus.getLength(), gameS, style);
 				        SolitaireFM.gameTitle.setText("<span style =\"color:white\"><b>Team 1<br>Flea Market Solitaire</b> <br> CPSC 4900 <br> Fall 2021</span>");
-				        SolitaireFM.recordBox.setText("<span style =\"color:white\"><b>User Record<br>Klondike Solitaire</b> <br> "
-								+ "Best Win Time: "+SolitaireFM.getBestRecord().getTime()+" seconds <br> Highest Score: "+SolitaireFM.getBestRecord().getScore()+"</span>");
+				        //SolitaireFM.recordBox.setText("<span style =\"color:white\"><b>User Record<br>Klondike Solitaire</b> <br> "
+						//		+ "Best Win Time: "+SolitaireFM.getBestRecord().getTime()+" seconds <br> Highest Score: "+SolitaireFM.getBestRecord().getScore()+"</span>");
 				        
 				        SolitaireK.scoreBox.setText("");
 						SolitaireK.timeBox.setText("");
@@ -257,7 +320,7 @@ public class SolitaireMenu {
 				        SolitaireK.gameTitle.setText("<span style =\"color:white\"><b>Team 1<br>Klondike Solitaire</b> <br> CPSC 4900 <br> Fall 2021</span>");
 				        
 					} else if(e.getSource() == white || e.getSource() == pink || e.getSource() == orange || 
-							e.getSource() == cyan || e.getSource() == yellow || e.getSource() == red || e.getSource() == original)
+							e.getSource() == cyan || e.getSource() == yellow || e.getSource() == red)
 					{
 						gameTypes.setText("");
 						statusBox.setText("");
@@ -274,8 +337,8 @@ public class SolitaireMenu {
 				        time.insertString(time.getLength(), times, style);
 				        gameStatus.insertString(gameStatus.getLength(), gameS, style);
 				        SolitaireFM.gameTitle.setText("<span style =\"color:black\"><b>Team 1<br>Flea Market Solitaire</b> <br> CPSC 4900 <br> Fall 2021</span>");
-				        SolitaireFM.recordBox.setText("<span style =\"color:black\"><b>User Record<br>Klondike Solitaire</b> <br> "
-								+ "Best Win Time: "+SolitaireFM.getBestRecord().getTime()+" seconds <br> Highest Score: "+SolitaireFM.getBestRecord().getScore()+"</span>");
+				       // SolitaireFM.recordBox.setText("<span style =\"color:black\"><b>User Record<br>Klondike Solitaire</b> <br> "
+						//		+ "Best Win Time: "+SolitaireFM.getBestRecord().getTime()+" seconds <br> Highest Score: "+SolitaireFM.getBestRecord().getScore()+"</span>");
 				        
 				        SolitaireK.scoreBox.setText("");
 						SolitaireK.timeBox.setText("");
@@ -297,28 +360,54 @@ public class SolitaireMenu {
 		}
 		
 		ActionListener aL = new SetUpColorListeners();
+		
 		colorFrame.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		
+		favColor.setBounds(50, TABLE_HEIGHT - 400, 285, 20);
+		
 		original.addActionListener(aL);
-		original.setBounds(0, TABLE_HEIGHT - 400, 285, 20);
+		original.setBounds(0, TABLE_HEIGHT - 370, 285, 20);
 		red.addActionListener(aL);
-		red.setBounds(0, TABLE_HEIGHT - 380, 285, 20);
+		red.setBounds(0, TABLE_HEIGHT - 350, 285, 20);
 		yellow.addActionListener(aL);
-		yellow.setBounds(0, TABLE_HEIGHT - 360, 285, 20);
+		yellow.setBounds(0, TABLE_HEIGHT - 330, 285, 20);
 		cyan.addActionListener(aL);
-		cyan.setBounds(0, TABLE_HEIGHT - 340, 285, 20);
+		cyan.setBounds(0, TABLE_HEIGHT - 310, 285, 20);
 		blue.addActionListener(aL);
-		blue.setBounds(0, TABLE_HEIGHT - 320, 285, 20);
+		blue.setBounds(0, TABLE_HEIGHT - 290, 285, 20);
 		green.addActionListener(aL);
-		green.setBounds(0, TABLE_HEIGHT - 300, 285, 20);
+		green.setBounds(0, TABLE_HEIGHT - 270, 285, 20);
 		gray.addActionListener(aL);
-		gray.setBounds(0, TABLE_HEIGHT - 280, 285, 20);
+		gray.setBounds(0, TABLE_HEIGHT - 250, 285, 20);
 		orange.addActionListener(aL);
-		orange.setBounds(0, TABLE_HEIGHT - 260, 285, 20);
+		orange.setBounds(0, TABLE_HEIGHT - 230, 285, 20);
 		pink.addActionListener(aL);
-		pink.setBounds(0, TABLE_HEIGHT - 240, 285, 20);
+		pink.setBounds(0, TABLE_HEIGHT - 210, 285, 20);
 		white.addActionListener(aL);
-		white.setBounds(0, TABLE_HEIGHT - 220, 285, 20);
+		white.setBounds(0, TABLE_HEIGHT - 190, 285, 20);
+		
+		originalC.addActionListener(aL);
+		originalC.setBounds(0, TABLE_HEIGHT - 370, 285, 20);
+		redC.addActionListener(aL);
+		redC.setBounds(0, TABLE_HEIGHT - 350, 285, 20);
+		yellowC.addActionListener(aL);
+		yellowC.setBounds(0, TABLE_HEIGHT - 330, 285, 20);
+		cyanC.addActionListener(aL);
+		cyanC.setBounds(0, TABLE_HEIGHT - 310, 285, 20);
+		blue.addActionListener(aL);
+		blueC.setBounds(0, TABLE_HEIGHT - 290, 285, 20);
+		greenC.addActionListener(aL);
+		greenC.setBounds(0, TABLE_HEIGHT - 270, 285, 20);
+		grayC.addActionListener(aL);
+		grayC.setBounds(0, TABLE_HEIGHT - 250, 285, 20);
+		orangeC.addActionListener(aL);
+		orangeC.setBounds(0, TABLE_HEIGHT - 230, 285, 20);
+		pinkC.addActionListener(aL);
+		pinkC.setBounds(0, TABLE_HEIGHT - 210, 285, 20);
+		whiteC.addActionListener(aL);
+		whiteC.setBounds(0, TABLE_HEIGHT - 190, 285, 20);
+		
+		colorMenu.add(favColor);
 		
 		colorMenu.add(original);
 		colorMenu.add(red);
@@ -330,6 +419,27 @@ public class SolitaireMenu {
 		colorMenu.add(orange);
 		colorMenu.add(pink);
 		colorMenu.add(white);
+		
+		colorMenu.add(originalC);
+		originalC.setVisible(false);
+		colorMenu.add(redC);
+		redC.setVisible(false);
+		colorMenu.add(yellowC);
+		yellowC.setVisible(false);
+		colorMenu.add(cyanC);
+		cyanC.setVisible(false);
+		colorMenu.add(blueC);
+		blueC.setVisible(false);
+		colorMenu.add(greenC);
+		greenC.setVisible(false);
+		colorMenu.add(grayC);
+		grayC.setVisible(false);
+		colorMenu.add(orangeC);
+		orangeC.setVisible(false);
+		colorMenu.add(pinkC);
+		pinkC.setVisible(false);
+		colorMenu.add(whiteC);
+		whiteC.setVisible(false);
 		
 		colorFrame.setLocationRelativeTo(frame);
 		colorFrame.setVisible(true);
@@ -345,8 +455,110 @@ public class SolitaireMenu {
 		JDialog userFrame = new JDialog(frame, true);
 		JPanel userTable = new JPanel();
 		userFrame.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-		userFrame.setSize(200, 75);
+		userFrame.setSize(300, 75);
 		JLabel userName = new JLabel("Enter User Name: ");
+		JButton guestButton = new JButton("Guest");
+		class guestListener implements ActionListener
+		{
+			@Override
+			public void actionPerformed(ActionEvent e) 
+			{
+				if(e.getSource() == guestButton)
+				{
+					String username = guestButton.getText();
+
+					try {
+						if(StatisticAnalysis.doesUserExist(username))
+						{
+							user = StatisticAnalysis.setUser(username);
+							String n = StatisticAnalysis.getUserColor(user);
+							
+							if(n.equals("GRAY"))
+							{
+								c = Color.GRAY;
+						        
+							} else if(n.equals("RED"))
+							{
+								c = Color.RED;
+
+							} else if(n.equals("YELLOW"))
+							{
+								c = Color.BLACK;
+						        
+							} else if(n.equals("CYAN"))
+							{
+								c = Color.CYAN;
+						        
+							} else if(n.equals("BLUE"))
+							{
+								c = Color.BLUE;
+
+							} else if(n.equals("N_GREEN"))
+							{
+								c = new Color(0, 180, 0);
+						        
+							} else if(n.equals("DARK_GRAY"))
+							{
+								c = Color.DARK_GRAY;
+						        
+							} else if(n.equals("ORANGE"))
+							{
+								c = Color.ORANGE;
+						        
+							} else if(n.equals("PINK"))
+							{
+								c = Color.PINK;
+						        
+							} else if(n.equals("WHITE"))
+							{
+								c = Color.WHITE;
+
+							} else
+							{
+								c = Color.GRAY;
+
+							}
+							
+							if(n.equals("RED") || n.equals("YELLOW") || n.equals("CYAN") || n.equals("DARK_GRAY") 
+									|| n.equals("ORANGE") || n.equals("PINK") || n.equals("WHITE")) 
+							{
+								gameTypes.setText("");
+								statusBox.setText("");
+								
+								StyleConstants.setForeground(style, Color.BLACK);
+								
+						        game.insertString(game.getLength(), "Available Game Modes", style);
+								status.insertString(status.getLength(), "Welcome "+user.getUser(), style);
+							} else if (n.equals("GRAY") || n.equals("BLUE") || n.equals("N_GREEN")) 
+							{
+								
+								gameTypes.setText("");
+								statusBox.setText("");
+								
+								StyleConstants.setForeground(style, Color.WHITE);
+						        
+						        game.insertString(game.getLength(), "Available Game Modes", style);
+						        status.insertString(status.getLength(), "Welcome "+user.getUser(), style);
+								
+							}
+							statusBox.setText("Welcome "+user.getUser());
+							menu.setBackground(c);
+							userFrame.dispose();
+							
+						} else {
+							user = new User(username, 0);
+							statusBox.setText("Welcome: "+username);
+							System.out.println(user);
+							c = Color.GRAY;
+							menu.setBackground(c);
+							userFrame.dispose();
+						}
+					} catch (BadLocationException e1) {
+						e1.printStackTrace();
+					}
+				}
+			}
+		}
 		
 		class userEnterListener implements KeyListener
 		{
@@ -368,140 +580,55 @@ public class SolitaireMenu {
 					{
 						user = StatisticAnalysis.setUser(username);
 						String n = StatisticAnalysis.getUserColor(user);
-						System.out.println();
 						
 						if(n.equals("GRAY"))
 						{
 							c = Color.GRAY;
-
-							gameTypes.setText("");
-							statusBox.setText("");
-							
-							StyleConstants.setForeground(style, Color.WHITE);
-					        
-					        game.insertString(game.getLength(), "Available Game Modes", style);
-					        status.insertString(status.getLength(), "Welcome "+user.getUser(), style);
-					        
 					        
 						} else if(n.equals("RED"))
 						{
 							c = Color.RED;
-							
-							gameTypes.setText("");
-							statusBox.setText("");
-							
-							StyleConstants.setForeground(style, Color.BLACK);
-							
-					        game.insertString(game.getLength(), "Available Game Modes", style);
-							status.insertString(status.getLength(), "Welcome "+user.getUser(), style);
-					        
+
 						} else if(n.equals("YELLOW"))
 						{
 							c = Color.BLACK;
-
-							gameTypes.setText("");
-							statusBox.setText("");
-							
-							StyleConstants.setForeground(style, Color.BLACK);
-							
-					        game.insertString(game.getLength(), "Available Game Modes", style);
-							status.insertString(status.getLength(), "Welcome "+user.getUser(), style);
-							
 					        
 						} else if(n.equals("CYAN"))
 						{
 							c = Color.CYAN;
-
-							gameTypes.setText("");
-							statusBox.setText("");
-							
-							StyleConstants.setForeground(style, Color.BLACK);
-							
-					        game.insertString(game.getLength(), "Available Game Modes", style);
-							status.insertString(status.getLength(), "Welcome "+user.getUser(), style);
-							
 					        
 						} else if(n.equals("BLUE"))
 						{
 							c = Color.BLUE;
-							
-							gameTypes.setText("");
-							statusBox.setText("");
-							
-							StyleConstants.setForeground(style, Color.WHITE);
-					        
-					        game.insertString(game.getLength(), "Available Game Modes", style);
-					        status.insertString(status.getLength(), "Welcome "+user.getUser(), style);
-							
+
 						} else if(n.equals("N_GREEN"))
 						{
 							c = new Color(0, 180, 0);
-
-							gameTypes.setText("");
-							statusBox.setText("");
-							
-							StyleConstants.setForeground(style, Color.WHITE);
-					        
-					        game.insertString(game.getLength(), "Available Game Modes", style);
-					        status.insertString(status.getLength(), "Welcome "+user.getUser(), style);
-					        
 					        
 						} else if(n.equals("DARK_GRAY"))
 						{
 							c = Color.DARK_GRAY;
-
-							gameTypes.setText("");
-							statusBox.setText("");
-							
-							StyleConstants.setForeground(style, Color.BLACK);
-							
-					        game.insertString(game.getLength(), "Available Game Modes", style);
-							status.insertString(status.getLength(), "Welcome "+user.getUser(), style);
-							
 					        
 						} else if(n.equals("ORANGE"))
 						{
 							c = Color.ORANGE;
-
-							gameTypes.setText("");
-							statusBox.setText("");
-							
-							StyleConstants.setForeground(style, Color.BLACK);
-							
-					        game.insertString(game.getLength(), "Available Game Modes", style);
-							status.insertString(status.getLength(), "Welcome "+user.getUser(), style);
-							
 					        
 						} else if(n.equals("PINK"))
 						{
 							c = Color.PINK;
-
-							gameTypes.setText("");
-							statusBox.setText("");
-							
-							StyleConstants.setForeground(style, Color.BLACK);
-							
-					        game.insertString(game.getLength(), "Available Game Modes", style);
-							status.insertString(status.getLength(), "Welcome "+user.getUser(), style);
-							
 					        
 						} else if(n.equals("WHITE"))
 						{
 							c = Color.WHITE;
 
-							gameTypes.setText("");
-							statusBox.setText("");
-							
-							StyleConstants.setForeground(style, Color.BLACK);
-							
-					        game.insertString(game.getLength(), "Available Game Modes", style);
-							status.insertString(status.getLength(), "Welcome "+user.getUser(), style);
-							
-					        
 						} else
 						{
-							c = Color.LIGHT_GRAY;
+							c = Color.GRAY;
 
+						}
+						if(n.equals("RED") || n.equals("YELLOW") || n.equals("CYAN") || n.equals("DARK_GRAY") 
+								|| n.equals("ORANGE") || n.equals("PINK") || n.equals("WHITE")) 
+						{
 							gameTypes.setText("");
 							statusBox.setText("");
 							
@@ -509,6 +636,16 @@ public class SolitaireMenu {
 							
 					        game.insertString(game.getLength(), "Available Game Modes", style);
 							status.insertString(status.getLength(), "Welcome "+user.getUser(), style);
+						} else if (n.equals("GRAY") || n.equals("BLUE") || n.equals("N_GREEN")) 
+						{
+							
+							gameTypes.setText("");
+							statusBox.setText("");
+							
+							StyleConstants.setForeground(style, Color.WHITE);
+					        
+					        game.insertString(game.getLength(), "Available Game Modes", style);
+					        status.insertString(status.getLength(), "Welcome "+user.getUser(), style);
 							
 						}
 						
@@ -519,7 +656,7 @@ public class SolitaireMenu {
 						user = new User(username, 0);
 						statusBox.setText("New User Created--Welcome: "+username);
 						System.out.println(user);
-						c = Color.LIGHT_GRAY;
+						c = Color.GRAY;
 						menu.setBackground(c);
 						userFrame.dispose();
 					}
@@ -534,6 +671,7 @@ public class SolitaireMenu {
 		}
 	
 		KeyListener kL = new userEnterListener();
+		ActionListener gL = new guestListener();
 		
 		userName.setBounds(0,0, 120, 30);
 		
@@ -541,8 +679,13 @@ public class SolitaireMenu {
 		userInput.setColumns(5);
 		userInput.addKeyListener(kL);
 		
+		guestButton.setBounds(130, 0, 60, 30);
+		guestButton.addActionListener(gL);
+		
 		userTable.add(userName);
 		userTable.add(userInput);
+		
+		userTable.add(guestButton);
 		
 		userFrame.add(userTable);
 		
@@ -563,39 +706,49 @@ public class SolitaireMenu {
 		ArrayList<fleaMarket.StatisticAnalysis.Record> rec = StatisticAnalysis.getRecords(user);
 		
 		JScrollPane scroll;
-		recordFrame.setSize(800, (rec.size()/8)*(50) + 250);
-		recordMenu.setSize(800, (rec.size()/8)*(50) + 250);
-		recordMenu.setLayout(new GridBagLayout()); //new GridLayout(0,4)
+		recordFrame.setSize(750, (rec.size()*25)+50);
+		recordMenu.setSize(750, (rec.size()*25)+50);
+		recordMenu.setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
 		
 		cP = recordFrame.getContentPane();
-		recordFrame.add(scroll = new JScrollPane(recordMenu, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED));
+		recordFrame.add(scroll = new JScrollPane(recordMenu, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED));
 		
 		JEditorPane recordBox;
-		//JEditorPane recordBox = new JEditorPane("text/html", "");
 		
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 0;
 		c.gridy = 0;
-		JEditorPane box = new JEditorPane("text/html", "<pre><b>Klondike Solitaire</b><br>"+user.getUser()+"'s Records <br>Score for Win = 416</pre>");
-		//box.setBounds(0, 5, 120, 20);
+		
+		float x = 0;
+		float y = rec.size();
+		for(int w = 0; w < rec.size(); w++) {
+			if(rec.get(w).getScore() == 416) {
+				x++;
+			}	
+		}
+		float winPer = ((x)/y)*100; 
+
+		JEditorPane box = new JEditorPane("text/html", "<pre><b>Solitaire</b><br>"+user.getUser()+"'s Records <br>Score for Win = 416<br>Win Percentage: "+winPer+"%</pre>");
+
 		box.setEditable(false);
 		box.setOpaque(false);
 		
 		recordMenu.add(box, c);
-		System.out.println(rec.size());
+		//System.out.println(rec.size());
+		
 		for(int r = 0; r < rec.size() ; r++)
 		{
 			c.fill = GridBagConstraints.HORIZONTAL;
-			c.gridx = r%4;
-			c.gridy = (r/4)+1;
+			c.gridx = 0;
+			c.gridy = r+1;
 			recordBox = new JEditorPane("text/html", "");
-			recordBox.setText("<pre><b>'"+user.getUser()+"'<br> Record "+(r+1)+"</b><br>"
-					+ "  - Time: "+rec.get(r).getTime()+" seconds<br>  - Highest Score: "+rec.get(r).getScore()+"</pre><br>");
-			//recordBox.setBounds(((TABLE_WIDTH/4)*(r%4)), ((r/4)*100)+50, 100, 100);
+			recordBox.setText("<pre><b>'"+user.getUser()+"', Game Type, Record "+(r+1)+"</b>"
+							+ ", Time: "+rec.get(r).getTime()+" seconds, Score: "+rec.get(r).getScore()+""
+							+ ", Date: "+sDF.format(rec.get(r).getDate())+"</pre>");
 			recordBox.setEditable(false);
 			recordBox.setOpaque(false);
-
+			
 			recordMenu.add(recordBox, c);
 		}
 		SwingUtilities.invokeLater(new Runnable() {
@@ -618,7 +771,7 @@ public class SolitaireMenu {
 		{
 			
 			Style style = gameTypes.addStyle("I'm a Style", null);
-			
+
 			try {
 				if(e.getSource() == klondikeStart) 
 				{
@@ -683,8 +836,8 @@ public class SolitaireMenu {
 				        time.insertString(time.getLength(), times, style);
 				        gameStatus.insertString(gameStatus.getLength(), gameS, style);
 				        SolitaireFM.gameTitle.setText("<span style =\"color:white\"><b>Team 1<br>Flea Market Solitaire</b> <br> CPSC 4900 <br> Fall 2021</span>");
-				        SolitaireFM.recordBox.setText("<span style =\"color:white\"><b>User Record<br>Klondike Solitaire</b> <br> "
-								+ "Best Win Time: "+SolitaireFM.getBestRecord().getTime()+" seconds <br> Highest Score: "+SolitaireFM.getBestRecord().getScore()+"</span>");
+				        //SolitaireFM.recordBox.setText("<span style =\"color:white\"><b>User Record<br>Klondike Solitaire</b> <br> "
+						//		+ "Best Win Time: "+SolitaireFM.getBestRecord().getTime()+" seconds <br> Highest Score: "+SolitaireFM.getBestRecord().getScore()+"</span>");
 				        
 					} else if (getColor() == Color.WHITE || getColor() == Color.PINK || getColor() == Color.ORANGE || 
 							getColor() == Color.CYAN || getColor() == Color.YELLOW || getColor() == Color.RED || getColor() == Color.LIGHT_GRAY)
@@ -704,20 +857,14 @@ public class SolitaireMenu {
 				        time.insertString(time.getLength(), times, style);
 				        gameStatus.insertString(gameStatus.getLength(), gameS, style);
 				        SolitaireFM.gameTitle.setText("<span style =\"color:black\"><b>Team 1<br>Flea Market Solitaire</b> <br> CPSC 4900 <br> Fall 2021</span>");
-				        SolitaireFM.recordBox.setText("<span style =\"color:black\"><b>User Record<br>Klondike Solitaire</b> <br> "
-								+ "Best Win Time: "+SolitaireFM.getBestRecord().getTime()+" seconds <br> Highest Score: "+SolitaireFM.getBestRecord().getScore()+"</span>");
+				        //SolitaireFM.recordBox.setText("<span style =\"color:black\"><b>User Record<br>Klondike Solitaire</b> <br> "
+						//		+ "Best Win Time: "+SolitaireFM.getBestRecord().getTime()+" seconds <br> Highest Score: "+SolitaireFM.getBestRecord().getScore()+"</span>");
 					}
 					
 				} else if(e.getSource() == backgroundColorButton) 
 				{
 					setUpColorChange();
 					
-				} else if(e.getSource() == SolitaireFM.newGameButton)
-				{
-					if(SolitaireFM.gameOver == true)
-					{
-						user.createRecord(SolitaireFM.score, SolitaireFM.time);
-					}
 				} else if(e.getSource() == disable) {
 					enable.setVisible(true);
 					soundO = false;
@@ -740,47 +887,11 @@ public class SolitaireMenu {
 		}
 	}
 	
-	public static void saveGame()
+	public static void saveGame() throws ParseException
 	{
-		SolitaireFM.toggleTimer();
-		JDialog saveFrame = new JDialog(frame, true);
-		JPanel saveTable = new JPanel();
-		saveFrame.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-		saveFrame.setSize(300, 100);
-		JLabel save = new JLabel("Would you like to save this games results?");
-		JButton yes = new JButton("YES");
-		JButton no = new JButton("NO");
-		
-		class saveGameListener implements ActionListener
-		{
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if(e.getSource() == yes) {
-					SolitaireMenu.getUser().createRecord(SolitaireFM.score, SolitaireFM.time);
-					saveFrame.dispose();
-				} else if(e.getSource() == no)
-				{
-					saveFrame.dispose();
-				}
-				
-			}
+		if(record != null) {
+			getUser().createRecord(record.getScore(), record.getTime());
 		}
-	
-		ActionListener act = new saveGameListener();
-		
-		save.setBounds(0, 0, 200, 30);
-		yes.setBounds(0, 0, 120, 30);
-		yes.addActionListener(act);
-		no.setBounds(120, 0, 120, 30);
-		no.addActionListener(act);
-		
-		saveTable.add(save);
-		saveTable.add(yes);
-		saveTable.add(no);
-		saveFrame.add(saveTable);
-		
-		saveFrame.setLocationRelativeTo(frame);
-		saveFrame.setVisible(true);
 		
 	}
 	
@@ -806,9 +917,38 @@ public class SolitaireMenu {
 
 	}
 	
+	public static class gameListener implements WindowListener
+	{
+
+		@Override
+		public void windowOpened(WindowEvent e) {}
+		@Override
+		public void windowClosing(WindowEvent e) {}
+		@Override
+		public void windowClosed(WindowEvent e) {}
+		@Override
+		public void windowIconified(WindowEvent e) {}
+		@Override
+		public void windowDeiconified(WindowEvent e) {}
+		@Override
+		public void windowActivated(WindowEvent e) {}
+		@Override
+		public void windowDeactivated(WindowEvent e) {
+			record = new Record(Integer.parseInt(SolitaireFM.scoreBox.getText().substring(7)), Integer.parseInt(SolitaireFM.timeBox.getText().substring(9)), new Date());
+			
+			try {
+				saveGame();
+			} catch (ParseException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+
+	}
+	
 	private static void openMenu() throws BadLocationException
 	{
-		statusBox.setBounds(220, TABLE_HEIGHT - 100, 200, 30);
+		statusBox.setBounds(220, TABLE_HEIGHT - 120, 200, 30);
 		statusBox.setEditable(false);
 		statusBox.setOpaque(false);
 		StyleConstants.setAlignment(center, StyleConstants.ALIGN_CENTER);
@@ -872,6 +1012,7 @@ public class SolitaireMenu {
 
 		frame.setVisible(true);
 		StatisticAnalysis.main(null);
+		System.out.println(new Date());
 
 	}
 
