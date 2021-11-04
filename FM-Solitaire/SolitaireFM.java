@@ -4,8 +4,6 @@ import global.Card;
 import global.CardStack;
 import global.FinalStack;
 import global.SimpleAudioPlayer;
-import global.StatisticAnalysis.Record;
-import global.StatisticAnalysis.User;
 import global.SolitaireMenu;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -57,17 +55,14 @@ public class SolitaireFM
 	// other components
 	public static JEditorPane gameTitle = new JEditorPane("text/html", "");
 	private static JButton showRulesButton = new JButton("Show Rules");
-	protected static JButton newGameButton = new JButton("New Game");
+	private static JButton newGameButton = new JButton("New Game");
 	private static JButton toggleTimerButton = new JButton("Pause Timer");
 	private static JButton autoPlayButton = new JButton("Auto Play");
 	public static JTextPane scoreBox = new JTextPane();// displays the score
 	public static JTextPane timeBox = new JTextPane();// displays the time
 	public static JTextPane statusBox = new JTextPane();// status messages
 	
-	protected static JEditorPane recordBox = new JEditorPane("text/html", "");// status messages
-	protected static global.StatisticAnalysis.Record bestRecord;
-	
-	//Action Listener for buttons
+	//ACTION LISTENERS
 	private static ActionListener ae = new setUpButtonListeners();
 	private static CardMovementManager cm = new CardMovementManager();
 	private static global.SolitaireMenu.gameListener gl = new global.SolitaireMenu.gameListener();
@@ -83,13 +78,13 @@ public class SolitaireFM
 	private static int deal_deck_pos = 0;
 	protected static boolean gameOver = true;
 	
-	//Sound
-	//private static boolean SolitaireMenu.getSoundState() = SolitaireMenu.soundO;
+	//SOUND PLAYERS
 	private static String filePath = "src/global/Sounds/dealing_card.wav";
 	private static String filePath2 = "src/global/Sounds/card_contact.wav";
 	private static String filePath3 = "src/global/Sounds/deal_cards_f.wav";
 	private static SimpleAudioPlayer card_contact_ap;
 	private static SimpleAudioPlayer deal_card_ap;
+	
 	
 	public static SimpleAudioPlayer ap(String fp, int loops) {
 		try {
@@ -100,15 +95,8 @@ public class SolitaireFM
 			e1.printStackTrace();
 		}
 		return null;
-			
-			
 	}
 	
-	public static Record getBestRecord()
-	{
-		return bestRecord;
-	}
-
 	// moves a card to abs location within a component
 	protected static Card moveCard(Card c, int x, int y)
 	{
@@ -116,6 +104,7 @@ public class SolitaireFM
 		c.setXY(new Point(x, y));
 		return c;
 	}
+	
 
 	// add/subtract points based on gameplay actions
 	protected static void setScore(int deltaScore)
@@ -126,6 +115,7 @@ public class SolitaireFM
 		scoreBox.repaint();
 	}
 
+	
 	// GAME TIMER UTILITIES
 	protected static void updateTimer()
 	{
@@ -139,6 +129,7 @@ public class SolitaireFM
 		timeBox.setText(time);
 		timeBox.repaint();
 	}
+	
 
 	protected static void startTimer()
 	{
@@ -148,6 +139,7 @@ public class SolitaireFM
 		timeRunning = true;
 	}
 	
+	
 	//reset timer
 	protected static void resetTimer()
 	{
@@ -155,6 +147,7 @@ public class SolitaireFM
 		time = 0;
 		timeRunning = false;
 	}
+	
 
 	// the pause timer button uses this
 	public static void toggleTimer()
@@ -168,6 +161,7 @@ public class SolitaireFM
 			startTimer();
 		}
 	}
+	
 
 	private static class ScoreClock extends TimerTask
 	{
@@ -177,6 +171,7 @@ public class SolitaireFM
 			updateTimer();
 		}
 	}
+	
 
 	// BUTTON LISTENER
 	private static class setUpButtonListeners implements ActionListener
@@ -236,24 +231,25 @@ public class SolitaireFM
 	
 	
 	/*
+	 * 
 	 * This class handles all of the logic of moving the Card components as well
 	 * as the game logic. This determines where Cards can be moved according to
-	 * the rules of Klondike solitiaire
+	 * the rules of Flea Market solitaire.
+	 * 
 	 */
 	private static class CardMovementManager extends MouseAdapter
 	{
 		private boolean checkForWin = false;// should we check if game is over?
-		//private boolean gameOver = true;// easier to negate this than affirm it
 		private Point start = null;// where mouse was clicked
 		private Point stop = null;// where mouse was released
 		private Card card = null; // card to be moved
+		
 		// used for moving single cards
 		private CardStack source = null;
 		private CardStack dest = null;
+		
 		// used for moving a stack of cards
 		private CardStack transferStack = new CardStack(false);
-		//private SimpleAudioPlayer deal_card_ap = ap("C:\\Users\\Evan_\\Desktop\\UTC Senior\\CPSC 4900\\Sounds\\dealing_card.wav");
-		//private SimpleAudioPlayer card_contact_ap = ap("C:\\Users\\Evan_\\Desktop\\UTC Senior\\CPSC 4900\\Sounds\\card_contact.wav");
 		
 		public static boolean validStackMove(Card source, Card dest)
 		{
@@ -282,6 +278,7 @@ public class SolitaireFM
 			return false; //this never gets reached
 		}
 		
+		
 		//Deal a card to an empty tableau whilst there still is cards on the deck
 		public static void dealSingleCard()
 		{
@@ -307,6 +304,7 @@ public class SolitaireFM
 				}
 			}
 		}
+		
 		
 		@Override
 		public void mousePressed(MouseEvent e)
@@ -344,6 +342,7 @@ public class SolitaireFM
 			}
 		}
 
+		
 		@Override
 		public void mouseReleased(MouseEvent e)
 		{
@@ -388,12 +387,7 @@ public class SolitaireFM
 						break;
 					} else if (dest.empty() && dest.contains(stop) &&
 							validStackMove(card, dest.getFirst()) && transferStack.showSize() == 1)
-					{// MOVING TO EMPTY STACK
-						 /* Keep for reference but believe it never gets used due to previous changes
-						  * 
-						  * if(source.showSize() > 1 && card != source.getLast()) {
-							
-						} */
+					{
 						Card c = null;
 						c = source.popFirst();
 						c.repaint();
@@ -502,6 +496,7 @@ public class SolitaireFM
 			{
 				statusBox.setText("That Is Not A Valid Move");
 			}
+			
 			// CHECKING FOR WIN
 			if (checkForWin)
 			{
@@ -525,7 +520,6 @@ public class SolitaireFM
 				}
 			}
 			
-			//System.out.println(gameOver);
 			if (checkForWin && gameOver)
 			{
 				JOptionPane.showMessageDialog(table, "Congratulations! You've Won!");
@@ -539,7 +533,7 @@ public class SolitaireFM
 			card = null;
 			checkForWin = false;
 			gameOver = false;
-			System.out.println(SolitaireMenu.getSoundState());
+
 			if(validMoveMade && SolitaireMenu.getSoundState())
 			{
 				card_contact_ap = ap(filePath2, 0);
@@ -547,6 +541,7 @@ public class SolitaireFM
 			}
 		}// end mousePressed()
 	}
+	
 	
 	private static void autoPlay()
 	{
@@ -560,11 +555,6 @@ public class SolitaireFM
 					Card dest = final_cards[z].getLast();
 					CardStack source_stack = playCardStack[x];
 					FinalStack dest_stack = final_cards[z];
-						
-					//System.out.println("Final first: "+dest_stack.getFirst().getValue());
-					//System.out.println("Start");
-					//System.out.println("z: "+z+" x: "+x+" all "+(z*x));
-					//System.out.println("Card to move: "+source1+" Destination Card: "+dest+" Valid move: "+(CardMovementManager.validStackMove(source1, dest)));
 					
 					if(dest_stack.getFirst().getValue() == Card.Value.ACE && source1.getValue().ordinal() == (dest.getValue().ordinal() + 1) ||
 							dest_stack.getFirst().getValue() == Card.Value.KING && source1.getValue().ordinal() == (dest.getValue().ordinal() - 1)) 
@@ -600,24 +590,6 @@ public class SolitaireFM
 		}
 	}
 	
-	private static void placeBestRecord() 
-	{
-		User u = SolitaireMenu.getUser();
-		global.StatisticAnalysis.setUser(u.getUser());
-		for(int x = 0; x < u.getRecords().size(); x++)
-		{
-			//System.out.println(u.getRecords().get(x));
-			if(u.getBestTime() == u.getRecords().get(x).getTime())
-			{
-				//System.out.println("BT: "+u.getBestTime());
-				recordBox.setText("<span><b>User Record<br>Klondike Solitaire</b> <br> "
-						+ "Best Win Time: "+u.getRecords().get(x).getTime()+" seconds <br> Highest Score: "+u.getRecords().get(x).getScore()+"</span>");
-				bestRecord = u.getRecords().get(x);
-				//recordBox.setText("Test");
-			}
-		}
-		
-	}
 
 	private static void playFMNewGame()
 	{
@@ -634,8 +606,6 @@ public class SolitaireFM
 		
 		table.removeMouseListener(cm);
 		table.removeMouseMotionListener(cm);
-		
-		//frame.setVisible(false);
 		
 		resetTimer();
 		
@@ -699,9 +669,6 @@ public class SolitaireFM
 					final_cards[x].putFirst(c);
 					break;
 				} else {
-					/*System.out.println("Putting back on show stack: ");
-					System.out.println(c.getValue());
-					System.out.println(c.getSuit());*/
 					deck.putFirst(c);
 				}
 			}
@@ -738,9 +705,6 @@ public class SolitaireFM
 						break;
 					} else 
 					{
-						/*System.out.println("Putting back on show stack: ");
-						System.out.println(c.getValue());
-						System.out.println(c.getSuit());*/
 						deck.putFirst(c);
 					}
 				}
@@ -796,11 +760,6 @@ public class SolitaireFM
 
 		}
 		
-		recordBox.setBounds(30, 5*PLAY_POS.y, 100, 150);
-		recordBox.setEditable(false);
-		recordBox.setOpaque(false);
-		//placeBestRecord();
-		
 		autoPlayButton.addActionListener(ae);
 		autoPlayButton.setBounds(0, TABLE_HEIGHT - 100, 120, 30);
 		
@@ -843,7 +802,6 @@ public class SolitaireFM
 		
 		scoreBox.setText("Score: "+score);
 		
-		table.add(recordBox);
 		table.add(statusBox);
 		table.add(toggleTimerButton);
 		table.add(gameTitle);
@@ -871,7 +829,6 @@ public class SolitaireFM
 	{
 		
 		playFMNewGame();
-		//System.out.println("Record: "+r);
 		
 	}
 }

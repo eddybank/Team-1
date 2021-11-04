@@ -30,8 +30,13 @@ public class StatisticAnalysis {
 	//private static String user = SolitaireMenu.getUser();
 	private static final File savedir = new File(System.getProperty("user.home"), ".solitairegame");
 	private static boolean dircreate = savedir.mkdir();
-	private static final File savefile = new File(savedir, "users.xml");
-	private static File filePP = new File(savedir, "usersPP.xml");
+	
+	//used for unit testing purposes
+	private static final File savefile = new File(savedir, "test.xml");
+	private static File filePP = new File(savedir, "testPP.xml");
+	
+	//private static final File savefile = new File(savedir, "users.xml");
+	//private static File filePP = new File(savedir, "usersPP.xml");
 	private static SimpleDateFormat sDF = new SimpleDateFormat("dd/MM/yy hh:mm:ss");
 	
 	public static void createFiles()
@@ -445,7 +450,9 @@ public class StatisticAnalysis {
 		
 		private ArrayList<Record> records = new ArrayList<Record>();
 		
+		//helper constructors for XML methods
 		public User(){}
+		
 		public User(String user)
 		{
 			username = user;
@@ -468,19 +475,17 @@ public class StatisticAnalysis {
 		{
 			return best_time;
 		}
+		
 		public void setBestTime()
 		{
-			ArrayList<Record> r = StatisticAnalysis.getRecords(this);
-			if(r.size() >= 1)
+			if(records.size() >= 1)
 			{
-				for(int x = 0; x < r.size(); x++)
+				for(int x = 0; x < records.size(); x++)
 				{
-					if(r.get(x).getScore() == 416)
-					{
-						System.out.println(" BT "+best_time+" > RS "+r.get(x).getTime());
-						if(best_time > r.get(x).getTime())
+					if(records.get(x).getScore() == 416) {
+						if(records.get(x).getTime() < best_time)
 						{
-							best_time = r.get(x).getTime();
+							best_time = records.get(x).getTime();
 						}
 					}
 				}
@@ -572,7 +577,7 @@ public class StatisticAnalysis {
 		
 		public String toString()
 		{
-			return "Time: "+time+", Score: "+score;
+			return "Game: "+game+", Time: "+time+", Score: "+score+", Date: "+date;
 		}
 	}
 

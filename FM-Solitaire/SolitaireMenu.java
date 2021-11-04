@@ -7,8 +7,6 @@ import java.awt.GridBagLayout;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowEvent;
@@ -27,7 +25,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
-import javax.swing.JToggleButton;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.JCheckBox;
@@ -59,12 +56,11 @@ public class SolitaireMenu {
 	private static JButton disable = new JButton("Disable Sound");
 	private static JButton records = new JButton("Look At Records");
 	private static JButton changeUser = new JButton("Change User");
-	//protected static JButton statisticButton = new JButton("Game Statistics");
 	private static JTextPane gameTypes = new JTextPane();// displays the score
 	private static JTextField userInput = new JTextField();
 	private static JTextPane statusBox = new JTextPane();// status messages
-	private static boolean soundO = true;
 	
+	private static boolean soundO = true;
 	private static Record record;
 	public static String gameType = "";
 	
@@ -103,6 +99,7 @@ public class SolitaireMenu {
 	{
 		 return c;
 	}
+	
 	public static String getColorS() 
 	{
 		 return col;
@@ -307,8 +304,6 @@ public class SolitaireMenu {
 				        time.insertString(time.getLength(), times, style);
 				        gameStatus.insertString(gameStatus.getLength(), gameS, style);
 				        SolitaireFM.gameTitle.setText("<span style =\"color:white\"><b>Team 1<br>Flea Market Solitaire</b> <br> CPSC 4900 <br> Fall 2021</span>");
-				        //SolitaireFM.recordBox.setText("<span style =\"color:white\"><b>User Record<br>Klondike Solitaire</b> <br> "
-						//		+ "Best Win Time: "+SolitaireFM.getBestRecord().getTime()+" seconds <br> Highest Score: "+SolitaireFM.getBestRecord().getScore()+"</span>");
 				        
 				        SolitaireK.scoreBox.setText("");
 						SolitaireK.timeBox.setText("");
@@ -339,9 +334,7 @@ public class SolitaireMenu {
 				        time.insertString(time.getLength(), times, style);
 				        gameStatus.insertString(gameStatus.getLength(), gameS, style);
 				        SolitaireFM.gameTitle.setText("<span style =\"color:black\"><b>Team 1<br>Flea Market Solitaire</b> <br> CPSC 4900 <br> Fall 2021</span>");
-				       // SolitaireFM.recordBox.setText("<span style =\"color:black\"><b>User Record<br>Klondike Solitaire</b> <br> "
-						//		+ "Best Win Time: "+SolitaireFM.getBestRecord().getTime()+" seconds <br> Highest Score: "+SolitaireFM.getBestRecord().getScore()+"</span>");
-				        
+				       
 				        SolitaireK.scoreBox.setText("");
 						SolitaireK.timeBox.setText("");
 						SolitaireK.statusBox.setText("");
@@ -825,8 +818,6 @@ public class SolitaireMenu {
 					
 					if(getColor() == Color.GRAY || getColor() == Color.GREEN || getColor() == Color.BLUE)
 					{
-						//gameTypes.setText("");
-						//statusBox.setText("");
 						SolitaireFM.scoreBox.setText("");
 						SolitaireFM.timeBox.setText("");
 						SolitaireFM.statusBox.setText("");
@@ -834,20 +825,14 @@ public class SolitaireMenu {
 						System.out.println(sco);
 						StyleConstants.setForeground(style, Color.WHITE);
 				        
-				        //game.insertString(game.getLength(), "Game Modes", style);
-				        //status.insertString(status.getLength(), "Welcome "+user.getUser(), style);
 				        score.insertString(score.getLength(), sco, style);
 				        time.insertString(time.getLength(), times, style);
 				        gameStatus.insertString(gameStatus.getLength(), gameS, style);
 				        SolitaireFM.gameTitle.setText("<span style =\"color:white\"><b>Team 1<br>Flea Market Solitaire</b> <br> CPSC 4900 <br> Fall 2021</span>");
-				        //SolitaireFM.recordBox.setText("<span style =\"color:white\"><b>User Record<br>Klondike Solitaire</b> <br> "
-						//		+ "Best Win Time: "+SolitaireFM.getBestRecord().getTime()+" seconds <br> Highest Score: "+SolitaireFM.getBestRecord().getScore()+"</span>");
 				        
 					} else if (getColor() == Color.WHITE || getColor() == Color.PINK || getColor() == Color.ORANGE || 
 							getColor() == Color.CYAN || getColor() == Color.YELLOW || getColor() == Color.RED || getColor() == Color.LIGHT_GRAY)
 					{
-						//gameTypes.setText("");
-						//statusBox.setText("");
 						SolitaireFM.scoreBox.setText("");
 						SolitaireFM.timeBox.setText("");
 						SolitaireFM.statusBox.setText("");
@@ -855,14 +840,10 @@ public class SolitaireMenu {
 						System.out.println(sco);
 						StyleConstants.setForeground(style, Color.BLACK);
 						
-				        //game.insertString(game.getLength(), "Available Game Modes", style);
-						//status.insertString(status.getLength(), "Welcome "+user.getUser(), style);
 						score.insertString(score.getLength(), sco, style);
 				        time.insertString(time.getLength(), times, style);
 				        gameStatus.insertString(gameStatus.getLength(), gameS, style);
 				        SolitaireFM.gameTitle.setText("<span style =\"color:black\"><b>Team 1<br>Flea Market Solitaire</b> <br> CPSC 4900 <br> Fall 2021</span>");
-				        //SolitaireFM.recordBox.setText("<span style =\"color:black\"><b>User Record<br>Klondike Solitaire</b> <br> "
-						//		+ "Best Win Time: "+SolitaireFM.getBestRecord().getTime()+" seconds <br> Highest Score: "+SolitaireFM.getBestRecord().getScore()+"</span>");
 					}
 					
 				} else if(e.getSource() == backgroundColorButton) 
@@ -938,8 +919,10 @@ public class SolitaireMenu {
 		public void windowActivated(WindowEvent e) {}
 		@Override
 		public void windowDeactivated(WindowEvent e) {
-			record = new Record(gameType, Integer.parseInt(SolitaireFM.scoreBox.getText().substring(7)), Integer.parseInt(SolitaireFM.timeBox.getText().substring(9)), new Date());
-			
+			if(frame.isActive()) {
+				record = new Record(gameType, Integer.parseInt(SolitaireFM.scoreBox.getText().substring(7)), 
+						Integer.parseInt(SolitaireFM.timeBox.getText().substring(9)), new Date());
+			}
 			try {
 				saveGame();
 			} catch (ParseException e1) {
