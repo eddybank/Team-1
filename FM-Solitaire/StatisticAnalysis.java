@@ -32,11 +32,11 @@ public class StatisticAnalysis {
 	private static boolean dircreate = savedir.mkdir();
 	
 	//used for unit testing purposes
-	private static final File savefile = new File(savedir, "test.xml");
-	private static File filePP = new File(savedir, "testPP.xml");
+	//private static final File savefile = new File(savedir, "test.xml");
+	//private static File filePP = new File(savedir, "testPP.xml");
 	
-	//private static final File savefile = new File(savedir, "users.xml");
-	//private static File filePP = new File(savedir, "usersPP.xml");
+	private static final File savefile = new File(savedir, "users.xml");
+	private static File filePP = new File(savedir, "usersPP.xml");
 	private static SimpleDateFormat sDF = new SimpleDateFormat("dd/MM/yy hh:mm:ss");
 	
 	public static void createFiles()

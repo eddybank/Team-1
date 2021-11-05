@@ -1,7 +1,10 @@
 package global;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -9,18 +12,17 @@ import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
-public class SimpleAudioPlayer {
+import fleaMarket.SolitaireFM;
 
-	private String filePath = "C:\\Users\\Evan_\\Desktop\\UTC Senior\\CPSC 4900\\Sounds\\dealing_card";
-	private String filePath2 = "C:\\Users\\Evan_\\Desktop\\UTC Senior\\CPSC 4900\\Sounds\\card_contact";
+public class SimpleAudioPlayer {
 	private AudioInputStream aIS;
 	private Clip clip;
 		
-	
-	public SimpleAudioPlayer(String fp) throws UnsupportedAudioFileException, IOException, LineUnavailableException 
+	public SimpleAudioPlayer() throws UnsupportedAudioFileException, IOException, LineUnavailableException 
 	{
+		URL filePath = getClass().getResource("Sounds.dealing_card.wav");
 		// create AudioInputStream object
-		aIS = AudioSystem.getAudioInputStream(new File(fp).getAbsoluteFile());
+		aIS = AudioSystem.getAudioInputStream(filePath);
 			              
 		// create clip reference
 		clip = AudioSystem.getClip();
@@ -29,10 +31,22 @@ public class SimpleAudioPlayer {
 		clip.loop(0);
 	 }
 	
-	public SimpleAudioPlayer(String fp, int loops) throws UnsupportedAudioFileException, IOException, LineUnavailableException 
+	public SimpleAudioPlayer(URL fp) throws UnsupportedAudioFileException, IOException, LineUnavailableException 
 	{
 		// create AudioInputStream object
-		aIS = AudioSystem.getAudioInputStream(new File(fp).getAbsoluteFile());
+		aIS = AudioSystem.getAudioInputStream(fp);
+			              
+		// create clip reference
+		clip = AudioSystem.getClip();
+		// open audioInputStream to the clip
+		clip.open(aIS);
+		clip.loop(0);
+	 }
+	
+	public SimpleAudioPlayer(URL fp, int loops) throws UnsupportedAudioFileException, IOException, LineUnavailableException 
+	{
+		// create AudioInputStream object
+		aIS = AudioSystem.getAudioInputStream(fp);
 			              
 		// create clip reference
 		clip = AudioSystem.getClip();
@@ -59,11 +73,20 @@ public class SimpleAudioPlayer {
         return clip;
     }
 	
-	public void resetAudioStream(String fp) throws UnsupportedAudioFileException, IOException, LineUnavailableException 
+	public void resetAudioStream(URL fp) throws UnsupportedAudioFileException, IOException, LineUnavailableException 
 	{
-		aIS = AudioSystem.getAudioInputStream(
-				new File(fp).getAbsoluteFile());
+		aIS = AudioSystem.getAudioInputStream(fp);
 		clip.open(aIS);
 		clip.loop(0);
+	}
+	public void start() throws UnsupportedAudioFileException, IOException, LineUnavailableException {
+		URL filePath = getClass().getResource("dealing_card.wav");
+		//System.out.println(filePath);
+		SimpleAudioPlayer audioPlayer = new SimpleAudioPlayer(filePath, 1);
+		audioPlayer.play();
+	}
+	
+	public static void main(String[] args) throws UnsupportedAudioFileException, IOException, LineUnavailableException {
+		SimpleAudioPlayer ap = new SimpleAudioPlayer();
 	}
 }

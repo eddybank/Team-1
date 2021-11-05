@@ -14,6 +14,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
+import java.net.URL;
 import java.util.Timer;
 import java.util.TimerTask;
 import javax.sound.sampled.LineUnavailableException;
@@ -79,14 +80,14 @@ public class SolitaireFM
 	protected static boolean gameOver = true;
 	
 	//SOUND PLAYERS
-	private static String filePath = "src/global/Sounds/dealing_card.wav";
-	private static String filePath2 = "src/global/Sounds/card_contact.wav";
-	private static String filePath3 = "src/global/Sounds/deal_cards_f.wav";
+	private static URL filePath = SolitaireFM.class.getClassLoader().getResource("dealing_card.wav");
+	private static URL filePath2 = SolitaireFM.class.getClassLoader().getResource("card_contact.wav");
+	private static URL filePath3 = SolitaireFM.class.getClassLoader().getResource("deal_cards_f.wav");
 	private static SimpleAudioPlayer card_contact_ap;
 	private static SimpleAudioPlayer deal_card_ap;
 	
 	
-	public static SimpleAudioPlayer ap(String fp, int loops) {
+	public static SimpleAudioPlayer ap(URL fp, int loops) {
 		try {
 			SimpleAudioPlayer audioPlayer = new SimpleAudioPlayer(fp, loops);
 			return audioPlayer;
