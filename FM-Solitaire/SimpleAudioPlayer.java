@@ -79,14 +79,4 @@ public class SimpleAudioPlayer {
 		clip.open(aIS);
 		clip.loop(0);
 	}
-	public void start() throws UnsupportedAudioFileException, IOException, LineUnavailableException {
-		URL filePath = getClass().getResource("dealing_card.wav");
-		//System.out.println(filePath);
-		SimpleAudioPlayer audioPlayer = new SimpleAudioPlayer(filePath, 1);
-		audioPlayer.play();
-	}
-	
-	public static void main(String[] args) throws UnsupportedAudioFileException, IOException, LineUnavailableException {
-		SimpleAudioPlayer ap = new SimpleAudioPlayer();
-	}
 }

@@ -3,15 +3,17 @@ package global;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.geom.RoundRectangle2D;
+import java.io.IOException;
+import java.net.URL;
 
+import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
-public class Card extends JPanel
-{
-
+public class Card extends JPanel{
 	public static enum Value
 	{
 		ACE("ACE"), TWO("TWO"), THREE("THREE"), FOUR("FOUR"), FIVE("FIVE"), SIX("SIX"), 
@@ -46,10 +48,17 @@ public class Card extends JPanel
 	    	return this.asString; 
 	    }
 	}
+	
+	public static enum Back
+	{
+		BLUE, GRAY, GREEN;
+	}
 
 	private Suit _suit;
 
 	private Value _value;
+	
+	public Back _back;
 
 	private Boolean _faceup;
 
@@ -58,7 +67,7 @@ public class Card extends JPanel
 	private Point whereAmI; // used to create abs postion rectangle for contains
 	// functions
 
-	private int x; // used for relative positioning within CardStack Container
+	private int x; // used for relative positioning within CardCStack Container
 	private int y;
 
 	private final int x_offset = 15;
@@ -70,7 +79,7 @@ public class Card extends JPanel
 
 	final static public int CORNER_ANGLE = 25;
 
-	Card(Suit suit, Value value)
+	public Card(Suit suit, Value value)
 	{
 		_suit = suit;
 		_value = value;
@@ -211,7 +220,6 @@ public class Card extends JPanel
 		_faceup = false;
 		return this;
 	}
-
 	@Override
 	public boolean contains(Point p)
 	{
@@ -231,89 +239,115 @@ public class Card extends JPanel
 		g.drawString(value, _location.x + new_x_offset - 5, _location.y + y_offset);
 		g.drawString(value, _location.x + new_x_offset - 5 , _location.y + y_offset + CARD_HEIGHT - 25);
 	}
-
 	@Override
 	public void paintComponent(Graphics g)
 	{
 		Graphics2D g2d = (Graphics2D) g;
-		RoundRectangle2D rect2 = new RoundRectangle2D.Double(_location.x, _location.y, CARD_WIDTH, CARD_HEIGHT,
-				CORNER_ANGLE, CORNER_ANGLE);
-		g2d.setColor(Color.WHITE);
-		g2d.fill(rect2);
-		g2d.setColor(Color.black);
-		g2d.draw(rect2);
-		// DRAW THE CARD SUIT AND VALUE IF FACEUP
-		if (_faceup)
-		{
-			switch (_suit)
+
+		String suit = "";
+		String value = "";
+		String color = "";
+		URL imageP = null;
+		Image img;
+		// DRAW THE CardC SUIT AND VALUE IF FACEUP
+		try {
+			if (_faceup)
 			{
-			case HEARTS:
-				drawSuit(g2d, "Hearts", Color.RED);
-				break;
-			case DIAMONDS:
-				drawSuit(g2d, "Diamonds", Color.RED);
-				break;
-			case SPADES:
-				drawSuit(g2d, "Spades", Color.BLACK);
-				break;
-			case CLUBS:
-				drawSuit(g2d, "Clubs", Color.BLACK);
-				break;
-			}
+				switch (_suit)
+				{
+				case HEARTS:
+					suit = "H";
+					break;
+				case DIAMONDS:
+					suit = "D";
+					break;
+				case SPADES:
+					suit = "S";
+					break;
+				case CLUBS:
+					suit = "C";
+					break;
+				}
+				
+				switch (_value)
+				{
+				case ACE:
+					value = "A";
+					break;
+				case TWO:
+					value = "2";
+					break;
+				case THREE:
+					value = "3";
+					break;
+				case FOUR:
+					value = "4";
+					break;
+				case FIVE:
+					value = "5";
+					break;
+				case SIX:
+					value = "6";
+					break;
+				case SEVEN:
+					value = "7";
+					break;
+				case EIGHT:
+					value = "8";
+					break;
+				case NINE:
+					value = "9";
+					break;
+				case TEN:
+					value = "10";
+					break;
+				case JACK:
+					value = "J";
+					break;
+				case QUEEN:
+					value = "Q";
+					break;
+				case KING:
+					value = "K";
+					break;
+				}
 			
-			switch (_value)
+				imageP = Card.class.getClassLoader().getResource(value+""+suit+".png");
+				img = ImageIO.read(imageP);
+				g.drawImage(img, _location.x, _location.y, CARD_WIDTH , CARD_HEIGHT, null);
+			
+			
+			} else
 			{
-			case ACE:
-				drawValue(g2d, "A");
-				break;
-			case TWO:
-				drawValue(g2d, "2");
-				break;
-			case THREE:
-				drawValue(g2d, "3");
-				break;
-			case FOUR:
-				drawValue(g2d, "4");
-				break;
-			case FIVE:
-				drawValue(g2d, "5");
-				break;
-			case SIX:
-				drawValue(g2d, "6");
-				break;
-			case SEVEN:
-				drawValue(g2d, "7");
-				break;
-			case EIGHT:
-				drawValue(g2d, "8");
-				break;
-			case NINE:
-				drawValue(g2d, "9");
-				break;
-			case TEN:
-				drawValue(g2d, "10");
-				break;
-			case JACK:
-				drawValue(g2d, "J");
-				break;
-			case QUEEN:
-				drawValue(g2d, "Q");
-				break;
-			case KING:
-				drawValue(g2d, "K");
-				break;
+				// DRAW THE BACK OF THE CardC IF FACEDOWN
+				if(_back != null)
+				{
+					switch(_back)
+					{
+					case BLUE:
+						color = "blue";
+						break;
+					case GRAY:
+						color = "gray";
+						break;
+					case GREEN:
+						color = "green";
+						break;
+					}
+					imageP = Card.class.getClassLoader().getResource(color+"_back.png");
+					img = ImageIO.read(imageP);
+					g.drawImage(img, _location.x, _location.y, CARD_WIDTH , CARD_HEIGHT, null);
+				} else {
+					RoundRectangle2D rect = new RoundRectangle2D.Double(_location.x, _location.y, CARD_WIDTH, CARD_HEIGHT,
+							CORNER_ANGLE, CORNER_ANGLE);
+					g2d.setColor(Color.LIGHT_GRAY);
+					g2d.fill(rect);
+					g2d.setColor(Color.black);
+					g2d.draw(rect);
+				}
 			}
-		} else
-		{
-			// DRAW THE BACK OF THE CARD IF FACEDOWN
-			RoundRectangle2D rect = new RoundRectangle2D.Double(_location.x, _location.y, CARD_WIDTH, CARD_HEIGHT,
-					CORNER_ANGLE, CORNER_ANGLE);
-			g2d.setColor(Color.LIGHT_GRAY);
-			g2d.fill(rect);
-			g2d.setColor(Color.black);
-			g2d.draw(rect);
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-
 	}
-
-}// END Card
+}

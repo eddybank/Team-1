@@ -21,8 +21,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 
 import global.Card;
-import global.CardStack;
-import global.FinalStack;
 import global.SolitaireMenu;
 
 
@@ -40,10 +38,10 @@ public class SolitaireK
 	public static final Point PLAY_POS = new Point(DECK_POS.x, FINAL_POS.y + Card.CARD_HEIGHT + 30);
 
 	// GAMEPLAY STRUCTURES
-	private static FinalStack[] final_cards;// Foundation Stacks
-	private static CardStack[] playCardStack; // Tableau stacks
+	private static FinalStackK[] final_cards;// Foundation Stacks
+	private static CardStackK[] playCardStackK; // Tableau stacks
 	private static final Card newCardPlace = new Card();// waste card spot
-	private static CardStack deck; // populated with standard 52 card deck
+	private static CardStackK deck; // populated with standard 52 card deck
 
 	// GUI COMPONENTS (top level)
 	private static final JFrame frame = new JFrame("Klondike Solitaire");
@@ -214,10 +212,10 @@ public class SolitaireK
 		private Point stop = null;// where mouse was released
 		private Card card = null; // card to be moved
 		// used for moving single cards
-		private CardStack source = null;
-		private CardStack dest = null;
+		private CardStackK source = null;
+		private CardStackK dest = null;
 		// used for moving a stack of cards
-		private CardStack transferStack = new CardStack(false);
+		private CardStackK transferStack = new CardStackK(false);
 
 		private boolean validPlayStackMove(Card source, Card dest)
 		{
@@ -258,7 +256,7 @@ public class SolitaireK
 				return false;
 		}
 
-		private boolean validFinalStackMove(Card source, Card dest)
+		private boolean validFinalStackKMove(Card source, Card dest)
 		{
 			int s_val = source.getValue().ordinal();
 			int d_val = dest.getValue().ordinal();
@@ -291,7 +289,7 @@ public class SolitaireK
 			{
 				if (stopSearch)
 					break;
-				source = playCardStack[x];
+				source = playCardStackK[x];
 				// pinpointing exact card pressed
 				for (Component ca : source.getComponents())
 				{
@@ -369,7 +367,7 @@ public class SolitaireK
 				// Moving from SHOW TO PLAY
 				for (int x = 0; x < NUM_PLAY_DECKS; x++)
 				{
-					dest = playCardStack[x];
+					dest = playCardStackK[x];
 					// to empty play stack, only kings can go
 					if (dest.empty() && movedCard != null && dest.contains(stop)
 							&& movedCard.getValue() == Card.Value.KING)
@@ -421,7 +419,7 @@ public class SolitaireK
 							break;
 						}
 					}
-					if (!dest.empty() && dest.contains(stop) && validFinalStackMove(movedCard, dest.getLast()))
+					if (!dest.empty() && dest.contains(stop) && validFinalStackKMove(movedCard, dest.getLast()))
 					{
 						System.out.println("Destin" + dest.showSize());
 						dest.push(movedCard);
@@ -443,7 +441,7 @@ public class SolitaireK
 			{ // Moving from PLAY TO PLAY
 				for (int x = 0; x < NUM_PLAY_DECKS; x++)
 				{
-					dest = playCardStack[x];
+					dest = playCardStackK[x];
 					// MOVING TO POPULATED STACK
 					if (card.getFaceStatus() == true && dest.contains(stop) && source != dest && !dest.empty()
 							&& validPlayStackMove(card, dest.getFirst()) && transferStack.showSize() == 1)
@@ -597,7 +595,7 @@ public class SolitaireK
 								validMoveMade = true;
 								break;
 							}// TO POPULATED STACK
-						} else if (validFinalStackMove(card, dest.getLast()))
+						} else if (validFinalStackKMove(card, dest.getLast()))
 						{
 							Card c = source.popFirst();
 							c.repaint();
@@ -680,15 +678,15 @@ public class SolitaireK
 		
 		frame.dispose();
 		
-		deck = new CardStack(true); // deal 52 cards
+		deck = new CardStackK(true); // deal 52 cards
 		deck.shuffle();
 		table.removeAll();
 		// reset stacks if user starts a new game in the middle of one
-		if (playCardStack != null && final_cards != null)
+		if (playCardStackK != null && final_cards != null)
 		{
 			for (int x = 0; x < NUM_PLAY_DECKS; x++)
 			{
-				playCardStack[x].makeEmpty();
+				playCardStackK[x].makeEmpty();
 			}
 			for (int x = 0; x < NUM_FINAL_DECKS; x++)
 			{
@@ -696,10 +694,10 @@ public class SolitaireK
 			}
 		}
 		// initialize & place final (foundation) decks/stacks
-		final_cards = new FinalStack[NUM_FINAL_DECKS];
+		final_cards = new FinalStackK[NUM_FINAL_DECKS];
 		for (int x = 0; x < NUM_FINAL_DECKS; x++)
 		{
-			final_cards[x] = new FinalStack();
+			final_cards[x] = new FinalStackK();
 
 			final_cards[x].setXY((FINAL_POS.x + (x * Card.CARD_WIDTH)) + 10, FINAL_POS.y);
 			table.add(final_cards[x]);
@@ -708,13 +706,13 @@ public class SolitaireK
 		// place new card distribution button
 		table.add(moveCard(newCardButton, DECK_POS.x, DECK_POS.y));
 		// initialize & place play (tableau) decks/stacks
-		playCardStack = new CardStack[NUM_PLAY_DECKS];
+		playCardStackK = new CardStackK[NUM_PLAY_DECKS];
 		for (int x = 0; x < NUM_PLAY_DECKS; x++)
 		{
-			playCardStack[x] = new CardStack(false);
-			playCardStack[x].setXY((DECK_POS.x + (x * (Card.CARD_WIDTH + 10))), PLAY_POS.y);
+			playCardStackK[x] = new CardStackK(false);
+			playCardStackK[x].setXY((DECK_POS.x + (x * (Card.CARD_WIDTH + 10))), PLAY_POS.y);
 
-			table.add(playCardStack[x]);
+			table.add(playCardStackK[x]);
 		}
 
 		// Dealing new game
@@ -722,11 +720,11 @@ public class SolitaireK
 		{
 			int hld = 0;
 			Card c = deck.pop().setFaceup();
-			playCardStack[x].putFirst(c);
+			playCardStackK[x].putFirst(c);
 
 			for (int y = x + 1; y < NUM_PLAY_DECKS; y++)
 			{
-				playCardStack[y].putFirst(c = deck.pop());
+				playCardStackK[y].putFirst(c = deck.pop());
 			}
 		}
 
