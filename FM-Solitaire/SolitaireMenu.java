@@ -919,12 +919,14 @@ public class SolitaireMenu {
 		public void windowActivated(WindowEvent e) {}
 		@Override
 		public void windowDeactivated(WindowEvent e) {
-			if(frame.isActive()) {
+			//if(SolitaireFM.frame.isEnabled()) {
 				record = new Record(gameType, Integer.parseInt(SolitaireFM.scoreBox.getText().substring(7)), 
 						Integer.parseInt(SolitaireFM.timeBox.getText().substring(9)), new Date());
-			}
+				System.out.println(record);
+			//}
 			try {
 				saveGame();
+				System.out.println("Game Saved");
 			} catch (ParseException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();

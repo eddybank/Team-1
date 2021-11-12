@@ -50,7 +50,7 @@ public class SolitaireFM
 	private static FinalStack[] deal_deck;// Foundation Stacks
 
 	// GUI COMPONENTS (top level)
-	private static final JFrame frame = new JFrame("Flea Market Solitaire");
+	public static final JFrame frame = new JFrame("Flea Market Solitaire");
 	public static final JPanel table = new JPanel();
 	protected static final JPanel menu = new JPanel();
 	// other components
