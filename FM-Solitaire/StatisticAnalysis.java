@@ -12,7 +12,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
@@ -27,7 +26,7 @@ public class StatisticAnalysis {
 	 * Create Directory based on users system--Directory path would be 'C:\Users\"NameofUser"' on windows
 	 * XML files to store record for individual users
 	 */
-	//private static String user = SolitaireMenu.getUser();
+
 	private static final File savedir = new File(System.getProperty("user.home"), ".solitairegame");
 	private static boolean dircreate = savedir.mkdir();
 	
@@ -39,6 +38,11 @@ public class StatisticAnalysis {
 	private static File filePP = new File(savedir, "usersPP.xml");
 	private static SimpleDateFormat sDF = new SimpleDateFormat("dd/MM/yy hh:mm:ss");
 	
+	
+	/*
+	 * Create directory on users home User directory (windows) named .solitairegame
+	 * then create the initial XML structure
+	 */
 	public static void createFiles()
 	{
 		try {
@@ -71,6 +75,9 @@ public class StatisticAnalysis {
 		}
 	}
 	
+	/*
+	 * Loop through users, setting the favorite color selected for the current user
+	 */
 	public static void setUserColor(User user) 
 	{
 		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
@@ -110,6 +117,9 @@ public class StatisticAnalysis {
 	    prettyPrint();
 	}
 	
+	/*
+	 * Loop through users, getting the favorite color for the current user
+	 */
 	public static String getUserColor(User user) 
 	{
 		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
@@ -139,6 +149,12 @@ public class StatisticAnalysis {
 	    return color;
 	}
 	
+	/*
+	 * Loop through users to determine if a user with that name already exists
+	 * Creates file if not already created for the case that the new user is the only user
+	 * 
+	 * Used for newUser() to verify that username is not taken
+	 */
 	public static boolean doesUserExist(String name) 
 	{
 		createFiles();
@@ -155,6 +171,12 @@ public class StatisticAnalysis {
 		return doesExist;
 	}
 	
+	/*
+	 * Loop through users, creating an array list of all the user objects 
+	 * including all saved records for each user
+	 * 
+	 * @return		ArrayList<User> object
+	 */
 	private static ArrayList<User> getAllUsers() 
 	{
 		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
@@ -205,6 +227,13 @@ public class StatisticAnalysis {
 		}
 		return allUsers;
 	}	
+	
+	/*
+	 * Returns a User object based on the input string of the username
+	 * 
+	 * @param  name  a string of user input used for username during login
+	 * @return		User object
+	 */
 	public static User setUser(String name) 
 	{
 		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
@@ -257,6 +286,12 @@ public class StatisticAnalysis {
 	    return user;
 	}	
 	
+	/*
+	 * Loop through a users record, creating an array list of all the record objects 
+	 *
+	 * @param  user  User object of the current user
+	 * @return		ArrayList<Record> object
+	 */
 	public static ArrayList<Record> getRecords(User user) 
 	{
 		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
@@ -312,6 +347,12 @@ public class StatisticAnalysis {
 		return user.getRecords();
 	}	
 	
+	/*
+	 * Save a record on to the XML file under the specified user
+	 * 
+	 * @param	user	User object of current user
+	 * @param	r	Record object that is to be added to XML file
+	 */
 	private static void setRecord(User user, Record r) 
 	{
 		 DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
@@ -373,6 +414,11 @@ public class StatisticAnalysis {
 	     prettyPrint();
 	}	
 	
+	/*
+	 * Create a XML files and structure for a newly created user
+	 * 
+	 * @param	user	User object of the user that has just been created
+	 */
 	private static void newUser(User user) 
 	{
 		 DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
@@ -420,6 +466,9 @@ public class StatisticAnalysis {
 		 prettyPrint();
 	}
 	
+	/*
+	 * Create a pretty print version of the XML so it is readable 
+	 */
 	public static void prettyPrint(){
 	    try{
 	    	boolean deleted = filePP.delete();
@@ -442,6 +491,7 @@ public class StatisticAnalysis {
 	        }
 	    }
 	
+	//Nested User class
 	public static class User 
 	{
 		
@@ -539,6 +589,7 @@ public class StatisticAnalysis {
 		}
 	}
 	
+	//Nested Record class
 	public static class Record 
 	{
 		private String game;

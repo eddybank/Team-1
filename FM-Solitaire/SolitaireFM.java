@@ -90,7 +90,6 @@ public class SolitaireFM
 	private static SimpleAudioPlayer card_contact_ap;
 	private static SimpleAudioPlayer deal_card_ap;
 	
-	
 	public static SimpleAudioPlayer ap(URL fp, int loops) {
 		try {
 			SimpleAudioPlayer audioPlayer = new SimpleAudioPlayer(fp, loops);
@@ -135,7 +134,7 @@ public class SolitaireFM
 		timeBox.repaint();
 	}
 	
-
+	//start timer
 	protected static void startTimer()
 	{
 		scoreClock = new ScoreClock();
@@ -177,6 +176,9 @@ public class SolitaireFM
 		}
 	}
 	
+	/*
+	 * Window state listener class to facilitate window resizing
+	 */
 	public static class resizeListener implements WindowStateListener
 	{
 		@Override
@@ -700,7 +702,11 @@ public class SolitaireFM
 		}// end mousePressed()
 	}
 	
-	
+	/*
+	 * Automatically makes valid moves from play stacks to final stacks
+	 * 
+	 * This method doesn't play how the game should, only places applicable moves onto final stacks.
+	 */
 	private static void autoPlay()
 	{
 		for(int z = 0; z < final_cards.length; z++) 
@@ -748,7 +754,10 @@ public class SolitaireFM
 		}
 	}
 	
-
+	/*
+	 * Remove all listeners as to not duplicate
+	 * Repaint tableaus and place them, place buttons and create frame
+	 */
 	public static void playFMNewGame()
 	{
 		newGameButton.removeActionListener(SolitaireFM.ae);

@@ -90,26 +90,27 @@ public class SolitaireMenu {
 	
 	private static SimpleDateFormat sDF = new SimpleDateFormat("dd/MM/yy hh:mm:ss");
 	
-	//sound boolean getter
+	//sound boolean getter to check is sound is on
 	public static boolean getSoundState()
 	{
 		return soundO;
 	}
 	
-	//Color getter
+	//getter method to return color as Color
 	public static Color getColor() 
 	{
 		 return c;
 	}
 	
+	//helper method to return color as a string
 	public static String getColorS() 
 	{
 		 return col;
 	}
 	
+	//Set the user using the text enter by user or use "Guest"
 	public static User getUser()
 	{
-		System.out.println(guestButton.getText());
 		if(guestButton.getText().equals("Guest")){
 			user = StatisticAnalysis.setUser("Guest");
 			return user;
@@ -120,6 +121,7 @@ public class SolitaireMenu {
 		}
 	}
 	
+	//Method to facilitate background color changing
 	private static void setUpColorChange() 
 	{
 		Container cP;
@@ -159,6 +161,9 @@ public class SolitaireMenu {
 		JPanel fMTable = SolitaireFM.table;
 		JPanel kTable = SolitaireK.table;
 
+		/*
+		 * Nested ActionListener class to facilitate action events for background color changing
+		 */
 		class SetUpColorListeners implements ActionListener
 		{
 			@Override
@@ -319,7 +324,6 @@ public class SolitaireMenu {
 						SolitaireK.statusBox.setText("");
 						SolitaireK.gameTitle.setText("");
 
-				        System.out.println(sco);
 				        scoreK.insertString(scoreK.getLength(), sco1, style);
 				        timeK.insertString(timeK.getLength(), times1, style);
 				        gameStatusK.insertString(gameStatusK.getLength(), gameS1, style);
@@ -449,6 +453,12 @@ public class SolitaireMenu {
 		colorFrame.setVisible(true);
 	}
 	
+	/*
+	 * Creates dialog window to enter user so that menu options cannot
+	 * be clicked until a user logs in either with a specified user name or as a guest
+	 * 
+	 * Panel will dispose once user is logged in
+	 */
 	public static void enterUser()
 	{
 		/*
@@ -462,6 +472,8 @@ public class SolitaireMenu {
 		userFrame.setSize(300, 100);
 		JLabel userName = new JLabel("Enter user name or Click on 'Guest' to Continue");
 		guestButton = new JButton("Guest");
+		
+		//nested action listener to log in as Guest and change background color accordingly
 		class guestListener implements ActionListener
 		{
 			@Override
@@ -564,6 +576,7 @@ public class SolitaireMenu {
 			}
 		}
 		
+		//nested Key listener for user input and change background color accordingly
 		class userEnterListener implements KeyListener
 		{
 			@Override
@@ -699,7 +712,10 @@ public class SolitaireMenu {
 	}
 	
 	
-	
+	/*
+	 * Creates a frame to hold hold records retrieved from the XML file
+	 * Shows all records for current user in frame
+	 */
 	private static void openRecords()
 	{
 		Container cP;
@@ -768,6 +784,11 @@ public class SolitaireMenu {
 		recordFrame.setVisible(true);
 	}
 	
+	/*
+	 * Action listener for starting games, enabling/diabling sound, changing user,
+	 * looking at records, and reseting FM and K games
+	 * 
+	 */
 	private static class SetUpButtonListeners implements ActionListener
 	{	
 		@Override
@@ -909,6 +930,8 @@ public class SolitaireMenu {
 		}
 	}
 	
+	
+	//Sets record to current game stats then creates record within User object
 	public static void saveGame() throws ParseException
 	{
 		if(gameType.equals("Flea Market")) {
@@ -926,6 +949,7 @@ public class SolitaireMenu {
 		}
 	}
 	
+	//Window Listener to initiate user login
 	private static class windowListener implements WindowListener
 	{
 
@@ -948,6 +972,7 @@ public class SolitaireMenu {
 
 	}
 	
+	//Implements game saving by linking it to the deactivation of the game windows
 	public static class gameListener implements WindowListener
 	{
 
@@ -978,6 +1003,7 @@ public class SolitaireMenu {
 
 	}
 	
+	//placing all buttons and adding their listeners
 	private static void openMenu() throws BadLocationException
 	{
 		statusBox.setBounds(220, TABLE_HEIGHT - 120, 200, 30);
@@ -1023,7 +1049,8 @@ public class SolitaireMenu {
 		menu.add(backgroundColorButton);
 		menu.add(statusBox);
 	}
-
+	
+	//Create the menu, set visible, and set default close operation
 	public static void main(String[] args) throws BadLocationException
 	{
 
@@ -1031,10 +1058,7 @@ public class SolitaireMenu {
 
 		frame.setSize(TABLE_WIDTH, TABLE_HEIGHT);
 		
-		frame.addWindowListener(new windowListener());
-		
 		menu.setLayout(null);
-		//menu.setBackground(Color.GRAY);
 		
 		contentPane = frame.getContentPane();
 		contentPane.add(menu);
@@ -1043,8 +1067,6 @@ public class SolitaireMenu {
 		openMenu();
 
 		frame.setVisible(true);
-		StatisticAnalysis.main(null);
-		System.out.println(new Date());
 
 	}
 
