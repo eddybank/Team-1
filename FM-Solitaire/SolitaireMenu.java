@@ -60,6 +60,7 @@ public class SolitaireMenu {
 	private static JTextPane gameTypes = new JTextPane();// displays the score
 	private static JTextField userInput = new JTextField();
 	private static JTextPane statusBox = new JTextPane();// status messages
+	private static JButton guestButton;
 	
 	private static boolean soundO = true;
 	private static Record record;
@@ -108,8 +109,15 @@ public class SolitaireMenu {
 	
 	public static User getUser()
 	{
-		return user;
-		
+		System.out.println(guestButton.getText());
+		if(guestButton.getText().equals("Guest")){
+			user = StatisticAnalysis.setUser("Guest");
+			return user;
+			
+		} else {
+			
+			return user;
+		}
 	}
 	
 	private static void setUpColorChange() 
@@ -451,9 +459,9 @@ public class SolitaireMenu {
 		JDialog userFrame = new JDialog(frame, true);
 		JPanel userTable = new JPanel();
 		userFrame.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-		userFrame.setSize(300, 75);
-		JLabel userName = new JLabel("Enter User Name: ");
-		JButton guestButton = new JButton("Guest");
+		userFrame.setSize(300, 100);
+		JLabel userName = new JLabel("Enter user name or Click on 'Guest' to Continue");
+		guestButton = new JButton("Guest");
 		class guestListener implements ActionListener
 		{
 			@Override
