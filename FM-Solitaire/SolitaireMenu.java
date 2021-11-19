@@ -35,13 +35,14 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 import Klondike.SolitaireK;
 import global.StatisticAnalysis.User;
+import test.Card;
 import fleaMarket.SolitaireFM;
 import global.StatisticAnalysis.Record;
 
 public class SolitaireMenu {
 	
-	public static final int TABLE_HEIGHT = 400;
-	public static final int TABLE_WIDTH = 500;
+	public static int TABLE_HEIGHT = 400;
+	public static int TABLE_WIDTH = 500;
 	private static User user;
 	
 	// GUI COMPONENTS (top level)
@@ -79,7 +80,7 @@ public class SolitaireMenu {
 	static Style style = gameTypes.addStyle("I'm a Style", null);
 	
 	//Action Listener
-	private static ActionListener ae = new SetUpButtonListeners();
+	public static ActionListener ae = new SetUpButtonListeners();
 	
 	//Color switcher
 	private static Color c;
@@ -864,6 +865,34 @@ public class SolitaireMenu {
 				} else if(e.getSource() == changeUser)
 				{
 					enterUser();
+				} else if(e.getSource() == SolitaireFM.newGameButton) 
+				{
+					/*
+					try {
+						//saveGame();
+						System.out.println("Game Saved");
+					} catch (ParseException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}*/
+					fleaMarket.SolitaireFM.frame.setState(JFrame.ICONIFIED);
+					fleaMarket.SolitaireFM.frame.setState(JFrame.NORMAL);
+					SolitaireFM.playFMNewGame();
+					statusBox.setText("Flea Market Reset");
+				} else if(e.getSource() == SolitaireK.newGameButton) 
+				{
+					
+					/*try {
+						//saveGame();
+						System.out.println("Game Saved");
+					} catch (ParseException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}*/
+					Klondike.SolitaireK.frame.setState(JFrame.ICONIFIED);
+					Klondike.SolitaireK.frame.setState(JFrame.NORMAL);
+					SolitaireK.playKNewGame();
+					statusBox.setText("Klondike Reset");
 				}
 			} catch (BadLocationException | NullPointerException e3) {
 				System.out.println("Error occurred - Printing stack trace");
@@ -874,10 +903,19 @@ public class SolitaireMenu {
 	
 	public static void saveGame() throws ParseException
 	{
+		if(gameType.equals("Flea Market")) {
+			record = new Record(gameType, Integer.parseInt(SolitaireFM.scoreBox.getText().substring(7)), 
+			Integer.parseInt(SolitaireFM.timeBox.getText().substring(9)), new Date());
+			System.out.println(record);
+			
+		} else if (gameType.equals("Klondike")) {
+			record = new Record(gameType, Integer.parseInt(SolitaireK.scoreBox.getText().substring(7)), 
+			Integer.parseInt(SolitaireK.timeBox.getText().substring(9)), new Date());
+			System.out.println(record);
+		}
 		if(record != null) {
 			getUser().createRecord(gameType, record.getScore(), record.getTime());
 		}
-		
 	}
 	
 	private static class windowListener implements WindowListener
@@ -910,7 +948,9 @@ public class SolitaireMenu {
 		@Override
 		public void windowClosing(WindowEvent e) {}
 		@Override
-		public void windowClosed(WindowEvent e) {}
+		public void windowClosed(WindowEvent e) {
+			
+		}
 		@Override
 		public void windowIconified(WindowEvent e) {}
 		@Override
@@ -919,11 +959,6 @@ public class SolitaireMenu {
 		public void windowActivated(WindowEvent e) {}
 		@Override
 		public void windowDeactivated(WindowEvent e) {
-			//if(SolitaireFM.frame.isEnabled()) {
-				record = new Record(gameType, Integer.parseInt(SolitaireFM.scoreBox.getText().substring(7)), 
-						Integer.parseInt(SolitaireFM.timeBox.getText().substring(9)), new Date());
-				System.out.println(record);
-			//}
 			try {
 				saveGame();
 				System.out.println("Game Saved");

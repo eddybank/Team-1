@@ -73,9 +73,10 @@ public class Card extends JPanel{
 	private final int x_offset = 15;
 	private final int y_offset = 20;
 	private final int new_x_offset = x_offset + (CARD_WIDTH - 30);
-	final static public int CARD_HEIGHT = 150;
+	
+	static public int CARD_HEIGHT = 150;
 
-	final static public int CARD_WIDTH = 100;
+	static public int CARD_WIDTH = 100;
 
 	final static public int CORNER_ANGLE = 25;
 
