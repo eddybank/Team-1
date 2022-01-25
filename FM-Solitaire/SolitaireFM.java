@@ -29,6 +29,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingUtilities;
 
 
 //import global.StatisticAnalysis.User;
@@ -37,8 +39,8 @@ import javax.swing.JTextPane;
 public class SolitaireFM
 {
 	// CONSTANTS
-	public static int TABLE_HEIGHT = Card.CARD_HEIGHT * (8); //1200
-	public static int TABLE_WIDTH = (Card.CARD_WIDTH * 8); //800
+	public static int table_height = Card.CARD_HEIGHT * (8); //1200
+	public static int table_width = (Card.CARD_WIDTH * 8); //800
 	public static final int NUM_FINAL_DECKS = 8;
 	public static final int NUM_PLAY_DECKS = 13;
 	public static final Point DECK_POS = new Point(5, 5);
@@ -65,6 +67,7 @@ public class SolitaireFM
 	public static JTextPane scoreBox = new JTextPane();// displays the score
 	public static JTextPane timeBox = new JTextPane();// displays the time
 	public static JTextPane statusBox = new JTextPane();// status messages
+	private static JScrollPane scroll;
 	
 	//ACTION LISTENERS
 	private static ActionListener ae = new setUpButtonListeners();
@@ -186,75 +189,72 @@ public class SolitaireFM
 			
 			if (e.getNewState() == frame.MAXIMIZED_BOTH){ //this means maximized
 				
-				TABLE_HEIGHT = frame.getHeight();
-		    	TABLE_WIDTH = frame.getWidth();
+				table_height = frame.getHeight();
+		    	table_width = frame.getWidth();
 		    	
-		    	Card.CARD_HEIGHT = (int)Math.round(TABLE_HEIGHT*.125);
-		    	Card.CARD_WIDTH = (int)Math.round(TABLE_WIDTH*.125);
+		    	Card.CARD_HEIGHT = (int)Math.round(table_height*.125);
+		    	Card.CARD_WIDTH = (int)Math.round(table_width*.125);
 		    	
-		    	frame.setSize(TABLE_WIDTH, TABLE_HEIGHT);
+		    	frame.setSize(table_width, table_height);
 		    	
 				for (int x = 0; x < NUM_FINAL_DECKS; x++)
 	    		{
 	    			//Bottom Up: A to K
 	    			if(x >= 0 && x <= 3) 
 	    			{
-	    				final_cards[x].setXY((int)Math.round(TABLE_WIDTH*0.25) + (x * (Card.CARD_WIDTH)), (int)Math.round(TABLE_HEIGHT*0.0041667));
+	    				final_cards[x].setXY((int)Math.round(table_width*0.25) + (x * (Card.CARD_WIDTH)), (int)Math.round(table_height*0.0041667));
 	    			}
 	    			else if(x >= 4 && x <= 7) 
 	    			{
-	    				final_cards[x].setXY((int)Math.round(TABLE_WIDTH*0.25) + ((x-4) * (Card.CARD_WIDTH)), (int)Math.round((TABLE_HEIGHT*0.1354167)));
+	    				final_cards[x].setXY((int)Math.round(table_width*0.25) + ((x-4) * (Card.CARD_WIDTH)), (int)Math.round((table_height*0.1354167)));
 	    			}
 	    		}
 	    		
 	    		for (int x = 0; x < NUM_PLAY_DECKS; x++)
 	    		{
-	    			playCardStack[x].setXY((int)Math.round(TABLE_WIDTH*0.4375), (2*(int)Math.round(TABLE_HEIGHT*0.154167)));
+	    			playCardStack[x].setXY((int)Math.round(table_width*0.4375), (2*(int)Math.round(table_height*0.154167)));
 	    			
 	    			if(x >= 1 && x <=4) 
 	    			{
-	    				System.out.println((125/2) + (x * (Card.CARD_WIDTH + 15))+""+3*PLAY_POS.y);
-	    				playCardStack[x].setXY((int)Math.round(TABLE_WIDTH*0.078125) + (x * (Card.CARD_WIDTH + (int)Math.round(TABLE_WIDTH*0.01875))), (3*(int)Math.round(TABLE_HEIGHT*0.154167)));
+	    				playCardStack[x].setXY((int)Math.round(table_width*0.078125) + (x * (Card.CARD_WIDTH + (int)Math.round(table_width*0.01875))), (3*(int)Math.round(table_height*0.154167)));
 	    			} 
 	    			if(x >= 5 && x <= 8) 
 	    			{
-	    				playCardStack[x].setXY((int)Math.round(TABLE_WIDTH*0.078125) + ((x-4) * (Card.CARD_WIDTH + (int)Math.round(TABLE_WIDTH*0.01875))), (4*(int)Math.round(TABLE_HEIGHT*0.154167)));
+	    				playCardStack[x].setXY((int)Math.round(table_width*0.078125) + ((x-4) * (Card.CARD_WIDTH + (int)Math.round(table_width*0.01875))), (4*(int)Math.round(table_height*0.154167)));
 	    			} if(x >= 9 && x <= 13) 
 	    			{
-	    				playCardStack[x].setXY((int)Math.round(TABLE_WIDTH*0.078125) + ((x-8) * (Card.CARD_WIDTH + (int)Math.round(TABLE_WIDTH*0.01875))), (5*(int)Math.round(TABLE_HEIGHT*0.154167)));
+	    				playCardStack[x].setXY((int)Math.round(table_width*0.078125) + ((x-8) * (Card.CARD_WIDTH + (int)Math.round(table_width*0.01875))), (5*(int)Math.round(table_height*0.154167)));
 	    			}
 	    		}
 	    		
 	    		
 	    		for (int x = 0; x < deal_deck.length; x++)
 	    		{
-	    			deal_deck[x].setXY((int)Math.round(TABLE_WIDTH*0.0625) - ((int)Math.round(TABLE_WIDTH*0.00625) + ((int)Math.round(TABLE_WIDTH*0.00375)*x)) + (int)Math.round(TABLE_WIDTH*0.00982143), (2*(int)Math.round(TABLE_HEIGHT*0.154167)));
+	    			deal_deck[x].setXY((int)Math.round(table_width*0.0625) - ((int)Math.round(table_width*0.00625) + ((int)Math.round(table_width*0.00375)*x)) + (int)Math.round(table_width*0.00982143), (2*(int)Math.round(table_height*0.154167)));
 	    		}
 	    		
-	    		autoPlayButton.setBounds(0, TABLE_HEIGHT - 160*(TABLE_HEIGHT/1200), 120*(TABLE_WIDTH/800), 60*(TABLE_HEIGHT/1200));
+	    		autoPlayButton.setBounds(0, table_height - 160*(table_height/1200), 120*(table_width/800), 60*(table_height/1200));
 
-				newGameButton.setBounds(0, TABLE_HEIGHT - 100*(TABLE_HEIGHT/1200), 120*(TABLE_WIDTH/800), 60*(TABLE_HEIGHT/1200));
+				newGameButton.setBounds(0, table_height - 100*(table_height/1200), 120*(table_width/800), 60*(table_height/1200));
 
-				showRulesButton.setBounds((int)Math.round(TABLE_WIDTH*0.15), TABLE_HEIGHT - 100*(TABLE_HEIGHT/1200), 120*(TABLE_WIDTH/800), 60*(TABLE_HEIGHT/1200));
+				showRulesButton.setBounds((int)Math.round(table_width*0.15), table_height - 100*(table_height/1200), 120*(table_width/800), 60*(table_height/1200));
 
 				gameTitle.setText("<b>Team 1<br>Flea Market Solitaire</b> <br> CPSC 4900 <br> Fall 2021");
 				gameTitle.setEditable(false);
 				gameTitle.setOpaque(false);
-				gameTitle.setBounds((int)Math.round(TABLE_WIDTH*0.04), 20, 100, 100);
+				gameTitle.setBounds((int)Math.round(table_width*0.04), 20, 100, 100);
 
-				scoreBox.setBounds((int)Math.round(TABLE_WIDTH*0.3), TABLE_HEIGHT - 100*(TABLE_HEIGHT/1200), 120*(TABLE_WIDTH/800), 60*(TABLE_HEIGHT/1200));
-				scoreBox.setText("Score: 0");
+				scoreBox.setBounds((int)Math.round(table_width*0.3), table_height - 100*(table_height/1200), 120*(table_width/800), 60*(table_height/1200));
 				scoreBox.setEditable(false);
 				scoreBox.setOpaque(false);
 
-				timeBox.setBounds((int)Math.round(TABLE_WIDTH*0.45), TABLE_HEIGHT - 100*(TABLE_HEIGHT/1200), 120*(TABLE_WIDTH/800), 60*(TABLE_HEIGHT/1200));
-				timeBox.setText("Seconds: 0");
+				timeBox.setBounds((int)Math.round(table_width*0.45), table_height - 100*(table_height/1200), 120*(table_width/800), 60*(table_height/1200));
 				timeBox.setEditable(false);
 				timeBox.setOpaque(false);
 
-				toggleTimerButton.setBounds((int)Math.round(TABLE_WIDTH*0.60), TABLE_HEIGHT - 100*(TABLE_HEIGHT/1200), 125*(TABLE_WIDTH/800), 60*(TABLE_HEIGHT/1200));
+				toggleTimerButton.setBounds((int)Math.round(table_width*0.60), table_height - 100*(table_height/1200), 125*(table_width/800), 60*(table_height/1200));
 
-				statusBox.setBounds((int)Math.round(TABLE_WIDTH*0.75625), TABLE_HEIGHT - 100*(TABLE_HEIGHT/1200), 180*(TABLE_WIDTH/800), 60*(TABLE_HEIGHT/1200));
+				statusBox.setBounds((int)Math.round(table_width*0.75625), table_height - 100*(table_height/1200), 180*(table_width/800), 60*(table_height/1200));
 				statusBox.setEditable(false);
 				statusBox.setOpaque(false);
 	
@@ -264,10 +264,10 @@ public class SolitaireFM
 		    	  	Card.CARD_HEIGHT = 150;
 			    	Card.CARD_WIDTH = 100;
 		    	  	
-					TABLE_HEIGHT = Card.CARD_HEIGHT * 8;
-			  		TABLE_WIDTH = (Card.CARD_WIDTH * 8);
+					table_height = Card.CARD_HEIGHT * 8;
+			  		table_width = (Card.CARD_WIDTH * 8);
 			    	
-			  		frame.setSize(TABLE_WIDTH, TABLE_HEIGHT);
+			  		frame.setSize(table_width, table_height);
 			  		
 		    	  	for (int x = 0; x < NUM_FINAL_DECKS; x++)
 		    		{
@@ -288,7 +288,6 @@ public class SolitaireFM
 		    			
 		    			if(x >= 1 && x <=4) 
 		    			{
-		    				System.out.println((125/2) + (x * (Card.CARD_WIDTH + 15))+""+3*PLAY_POS.y);
 		    				playCardStack[x].setXY((125/2) + (x * (Card.CARD_WIDTH + 15)), (3*PLAY_POS.y));
 		    			} 
 		    			if(x >= 5 && x <= 8) 
@@ -306,30 +305,28 @@ public class SolitaireFM
 		    			deal_deck[x].setXY(50 - (5 + (3*x)) + ((110/2)/7), (2*PLAY_POS.y));
 		    		}
 		    		
-		    		autoPlayButton.setBounds(0, TABLE_HEIGHT - 100, 120, 30);
+		    		autoPlayButton.setBounds(0, table_height - 100, 120, 30);
 		    		
-		    		newGameButton.setBounds(0, TABLE_HEIGHT - 70, 120, 30);
+		    		newGameButton.setBounds(0, table_height - 70, 120, 30);
 
-		    		showRulesButton.setBounds(120, TABLE_HEIGHT - 70, 120, 30);
+		    		showRulesButton.setBounds(120, table_height - 70, 120, 30);
 
 		    		gameTitle.setText("<b>Team 1<br>Flea Market Solitaire</b> <br> CPSC 4900 <br> Fall 2021");
 		    		gameTitle.setEditable(false);
 		    		gameTitle.setOpaque(false);
 		    		gameTitle.setBounds(32, 20, 100, 100);
 
-		    		scoreBox.setBounds(240, TABLE_HEIGHT - 70, 120, 30);
-		    		scoreBox.setText("Score: 0");
+		    		scoreBox.setBounds(240, table_height - 70, 120, 30);
 		    		scoreBox.setEditable(false);
 		    		scoreBox.setOpaque(false);
 
-		    		timeBox.setBounds(360, TABLE_HEIGHT - 70, 120, 30);
-		    		timeBox.setText("Seconds: 0");
+		    		timeBox.setBounds(360, table_height - 70, 120, 30);
 		    		timeBox.setEditable(false);
 		    		timeBox.setOpaque(false);
 
-		    		toggleTimerButton.setBounds(480, TABLE_HEIGHT - 70, 125, 30);
+		    		toggleTimerButton.setBounds(480, table_height - 70, 125, 30);
 
-		    		statusBox.setBounds(605, TABLE_HEIGHT - 70, 180, 30);
+		    		statusBox.setBounds(605, table_height - 70, 180, 30);
 		    		statusBox.setEditable(false);
 		    		statusBox.setOpaque(false);
 		      }
@@ -357,7 +354,7 @@ public class SolitaireFM
 			{
 					JDialog ruleFrame = new JDialog(frame, true);
 					ruleFrame.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-					ruleFrame.setSize(TABLE_HEIGHT - (TABLE_HEIGHT/3), TABLE_WIDTH - (TABLE_WIDTH/3));
+					ruleFrame.setSize(table_height - (table_height/3), table_width - (table_width/3));
 					JScrollPane scroll;
 					JEditorPane rulesTextPane = new JEditorPane("text/html", "");
 					rulesTextPane.setEditable(false);
@@ -776,6 +773,7 @@ public class SolitaireFM
 		
 		resetTimer();
 		
+		
 		deal_deck_pos = 0;
 		
 		score = -64;
@@ -784,6 +782,8 @@ public class SolitaireFM
 		deck.shuffle();
 		
 		table.removeAll();
+		
+		
 		// reset stacks if user starts a new game in the middle of one
 		if (playCardStack != null && final_cards != null)
 		{
@@ -927,42 +927,47 @@ public class SolitaireFM
 
 		}
 		
+		
+		
 		autoPlayButton.addActionListener(ae);
-		autoPlayButton.setBounds(0, TABLE_HEIGHT - 100, 120, 30);
+		autoPlayButton.setBounds(0, table_height - 100, 120, 30);
 		
 		newGameButton.addActionListener(SolitaireMenu.ae);
-		newGameButton.setBounds(0, TABLE_HEIGHT - 70, 120, 30);
+		newGameButton.setBounds(0, table_height - 70, 120, 30);
 
 		showRulesButton.addActionListener(ae);
-		showRulesButton.setBounds(120, TABLE_HEIGHT - 70, 120, 30);
+		showRulesButton.setBounds(120, table_height - 70, 120, 30);
 
 		gameTitle.setText("<b>Team 1<br>Flea Market Solitaire</b> <br> CPSC 4900 <br> Fall 2021");
 		gameTitle.setEditable(false);
 		gameTitle.setOpaque(false);
 		gameTitle.setBounds(32, 20, 100, 100);
 
-		scoreBox.setBounds(240, TABLE_HEIGHT - 70, 120, 30);
+		scoreBox.setBounds(240, table_height - 70, 120, 30);
 		scoreBox.setText("Score: 0");
 		scoreBox.setEditable(false);
 		scoreBox.setOpaque(false);
 
-		timeBox.setBounds(360, TABLE_HEIGHT - 70, 120, 30);
+		timeBox.setBounds(360, table_height - 70, 120, 30);
 		timeBox.setText("Seconds: 0");
 		timeBox.setEditable(false);
 		timeBox.setOpaque(false);
 
 		startTimer();
 
-		toggleTimerButton.setBounds(480, TABLE_HEIGHT - 70, 125, 30);
+		toggleTimerButton.setBounds(480, table_height - 70, 125, 30);
 		toggleTimerButton.addActionListener(ae);
 
-		statusBox.setBounds(605, TABLE_HEIGHT - 70, 180, 30);
+		statusBox.setBounds(605, table_height - 70, 180, 30);
 		statusBox.setEditable(false);
 		statusBox.setOpaque(false);
 		
 		Container contentPane;
-
-		frame.setSize(TABLE_WIDTH, TABLE_HEIGHT);
+		contentPane = frame.getContentPane();
+		
+		
+		
+		frame.setSize(table_width, table_height);
 
 		table.setLayout(null);
 		table.setBackground(SolitaireMenu.getColor());
@@ -980,8 +985,20 @@ public class SolitaireFM
 		
 		table.repaint();
 		
-		contentPane = frame.getContentPane();
-		contentPane.add(table);
+		
+		frame.add(scroll = new JScrollPane(table, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED));
+		table.setPreferredSize(new Dimension(700, 1200));
+		SwingUtilities.invokeLater(new Runnable() {
+
+            @Override
+            public void run() {
+                scroll.getVerticalScrollBar().setValue(0);
+                scroll.getVerticalScrollBar().setUnitIncrement(Card.CARD_HEIGHT);
+            }
+        });
+		
+		frame.add(scroll);
+		
 		frame.addWindowListener(gl);
 		frame.addWindowStateListener(wSL);
 		table.addMouseListener(cm);
@@ -989,6 +1006,10 @@ public class SolitaireFM
 		
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frame.setVisible(true);
+		
+		
+		
+		
 	}
 
 

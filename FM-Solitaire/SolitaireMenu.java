@@ -469,8 +469,8 @@ public class SolitaireMenu {
 		JDialog userFrame = new JDialog(frame, true);
 		JPanel userTable = new JPanel();
 		userFrame.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-		userFrame.setSize(300, 100);
-		JLabel userName = new JLabel("Enter user name or Click on 'Guest' to Continue");
+		userFrame.setSize(450, 100);
+		JLabel userName = new JLabel("Type Desired Username then Press Enter Or Click on 'Guest' to Continue");
 		guestButton = new JButton("Guest");
 		
 		//nested action listener to log in as Guest and change background color accordingly
@@ -1006,7 +1006,7 @@ public class SolitaireMenu {
 	//placing all buttons and adding their listeners
 	private static void openMenu() throws BadLocationException
 	{
-		statusBox.setBounds(220, TABLE_HEIGHT - 120, 200, 30);
+		statusBox.setBounds(220, TABLE_HEIGHT - 120, 200, 50);
 		statusBox.setEditable(false);
 		statusBox.setOpaque(false);
 		StyleConstants.setAlignment(center, StyleConstants.ALIGN_CENTER);
@@ -1057,7 +1057,7 @@ public class SolitaireMenu {
 		Container contentPane;
 
 		frame.setSize(TABLE_WIDTH, TABLE_HEIGHT);
-		
+		frame.addWindowListener(new windowListener());
 		menu.setLayout(null);
 		
 		contentPane = frame.getContentPane();

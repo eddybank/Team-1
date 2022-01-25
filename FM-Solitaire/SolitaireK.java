@@ -185,12 +185,10 @@ public class SolitaireK
 				gameTitle.setBounds((int)Math.round(TABLE_WIDTH*0.30625), 20, 100, 100);
 
 				scoreBox.setBounds((int)Math.round(TABLE_WIDTH*0.3), TABLE_HEIGHT - 50*(TABLE_HEIGHT/600), 120*(TABLE_WIDTH/800), 30*(TABLE_HEIGHT/600));
-				scoreBox.setText("Score: 0");
 				scoreBox.setEditable(false);
 				scoreBox.setOpaque(false);
 
 				timeBox.setBounds((int)Math.round(TABLE_WIDTH*0.45), TABLE_HEIGHT - 50*(TABLE_HEIGHT/600), 120*(TABLE_WIDTH/800), 30*(TABLE_HEIGHT/600));
-				timeBox.setText("Seconds: 0");
 				timeBox.setEditable(false);
 				timeBox.setOpaque(false);
 
@@ -241,12 +239,10 @@ public class SolitaireK
 					gameTitle.setBounds(245, 20, 100, 100);
 
 					scoreBox.setBounds(240, TABLE_HEIGHT - 70, 120, 30);
-					scoreBox.setText("Score: 0");
 					scoreBox.setEditable(false);
 					scoreBox.setOpaque(false);
 
 					timeBox.setBounds(360, TABLE_HEIGHT - 70, 120, 30);
-					timeBox.setText("Seconds: 0");
 					timeBox.setEditable(false);
 					timeBox.setOpaque(false);
 

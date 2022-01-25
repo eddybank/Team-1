@@ -228,18 +228,6 @@ public class Card extends JPanel{
 		return (rect.contains(p));
 	}
 
-	private void drawSuit(Graphics2D g, String suit, Color color)
-	{
-		g.setColor(color);
-		g.drawString(suit, _location.x + x_offset - 5, _location.y + y_offset);
-		g.drawString(suit, _location.x + x_offset - 5 , _location.y + CARD_HEIGHT - 5);
-	}
-
-	private void drawValue(Graphics2D g, String value)
-	{
-		g.drawString(value, _location.x + new_x_offset - 5, _location.y + y_offset);
-		g.drawString(value, _location.x + new_x_offset - 5 , _location.y + y_offset + CARD_HEIGHT - 25);
-	}
 	@Override
 	public void paintComponent(Graphics g)
 	{
